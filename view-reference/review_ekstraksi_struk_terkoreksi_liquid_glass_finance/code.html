@@ -1,0 +1,834 @@
+<!doctype html>
+
+<html class="h-full" lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta
+			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+			name="viewport"
+		/>
+		<meta content="mobile_stack" name="shell-type" />
+		<link href="https://fonts.googleapis.com" rel="preconnect" />
+		<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap"
+			rel="stylesheet"
+		/>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+			rel="stylesheet"
+		/>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+			rel="stylesheet"
+		/>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+			rel="stylesheet"
+		/>
+		<script src="https://cdn.tailwindcss.com"></script>
+		<script id="tailwind-config">
+			tailwind.config = {
+				darkMode: 'class',
+				theme: {
+					extend: {
+						colors: {
+							'inverse-on-surface': '#f3f0f2',
+							error: '#ba1a1a',
+							'secondary-fixed-dim': '#53e16f',
+							'surface-tint': '#005bc1',
+							outline: '#717786',
+							'inverse-primary': '#adc6ff',
+							'on-error-container': '#93000a',
+							'primary-container': '#0070eb',
+							'on-tertiary-fixed-variant': '#930005',
+							'on-secondary': '#ffffff',
+							'inverse-surface': '#303032',
+							secondary: '#006e28',
+							'outline-variant': '#c1c6d7',
+							'surface-bright': '#fcf8fb',
+							'error-container': '#ffdad6',
+							'surface-variant': '#e4e2e4',
+							'tertiary-container': '#e2241f',
+							'surface-container-low': '#f6f3f5',
+							'surface-dim': '#dcd9dc',
+							'secondary-container': '#6ffb85',
+							background: '#fcf8fb',
+							'on-tertiary': '#ffffff',
+							'on-primary-container': '#fefcff',
+							'surface-container-highest': '#e4e2e4',
+							'surface-container': '#f0edef',
+							'on-background': '#1b1b1d',
+							'on-tertiary-container': '#fffbff',
+							'tertiary-fixed-dim': '#ffb4aa',
+							'tertiary-fixed': '#ffdad5',
+							'on-primary': '#ffffff',
+							'on-secondary-container': '#00732a',
+							'on-primary-fixed': '#001a41',
+							'on-secondary-fixed': '#002107',
+							'on-surface-variant': '#414755',
+							'surface-container-lowest': '#ffffff',
+							surface: '#fcf8fb',
+							'primary-fixed-dim': '#adc6ff',
+							'on-error': '#ffffff',
+							'surface-container-high': '#eae7ea',
+							'secondary-fixed': '#72fe88',
+							'on-surface': '#1b1b1d',
+							primary: '#0058bc',
+							'on-tertiary-fixed': '#410001',
+							'primary-fixed': '#d8e2ff',
+							tertiary: '#bc000a',
+							'on-primary-fixed-variant': '#004493',
+							'on-secondary-fixed-variant': '#00531c'
+						},
+						borderRadius: { DEFAULT: '1rem', lg: '2rem', xl: '3rem', full: '9999px' },
+						spacing: {
+							'space-xl': '2rem',
+							margin: '1.25rem',
+							gutter: '1rem',
+							'space-lg': '1.5rem',
+							'space-xs': '0.25rem',
+							'space-md': '1rem',
+							'space-sm': '0.5rem'
+						},
+						fontFamily: {
+							callout: ['Plus Jakarta Sans'],
+							'currency-hero': ['Plus Jakarta Sans'],
+							'currency-card': ['Plus Jakarta Sans'],
+							'caption-1': ['Plus Jakarta Sans'],
+							'title-2': ['Plus Jakarta Sans'],
+							'title-1': ['Plus Jakarta Sans'],
+							footnote: ['Plus Jakarta Sans'],
+							headline: ['Plus Jakarta Sans'],
+							subhead: ['Plus Jakarta Sans'],
+							'caption-2': ['Plus Jakarta Sans'],
+							body: ['Plus Jakarta Sans'],
+							'large-title': ['Plus Jakarta Sans'],
+							'title-3': ['Plus Jakarta Sans']
+						},
+						fontSize: {
+							callout: [
+								'16px',
+								{ lineHeight: '21px', letterSpacing: '-0.32px', fontWeight: '500' }
+							],
+							'currency-hero': [
+								'36px',
+								{ lineHeight: '44px', letterSpacing: '-0.5px', fontWeight: '700' }
+							],
+							'currency-card': [
+								'24px',
+								{ lineHeight: '30px', letterSpacing: '-0.3px', fontWeight: '700' }
+							],
+							'caption-1': [
+								'12px',
+								{ lineHeight: '16px', letterSpacing: '0px', fontWeight: '500' }
+							],
+							'title-2': [
+								'22px',
+								{ lineHeight: '28px', letterSpacing: '-0.26px', fontWeight: '700' }
+							],
+							'title-1': [
+								'28px',
+								{ lineHeight: '34px', letterSpacing: '0.36px', fontWeight: '700' }
+							],
+							footnote: [
+								'13px',
+								{ lineHeight: '18px', letterSpacing: '-0.08px', fontWeight: '400' }
+							],
+							headline: [
+								'17px',
+								{ lineHeight: '22px', letterSpacing: '-0.43px', fontWeight: '600' }
+							],
+							subhead: [
+								'15px',
+								{ lineHeight: '20px', letterSpacing: '-0.24px', fontWeight: '500' }
+							],
+							'caption-2': [
+								'11px',
+								{ lineHeight: '13px', letterSpacing: '0.07px', fontWeight: '600' }
+							],
+							body: ['17px', { lineHeight: '22px', letterSpacing: '-0.43px', fontWeight: '400' }],
+							'large-title': [
+								'34px',
+								{ lineHeight: '41px', letterSpacing: '0.37px', fontWeight: '700' }
+							],
+							'title-3': [
+								'20px',
+								{ lineHeight: '25px', letterSpacing: '-0.45px', fontWeight: '600' }
+							]
+						}
+					}
+				}
+			};
+		</script>
+		<style>
+			@layer base {
+				html,
+				body {
+					margin: 0;
+					padding: 0;
+					min-height: 100%;
+				}
+				body {
+					overscroll-behavior-y: none;
+					-webkit-tap-highlight-color: transparent;
+				}
+				.pb-safe {
+					padding-bottom: env(safe-area-inset-bottom, 0px);
+				}
+				.pt-safe {
+					padding-top: env(safe-area-inset-top, 0px);
+				}
+				main > :first-child {
+					margin-top: 0 !important;
+				}
+				main > :last-child {
+					margin-bottom: 0 !important;
+				}
+			}
+			::-webkit-scrollbar {
+				display: none;
+			}
+		</style>
+		<style>
+			body {
+				min-height: max(884px, 100dvh);
+			}
+		</style>
+	</head>
+	<body
+		class="bg-surface font-body text-body text-on-surface selection:bg-primary-fixed relative flex min-h-screen flex-col"
+	>
+		<header
+			class="pt-safe bg-surface/80 fixed top-0 z-50 w-full shadow-[0_1px_8px_rgba(0,0,0,0.04)] backdrop-blur-xl"
+		>
+			<div class="px-margin flex h-16 items-center justify-between">
+				<button
+					aria-label="Tutup atau kembali"
+					class="text-on-surface hover:bg-surface-container-high -ml-2 flex h-11 w-11 items-center justify-center rounded-full transition-colors"
+					onclick="history.back()"
+				>
+					<span class="material-symbols-outlined text-[24px]">close</span>
+				</button>
+				<h1
+					class="text-headline font-headline text-on-surface px-space-xs flex-1 truncate text-center"
+				>
+					Review Ekstraksi Struk
+				</h1>
+				<div class="-mr-1 flex items-center justify-end">
+					<div class="bg-primary flex h-8 w-8 items-center justify-center rounded-full">
+						<span class="material-symbols-outlined text-on-primary text-[18px]">person</span>
+					</div>
+				</div>
+			</div>
+		</header>
+		<main class="bg-surface pb-safe w-full flex-1 pt-16">
+			<div class="relative flex w-full flex-col pb-10">
+				<!-- Ambient Chromatic Aura Orbs (Liquid Backdrop) -->
+				<div class="pointer-events-none absolute inset-x-0 top-0 -z-10 h-96 overflow-hidden">
+					<div
+						class="bg-secondary-container/30 absolute -top-12 -left-10 h-72 w-72 rounded-full blur-3xl"
+					></div>
+					<div
+						class="bg-primary-fixed/40 absolute top-10 right-0 h-80 w-80 rounded-full blur-3xl"
+					></div>
+					<div
+						class="bg-surface-tint/10 absolute top-44 left-1/3 h-64 w-64 rounded-full blur-2xl"
+					></div>
+				</div>
+				<!-- Sub-Header Quick Action Bar -->
+				<div class="px-margin pt-space-xs pb-space-sm flex items-center justify-between">
+					<button
+						class="bg-surface-container-lowest/80 text-on-surface inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 shadow-sm backdrop-blur-md transition-all active:scale-95"
+						onclick="history.back()"
+					>
+						<span class="material-symbols-outlined text-[18px]">arrow_back_ios_new</span>
+						<span class="font-subhead text-subhead">Kembali</span>
+					</button>
+					<button
+						class="bg-surface-container-lowest/80 text-primary inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 shadow-sm backdrop-blur-md transition-all active:scale-95"
+						id="rescanBtn"
+					>
+						<span class="material-symbols-outlined text-[18px]">document_scanner</span>
+						<span class="font-subhead text-subhead">Scan Ulang</span>
+					</button>
+				</div>
+				<!-- Dynamic Notification Pill (Liquid iOS Glass) -->
+				<div class="px-margin mb-space-md">
+					<div
+						class="bg-surface-container-lowest/85 relative flex items-center justify-between overflow-hidden rounded-full p-1.5 pr-4 shadow-[0_12px_28px_-6px_rgba(0,110,40,0.12)] backdrop-blur-xl transition-all"
+					>
+						<div class="flex min-w-0 items-center gap-2.5">
+							<div
+								class="bg-secondary text-on-secondary flex h-8 w-8 shrink-0 items-center justify-center rounded-full shadow-[0_0_12px_rgba(0,110,40,0.45)]"
+							>
+								<span
+									class="material-symbols-outlined text-[18px]"
+									style="font-variation-settings: 'FILL' 1"
+									>check</span
+								>
+							</div>
+							<div class="min-w-0">
+								<p class="font-footnote text-footnote text-on-surface truncate">
+									<span class="font-headline text-headline text-secondary">Koreksi Diterapkan</span>
+									• Data Tersinkronisasi
+								</p>
+							</div>
+						</div>
+						<span
+							class="bg-secondary-container text-on-secondary-container font-caption-2 text-caption-2 shrink-0 rounded-full px-2.5 py-1 shadow-sm"
+						>
+							1 Item Diperbaiki
+						</span>
+					</div>
+				</div>
+				<!-- Hero Receipt Status Card -->
+				<div class="px-margin mb-space-lg">
+					<div
+						class="bg-surface-container-lowest/75 p-space-md relative overflow-hidden rounded-lg shadow-[0_16px_36px_-8px_rgba(27,39,87,0.08)] backdrop-blur-2xl"
+					>
+						<!-- Glow ambient edge -->
+						<div
+							class="bg-secondary-fixed/20 pointer-events-none absolute top-0 right-0 h-44 w-44 rounded-full blur-2xl"
+						></div>
+						<!-- Merchant & Physical Receipt Teaser -->
+						<div class="mb-space-md flex items-start justify-between gap-3">
+							<div class="flex min-w-0 items-center gap-3">
+								<!-- Merchant Avatar with Verified Aura -->
+								<div
+									class="bg-surface-container-high relative flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full shadow-inner"
+								>
+									<img
+										class="h-full w-full object-cover"
+										data-alt="Close up warm cup of artisan espresso with glossy brown foam from Kopi Kenangan cafe, Indonesian coffee lifestyle aesthetic"
+										src="https://lh3.googleusercontent.com/aida-public/AB6AXuCwsv2VUCB0kjPB_RbAPGK5z1xyhmp7_Ek4CjJGXE8xHKpsUQwmqaWjgeShLpZ6VFZY3qZTj2rHG60XjT8wzsxxDwPg0YIOBe9ZZkezd7V4VKcPumwBFuQqs9IEqI-eHHUh99xm3KbPZ0570xmDTIcayNZTImRGAyRvyQ0OXbu2AmzhC9Ub0jDv6pdLn1A3-3jqrxsxjStohEVv8UZrgYhcGPlQ2wtxYreGjb3bS9bs5ZPcUja0aSjcVw"
+									/>
+									<div
+										class="bg-primary text-on-primary absolute right-0 bottom-0 flex h-4 w-4 items-center justify-center rounded-full"
+									>
+										<span
+											class="material-symbols-outlined text-[11px]"
+											style="font-variation-settings: 'FILL' 1"
+											>verified</span
+										>
+									</div>
+								</div>
+								<div class="min-w-0">
+									<div class="flex items-center gap-1.5">
+										<h2 class="font-headline text-headline text-on-surface truncate">
+											Kopi Kenangan
+										</h2>
+										<span
+											class="material-symbols-outlined text-primary text-[17px]"
+											style="font-variation-settings: 'FILL' 1"
+											>check_circle</span
+										>
+									</div>
+									<p class="font-footnote text-footnote text-on-surface-variant truncate">
+										Grand Indonesia West Mall • Wisma 46
+									</p>
+									<p class="font-caption-2 text-caption-2 text-outline">
+										12 Okt 2026, 14:20 WIB • <span class="text-secondary font-headline">Lunas</span>
+									</p>
+								</div>
+							</div>
+							<span
+								class="bg-secondary-container text-on-secondary-container font-caption-1 text-caption-1 flex shrink-0 items-center gap-1 rounded-full px-2.5 py-1"
+							>
+								<span
+									class="material-symbols-outlined text-[13px]"
+									style="font-variation-settings: 'FILL' 1"
+									>verified_user</span
+								>
+								100% Terverifikasi
+							</span>
+						</div>
+						<!-- Physical Mini Receipt Slip Viewport -->
+						<div
+							class="rounded-DEFAULT bg-surface-container-low/70 mb-space-md relative flex items-center justify-between gap-3 p-3 backdrop-blur-md"
+						>
+							<div class="flex min-w-0 items-center gap-3">
+								<div
+									class="bg-surface-container-lowest relative flex h-14 w-12 shrink-0 flex-col items-center justify-center overflow-hidden rounded p-1 shadow-sm"
+								>
+									<img
+										class="h-full w-full rounded object-cover opacity-85"
+										data-alt="Paper receipt slip macro view printed typography showing cafe order items and subtotal numbers with clean paper texture"
+										src="https://lh3.googleusercontent.com/aida-public/AB6AXuA6h6U-bNOm5q9exeNzYRqGIqq0_1NEZAkNm3vcWMeAYh20uQdh4G2OaQP5epCQGvEurp_zc3yS3-vn4Pq-K_4lRBnb6exFlKUFjf7AWTiOSemZruuwKQY7wwTumr7p58_Ji7q0P0wCydGq4ZsRjfiEVYQreEfReDlrNofDK1zKBu4gnvGa7QpkNAdSsBiPLCL2n4kK-RNkVpBKTw01aK2LQlwzun86FRxRK740scX5B8kNBf5rLXXr4w"
+									/>
+									<div
+										class="from-surface-container/60 absolute inset-0 bg-gradient-to-t to-transparent"
+									></div>
+								</div>
+								<div class="min-w-0">
+									<p class="font-subhead text-subhead text-on-surface font-headline truncate">
+										Struk Fisik Kasir #KK-8924
+									</p>
+									<p class="font-caption-1 text-caption-1 text-outline truncate">
+										Ukuran 58mm • Resolusi OCR Tajam
+									</p>
+								</div>
+							</div>
+							<button
+								class="bg-surface-container-lowest text-primary font-caption-1 text-caption-1 flex shrink-0 items-center gap-1 rounded-full px-3 py-1.5 shadow-sm transition-transform active:scale-95"
+								id="zoomModalTrigger"
+							>
+								<span class="material-symbols-outlined text-[15px]">zoom_in</span>
+								Perbesar
+							</button>
+						</div>
+						<!-- Total Amount Box with Dual Liquid Shield -->
+						<div
+							class="rounded-DEFAULT from-secondary-container/30 via-surface-container-lowest/90 to-primary-container/10 flex items-center justify-between bg-gradient-to-r p-3.5"
+						>
+							<div>
+								<span class="font-caption-1 text-caption-1 text-on-surface-variant block"
+									>Total Tagihan Terverifikasi</span
+								>
+								<span class="font-currency-hero text-currency-hero text-on-surface tracking-tight"
+									>Rp 148.500</span
+								>
+							</div>
+							<div class="flex flex-col items-end gap-1">
+								<div
+									class="bg-secondary text-on-secondary font-caption-2 text-caption-2 inline-flex items-center gap-1 rounded-full px-2.5 py-1 shadow-[0_4px_12px_rgba(0,110,40,0.3)]"
+								>
+									<span
+										class="material-symbols-outlined text-[13px]"
+										style="font-variation-settings: 'FILL' 1"
+										>auto_fix_high</span
+									>
+									Diverifikasi AI + Pengguna
+								</div>
+								<span class="font-caption-2 text-caption-2 text-outline"
+									>Cocok dengan struk fisik</span
+								>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- Detected & Corrected Breakdown Items Section -->
+				<div class="px-margin mb-space-lg">
+					<div class="mb-space-xs flex items-center justify-between">
+						<div class="flex items-center gap-2">
+							<h3 class="font-title-3 text-title-3 text-on-surface">Rincian Item</h3>
+							<span
+								class="bg-surface-container-high text-on-surface-variant font-caption-1 text-caption-1 rounded-full px-2 py-0.5"
+								>3 Item</span
+							>
+						</div>
+						<button
+							class="font-footnote text-footnote text-primary inline-flex items-center gap-1 transition-all hover:opacity-80 active:scale-95"
+						>
+							<span class="material-symbols-outlined text-[16px]">edit</span>
+							Koreksi Ulang
+						</button>
+					</div>
+					<!-- Items List Group -->
+					<div class="flex flex-col gap-2.5">
+						<!-- Item 1: Unchanged high accuracy -->
+						<div
+							class="rounded-DEFAULT bg-surface-container-lowest/80 flex items-center justify-between gap-3 p-3.5 shadow-sm backdrop-blur-xl"
+						>
+							<div class="flex min-w-0 items-center gap-3">
+								<div
+									class="bg-surface-container text-primary flex h-10 w-10 shrink-0 items-center justify-center rounded-full"
+								>
+									<span class="material-symbols-outlined text-[20px]">coffee</span>
+								</div>
+								<div class="min-w-0">
+									<p class="font-subhead text-subhead text-on-surface font-headline truncate">
+										2x Kopi Kenangan Mantan
+									</p>
+									<p class="font-caption-1 text-caption-1 text-on-surface-variant truncate">
+										Reguler / Normal Sweet
+									</p>
+								</div>
+							</div>
+							<div class="shrink-0 text-right">
+								<p class="font-headline text-headline text-on-surface">Rp 64.000</p>
+								<span
+									class="font-caption-2 text-caption-2 text-secondary inline-flex items-center gap-0.5"
+								>
+									<span
+										class="material-symbols-outlined text-[11px]"
+										style="font-variation-settings: 'FILL' 1"
+										>check_circle</span
+									>
+									Akurat 99.8%
+								</span>
+							</div>
+						</div>
+						<!-- Item 2: MANUALLY CORRECTED (Highlight Glow Card) -->
+						<div
+							class="rounded-DEFAULT from-secondary-container/35 via-surface-container-lowest to-surface-container-lowest relative overflow-hidden bg-gradient-to-r p-3.5 shadow-[0_8px_20px_-4px_rgba(0,110,40,0.12)]"
+						>
+							<!-- Refractive Accent Bar -->
+							<div class="bg-secondary absolute top-0 bottom-0 left-0 w-1.5"></div>
+							<div class="flex items-center justify-between gap-3 pl-1">
+								<div class="flex min-w-0 items-center gap-3">
+									<div
+										class="bg-secondary/15 text-secondary flex h-10 w-10 shrink-0 items-center justify-center rounded-full"
+									>
+										<span class="material-symbols-outlined text-[20px]">bakery_dining</span>
+									</div>
+									<div class="min-w-0">
+										<div class="flex items-center gap-1.5">
+											<p class="font-subhead text-subhead text-on-surface font-headline truncate">
+												1x Toast Cokelat Klasik
+											</p>
+										</div>
+										<p class="font-caption-1 text-caption-1 text-on-surface-variant truncate">
+											Roti Panggang Lembut Cokelat
+										</p>
+										<p class="font-caption-2 text-caption-2 text-outline truncate line-through">
+											OCR Awal: T0ast Cklt Klsk
+										</p>
+									</div>
+								</div>
+								<div class="flex shrink-0 flex-col items-end text-right">
+									<p class="font-headline text-headline text-on-surface">Rp 28.000</p>
+									<span
+										class="bg-secondary text-on-secondary font-caption-2 text-caption-2 mt-1 flex items-center gap-0.5 rounded-full px-2 py-0.5 shadow-sm"
+									>
+										<span
+											class="material-symbols-outlined text-[11px]"
+											style="font-variation-settings: 'FILL' 1"
+											>edit_note</span
+										>
+										Terkoreksi Manual ✓
+									</span>
+								</div>
+							</div>
+						</div>
+						<!-- Item 3: High accuracy Americano -->
+						<div
+							class="rounded-DEFAULT bg-surface-container-lowest/80 flex items-center justify-between gap-3 p-3.5 shadow-sm backdrop-blur-xl"
+						>
+							<div class="flex min-w-0 items-center gap-3">
+								<div
+									class="bg-surface-container text-primary flex h-10 w-10 shrink-0 items-center justify-center rounded-full"
+								>
+									<span class="material-symbols-outlined text-[20px]">local_cafe</span>
+								</div>
+								<div class="min-w-0">
+									<p class="font-subhead text-subhead text-on-surface font-headline truncate">
+										1x Americano Dingin
+									</p>
+									<p class="font-caption-1 text-caption-1 text-on-surface-variant truncate">
+										Ukuran Reguler • No Sugar
+									</p>
+								</div>
+							</div>
+							<div class="shrink-0 text-right">
+								<p class="font-headline text-headline text-on-surface">Rp 24.000</p>
+								<span
+									class="font-caption-2 text-caption-2 text-secondary inline-flex items-center gap-0.5"
+								>
+									<span
+										class="material-symbols-outlined text-[11px]"
+										style="font-variation-settings: 'FILL' 1"
+										>check_circle</span
+									>
+									Akurat 99.1%
+								</span>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- Financial Tax & Surcharge Breakdown (Frosted Glass Receipt Tail) -->
+				<div class="px-margin mb-space-lg">
+					<div
+						class="bg-surface-container-lowest/70 p-space-md rounded-lg shadow-sm backdrop-blur-xl"
+					>
+						<h4
+							class="font-headline text-headline text-on-surface mb-space-sm flex items-center justify-between"
+						>
+							<span>Rincian Biaya &amp; Pajak</span>
+							<span class="material-symbols-outlined text-outline text-[18px]">receipt_long</span>
+						</h4>
+						<div class="font-subhead text-subhead flex flex-col gap-2">
+							<div class="text-on-surface-variant flex items-center justify-between">
+								<span>Subtotal Pesanan</span>
+								<span class="text-on-surface font-callout">Rp 116.000</span>
+							</div>
+							<div class="text-on-surface-variant flex items-center justify-between">
+								<span class="flex items-center gap-1">
+									PB1 / Pajak Restoran (10%)
+									<span class="material-symbols-outlined text-outline text-[14px]">info</span>
+								</span>
+								<span class="text-on-surface font-callout">Rp 11.600</span>
+							</div>
+							<div class="text-on-surface-variant flex items-center justify-between">
+								<span>Biaya Layanan &amp; Takeaway</span>
+								<span class="text-on-surface font-callout">Rp 20.900</span>
+							</div>
+							<div class="bg-surface-variant my-1 h-px"></div>
+							<div
+								class="font-headline text-headline text-on-surface flex items-center justify-between pt-1"
+							>
+								<span class="flex items-center gap-1.5">
+									Total Akhir
+									<span
+										class="bg-secondary-container text-on-secondary-container font-caption-2 text-caption-2 rounded px-1.5 py-0.5"
+										>Match 100%</span
+									>
+								</span>
+								<span class="text-primary font-currency-card text-currency-card">Rp 148.500</span>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- Wallet & Budget Allocation Interactive Card -->
+				<div class="px-margin mb-space-lg">
+					<div
+						class="bg-surface-container-lowest/80 p-space-md gap-space-md flex flex-col rounded-lg shadow-sm backdrop-blur-2xl"
+					>
+						<div>
+							<h4 class="font-headline text-headline text-on-surface mb-space-xs">
+								Alokasi &amp; Dompet
+							</h4>
+							<p class="font-footnote text-footnote text-on-surface-variant">
+								Dana akan langsung didebet dan pos anggaran diperbarui
+							</p>
+						</div>
+						<!-- Payment Source Selector -->
+						<div
+							class="rounded-DEFAULT bg-surface-container-low/60 flex items-center justify-between p-3"
+						>
+							<div class="flex items-center gap-3">
+								<div
+									class="bg-primary-container text-on-primary-container font-headline flex h-10 w-10 items-center justify-center rounded-full"
+								>
+									<span class="material-symbols-outlined text-[20px]">account_balance_wallet</span>
+								</div>
+								<div>
+									<div class="flex items-center gap-1.5">
+										<span class="font-headline text-headline text-on-surface">GoPay Utama</span>
+										<span
+											class="py-0.2 bg-surface-container-highest text-on-surface font-caption-2 text-caption-2 rounded px-1.5"
+											>Default</span
+										>
+									</div>
+									<p class="font-caption-1 text-caption-1 text-on-surface-variant">
+										Saldo saat ini: <strong class="text-on-surface">Rp 2.450.000</strong>
+									</p>
+								</div>
+							</div>
+							<button
+								class="bg-surface-container-lowest text-on-surface font-caption-1 text-caption-1 rounded-full px-2.5 py-1 shadow-xs"
+							>
+								Ganti
+							</button>
+						</div>
+						<!-- Budget Category with Dynamic Gauge -->
+						<div class="rounded-DEFAULT bg-surface-container-low/60 p-3.5">
+							<div class="mb-2 flex items-center justify-between">
+								<div class="flex items-center gap-2">
+									<span class="material-symbols-outlined text-secondary text-[20px]"
+										>restaurant</span
+									>
+									<span class="font-headline text-headline text-on-surface"
+										>Pos: Makan &amp; Minum</span
+									>
+								</div>
+								<span class="font-caption-1 text-caption-1 text-on-surface-variant"
+									>Oktober 2026</span
+								>
+							</div>
+							<!-- Custom Progress Bar -->
+							<div class="bg-surface-variant mb-2 h-2.5 w-full overflow-hidden rounded-full">
+								<div
+									class="bg-secondary h-full rounded-full transition-all duration-500"
+									style="width: 68%"
+								></div>
+							</div>
+							<div class="font-footnote text-footnote flex items-center justify-between">
+								<span class="text-outline">Sisa sblm: Rp 468.500</span>
+								<span class="text-secondary font-headline">Sisa nanti: Rp 320.000</span>
+							</div>
+						</div>
+						<!-- Additional Memo Input -->
+						<div class="rounded-DEFAULT bg-surface-container-low/40 p-3">
+							<label class="font-caption-1 text-caption-1 text-on-surface-variant mb-1 block"
+								>Catatan Transaksi</label
+							>
+							<p class="font-subhead text-subhead text-on-surface">
+								"Nongkrong siang bareng tim produk (Item roti dikoreksi)"
+							</p>
+						</div>
+						<!-- Save Photo Toggle (iOS Switch) -->
+						<div class="flex items-center justify-between pt-1">
+							<div class="flex items-center gap-2.5">
+								<div
+									class="bg-surface-container text-primary flex h-8 w-8 items-center justify-center rounded-full"
+								>
+									<span class="material-symbols-outlined text-[18px]">photo_library</span>
+								</div>
+								<div>
+									<span class="font-headline text-headline text-on-surface block"
+										>Simpan Bukti Struk</span
+									>
+									<span class="font-caption-1 text-caption-1 text-outline"
+										>Arsipkan file gambar ke vault terenkripsi</span
+									>
+								</div>
+							</div>
+							<!-- iOS Native-like Toggle active state -->
+							<div
+								class="bg-secondary flex h-7 w-12 cursor-pointer items-center justify-end rounded-full p-0.5 shadow-inner transition-colors"
+								id="toggleSwitch"
+							>
+								<div
+									class="bg-surface-container-lowest h-6 w-6 transform rounded-full shadow-md transition-transform"
+								></div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- Persistent Sticky Bottom Action Controls -->
+				<div class="px-margin mt-space-sm sticky bottom-3 z-20">
+					<div
+						class="bg-surface-container-lowest/85 p-space-sm flex flex-col gap-2 rounded-lg shadow-[0_20px_40px_-6px_rgba(27,39,87,0.15)] backdrop-blur-2xl"
+					>
+						<!-- iOS Fluid Capsule Primary Button -->
+						<button
+							class="bg-primary text-on-primary font-headline text-headline flex w-full items-center justify-center gap-2 rounded-full py-4 shadow-[0_8px_24px_rgba(0,88,188,0.35)] transition-all hover:brightness-105 active:scale-[0.98]"
+							id="confirmTransactionBtn"
+						>
+							<span
+								class="material-symbols-outlined text-[20px]"
+								style="font-variation-settings: 'FILL' 1"
+								>check_circle</span
+							>
+							<span>Konfirmasi &amp; Simpan (Rp 148.500)</span>
+						</button>
+						<!-- Secondary Plain Link Action -->
+						<button
+							class="text-error font-subhead text-subhead hover:bg-error-container/20 w-full rounded-full py-2 text-center transition-colors active:scale-98"
+							id="cancelExtractionBtn"
+						>
+							Batal &amp; Hapus Ekstraksi
+						</button>
+					</div>
+				</div>
+				<!-- Receipt Image Modal Overlay (Preview zoomed physical slip) -->
+				<div
+					class="bg-inverse-surface/60 p-space-md fixed inset-0 z-50 hidden items-center justify-center opacity-0 backdrop-blur-lg transition-opacity duration-200"
+					id="zoomModal"
+				>
+					<div
+						class="bg-surface-container-lowest p-space-md gap-space-md flex w-full max-w-sm scale-95 transform flex-col rounded-lg shadow-2xl transition-transform duration-200"
+					>
+						<div class="flex items-center justify-between">
+							<div class="flex items-center gap-2">
+								<span class="material-symbols-outlined text-primary text-[20px]">receipt</span>
+								<h4 class="font-headline text-headline text-on-surface">Foto Struk Asli</h4>
+							</div>
+							<button
+								class="bg-surface-container-high text-on-surface flex h-8 w-8 items-center justify-center rounded-full"
+								id="closeZoomModal"
+							>
+								<span class="material-symbols-outlined text-[18px]">close</span>
+							</button>
+						</div>
+						<div
+							class="rounded-DEFAULT bg-surface-container relative h-80 w-full overflow-hidden shadow-inner"
+						>
+							<img
+								class="h-full w-full object-contain p-2"
+								data-alt="High resolution crisp macro flat lay of an official cash register receipt for Kopi Kenangan showing detailed line items prices and subtotal stamped with restaurant tax details"
+								src="https://lh3.googleusercontent.com/aida-public/AB6AXuBx9GE3a5018795_Loju01_ZZ1VUXSXeAi4_VwZAtySLxHUSNT7cLMfSwBP9Wf1E__BWDHQMScswF6IlXJUPQ8gg342uIZaPUt3cuBv78wANkA7Lcar8xRnwqN6OnI69kW_smF9FreWYRSy4F4V11Dp-oZvm_yXCRbGQn94ZZqtvXbTWRuxmdBSifdxBXHRVDfn3DAfJmHaTM_iQIj8eMBd04pfsjIBW-GCkjzQ7fVJkKPH7wLALjX3dw"
+							/>
+						</div>
+						<div class="text-footnote text-outline font-footnote flex items-center justify-between">
+							<span>Dimensi: 1080 x 1920 px</span>
+							<span class="text-secondary font-headline">Koreksi Toast Tersimpan</span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<script>
+				// Simple micro-interactions for the review receipt view
+				const zoomBtn = document.getElementById('zoomModalTrigger');
+				const zoomModal = document.getElementById('zoomModal');
+				const closeZoomBtn = document.getElementById('closeZoomModal');
+				const toggleSwitch = document.getElementById('toggleSwitch');
+				const confirmBtn = document.getElementById('confirmTransactionBtn');
+				const rescanBtn = document.getElementById('rescanBtn');
+
+				// Modal Open
+				if (zoomBtn && zoomModal) {
+					zoomBtn.addEventListener('click', () => {
+						zoomModal.classList.remove('hidden');
+						zoomModal.classList.add('flex');
+						setTimeout(() => {
+							zoomModal.classList.remove('opacity-0');
+							zoomModal.querySelector('div').classList.remove('scale-95');
+						}, 10);
+					});
+				}
+
+				// Modal Close
+				const hideModal = () => {
+					if (!zoomModal) return;
+					zoomModal.classList.add('opacity-0');
+					zoomModal.querySelector('div').classList.add('scale-95');
+					setTimeout(() => {
+						zoomModal.classList.add('hidden');
+						zoomModal.classList.remove('flex');
+					}, 200);
+				};
+
+				if (closeZoomBtn) closeZoomBtn.addEventListener('click', hideModal);
+				if (zoomModal) {
+					zoomModal.addEventListener('click', (e) => {
+						if (e.target === zoomModal) hideModal();
+					});
+				}
+
+				// Interactive toggle for "Simpan Bukti Struk"
+				let isToggled = true;
+				if (toggleSwitch) {
+					toggleSwitch.addEventListener('click', () => {
+						isToggled = !isToggled;
+						const knob = toggleSwitch.querySelector('div');
+						if (isToggled) {
+							toggleSwitch.className =
+								'w-12 h-7 rounded-full bg-secondary p-0.5 cursor-pointer flex items-center justify-end transition-colors shadow-inner';
+						} else {
+							toggleSwitch.className =
+								'w-12 h-7 rounded-full bg-outline-variant p-0.5 cursor-pointer flex items-center justify-start transition-colors shadow-inner';
+						}
+					});
+				}
+
+				// Confirm Button tactile feedback
+				if (confirmBtn) {
+					confirmBtn.addEventListener('click', () => {
+						confirmBtn.innerHTML = `
+        <span class="material-symbols-outlined text-[20px] animate-spin">progress_activity</span>
+        <span>Menyimpan ke Buku Kas...</span>
+      `;
+						setTimeout(() => {
+							confirmBtn.className =
+								'w-full py-4 rounded-full bg-secondary text-on-secondary font-headline text-headline shadow-lg flex items-center justify-center gap-2';
+							confirmBtn.innerHTML = `
+          <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">check</span>
+          <span>Tersimpan dengan Sukses!</span>
+        `;
+						}, 700);
+					});
+				}
+
+				if (rescanBtn) {
+					rescanBtn.addEventListener('click', () => {
+						if (confirm('Scan ulang struk? Data koreksi yang belum tersimpan akan diatur ulang.')) {
+							history.back();
+						}
+					});
+				}
+			</script>
+		</main>
+	</body>
+</html>

@@ -1,0 +1,713 @@
+<!doctype html>
+
+<html lang="id">
+	<head>
+		<meta charset="utf-8" />
+		<meta
+			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+			name="viewport"
+		/>
+		<meta content="mobile_tab" name="shell-type" />
+		<link href="https://fonts.googleapis.com" rel="preconnect" />
+		<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap"
+			rel="stylesheet"
+		/>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+			rel="stylesheet"
+		/>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+			rel="stylesheet"
+		/>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+			rel="stylesheet"
+		/>
+		<script src="https://cdn.tailwindcss.com"></script>
+		<script id="tailwind-config">
+			tailwind.config = {
+				darkMode: 'class',
+				theme: {
+					extend: {
+						colors: {
+							'on-error-container': '#93000a',
+							tertiary: '#bc000a',
+							'tertiary-fixed-dim': '#ffb4aa',
+							outline: '#717786',
+							'outline-variant': '#c1c6d7',
+							'on-secondary-fixed-variant': '#00531c',
+							'surface-container-lowest': '#ffffff',
+							'on-primary-container': '#fefcff',
+							'on-primary-fixed-variant': '#004493',
+							'secondary-fixed': '#72fe88',
+							'primary-container': '#0070eb',
+							'on-surface': '#1b1b1d',
+							'primary-fixed': '#d8e2ff',
+							'secondary-container': '#6ffb85',
+							'surface-container-high': '#eae7ea',
+							'surface-container-low': '#f6f3f5',
+							'error-container': '#ffdad6',
+							'surface-tint': '#005bc1',
+							'on-secondary-fixed': '#002107',
+							'on-tertiary-fixed': '#410001',
+							'on-tertiary-fixed-variant': '#930005',
+							'inverse-surface': '#303032',
+							secondary: '#006e28',
+							'surface-variant': '#e4e2e4',
+							'surface-bright': '#fcf8fb',
+							'on-surface-variant': '#414755',
+							error: '#ba1a1a',
+							'surface-container-highest': '#e4e2e4',
+							'primary-fixed-dim': '#adc6ff',
+							'on-secondary-container': '#00732a',
+							background: '#fcf8fb',
+							'on-tertiary-container': '#fffbff',
+							'inverse-primary': '#adc6ff',
+							'on-tertiary': '#ffffff',
+							primary: '#0058bc',
+							'surface-container': '#f0edef',
+							'on-background': '#1b1b1d',
+							'tertiary-container': '#e2241f',
+							'inverse-on-surface': '#f3f0f2',
+							surface: '#fcf8fb',
+							'on-error': '#ffffff',
+							'on-secondary': '#ffffff',
+							'on-primary-fixed': '#001a41',
+							'tertiary-fixed': '#ffdad5',
+							'secondary-fixed-dim': '#53e16f',
+							'on-primary': '#ffffff',
+							'surface-dim': '#dcd9dc'
+						},
+						borderRadius: { DEFAULT: '1rem', lg: '2rem', xl: '3rem', full: '9999px' },
+						spacing: {
+							gutter: '1rem',
+							margin: '1.25rem',
+							'space-md': '1rem',
+							'space-xs': '0.25rem',
+							'space-lg': '1.5rem',
+							'space-xl': '2rem',
+							'space-sm': '0.5rem'
+						},
+						fontFamily: {
+							'title-3': ['Plus Jakarta Sans'],
+							footnote: ['Plus Jakarta Sans'],
+							headline: ['Plus Jakarta Sans'],
+							'currency-card': ['Plus Jakarta Sans'],
+							'caption-1': ['Plus Jakarta Sans'],
+							callout: ['Plus Jakarta Sans'],
+							subhead: ['Plus Jakarta Sans'],
+							'caption-2': ['Plus Jakarta Sans'],
+							'currency-hero': ['Plus Jakarta Sans'],
+							body: ['Plus Jakarta Sans'],
+							'large-title': ['Plus Jakarta Sans'],
+							'title-1': ['Plus Jakarta Sans'],
+							'title-2': ['Plus Jakarta Sans']
+						},
+						fontSize: {
+							'title-3': [
+								'20px',
+								{ lineHeight: '25px', letterSpacing: '-0.45px', fontWeight: '600' }
+							],
+							footnote: [
+								'13px',
+								{ lineHeight: '18px', letterSpacing: '-0.08px', fontWeight: '400' }
+							],
+							headline: [
+								'17px',
+								{ lineHeight: '22px', letterSpacing: '-0.43px', fontWeight: '600' }
+							],
+							'currency-card': [
+								'24px',
+								{ lineHeight: '30px', letterSpacing: '-0.3px', fontWeight: '700' }
+							],
+							'caption-1': [
+								'12px',
+								{ lineHeight: '16px', letterSpacing: '0px', fontWeight: '500' }
+							],
+							callout: [
+								'16px',
+								{ lineHeight: '21px', letterSpacing: '-0.32px', fontWeight: '500' }
+							],
+							subhead: [
+								'15px',
+								{ lineHeight: '20px', letterSpacing: '-0.24px', fontWeight: '500' }
+							],
+							'caption-2': [
+								'11px',
+								{ lineHeight: '13px', letterSpacing: '0.07px', fontWeight: '600' }
+							],
+							'currency-hero': [
+								'36px',
+								{ lineHeight: '44px', letterSpacing: '-0.5px', fontWeight: '700' }
+							],
+							body: ['17px', { lineHeight: '22px', letterSpacing: '-0.43px', fontWeight: '400' }],
+							'large-title': [
+								'34px',
+								{ lineHeight: '41px', letterSpacing: '0.37px', fontWeight: '700' }
+							],
+							'title-1': [
+								'28px',
+								{ lineHeight: '34px', letterSpacing: '0.36px', fontWeight: '700' }
+							],
+							'title-2': [
+								'22px',
+								{ lineHeight: '28px', letterSpacing: '-0.26px', fontWeight: '700' }
+							]
+						}
+					}
+				}
+			};
+		</script>
+		<style>
+			@layer base {
+				html,
+				body {
+					width: 100%;
+					margin: 0;
+					padding: 0;
+					min-height: 100%;
+				}
+				body {
+					overscroll-behavior-y: none;
+					-webkit-tap-highlight-color: transparent;
+				}
+				.pb-safe {
+					padding-bottom: env(safe-area-inset-bottom, 0px);
+				}
+				.pt-safe {
+					padding-top: env(safe-area-inset-top, 0px);
+				}
+			}
+			::-webkit-scrollbar {
+				display: none;
+			}
+		</style>
+		<style>
+			body {
+				min-height: max(884px, 100dvh);
+			}
+		</style>
+	</head>
+	<body
+		class="bg-surface font-body text-body text-on-surface selection:bg-primary-fixed relative min-h-screen"
+	>
+		<div class="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+			<div
+				class="bg-primary-fixed-dim/40 absolute -top-[10%] -left-[15%] h-[320px] w-[320px] rounded-full blur-[80px]"
+			></div>
+			<div
+				class="bg-secondary-fixed/30 absolute top-[30%] -right-[20%] h-[360px] w-[360px] rounded-full blur-[90px]"
+			></div>
+			<div
+				class="bg-tertiary-fixed/35 absolute top-[60%] -left-[10%] h-[300px] w-[300px] rounded-full blur-[85px]"
+			></div>
+		</div>
+		<header
+			class="pt-safe bg-surface/80 fixed top-0 z-50 w-full shadow-[0_1px_8px_rgba(0,0,0,0.04)] backdrop-blur-xl"
+		>
+			<div class="text-on-surface flex h-11 items-center justify-between px-6">
+				<span class="font-caption-2 text-caption-2 tracking-tight">09:41</span>
+				<div class="flex items-center gap-1.5">
+					<span class="material-symbols-outlined text-[15px]">signal_cellular_alt</span
+					><span class="material-symbols-outlined text-[15px]">wifi</span
+					><span class="material-symbols-outlined text-[17px]">battery_full</span>
+				</div>
+			</div>
+			<div class="flex h-14 items-center justify-between px-5">
+				<div class="flex items-center gap-2">
+					<h1 class="font-headline text-headline text-on-surface">Beranda</h1>
+				</div>
+				<div class="flex items-center gap-3">
+					<button
+						class="text-on-surface-variant hover:text-on-surface flex h-11 w-11 items-center justify-center rounded-full"
+					>
+						<span class="material-symbols-outlined text-[22px]">notifications</span>
+					</button>
+					<div class="bg-primary flex h-8 w-8 items-center justify-center rounded-full">
+						<span class="material-symbols-outlined text-on-primary text-[18px]">person</span>
+					</div>
+				</div>
+			</div>
+		</header>
+		<main class="relative flex min-h-screen w-full flex-col bg-transparent px-5 pt-28 pb-32">
+			<div class="flex w-full flex-col gap-5">
+				<!-- Top Utility Bar: Period & Quick Export Actions -->
+				<div class="flex items-center justify-between gap-2">
+					<!-- Period Picker Capsule -->
+					<div
+						class="bg-surface-container-lowest/70 flex items-center rounded-full px-1.5 py-1 shadow-sm backdrop-blur-xl"
+					>
+						<button
+							class="text-on-surface-variant hover:text-on-surface flex h-7 w-7 items-center justify-center rounded-full transition-transform active:scale-90"
+						>
+							<span class="material-symbols-outlined text-[18px]">chevron_left</span>
+						</button>
+						<div class="flex items-center gap-1.5 px-2">
+							<span class="material-symbols-outlined text-primary text-[16px]">calendar_month</span>
+							<span class="font-subhead text-subhead text-on-surface tracking-tight"
+								>Oktober 2026</span
+							>
+						</div>
+						<button
+							class="text-on-surface-variant hover:text-on-surface flex h-7 w-7 items-center justify-center rounded-full transition-transform active:scale-90"
+						>
+							<span class="material-symbols-outlined text-[18px]">chevron_right</span>
+						</button>
+					</div>
+					<!-- Quick Glass Action Buttons -->
+					<div class="flex items-center gap-2">
+						<button
+							class="bg-surface-container-lowest/70 text-on-surface-variant hover:text-primary flex h-9 w-9 items-center justify-center rounded-full shadow-sm backdrop-blur-xl transition-all active:scale-95"
+							title="Unduh PDF / Bagikan"
+						>
+							<span class="material-symbols-outlined text-[18px]">ios_share</span>
+						</button>
+						<button
+							class="bg-surface-container-lowest/70 text-on-surface-variant hover:text-primary flex h-9 w-9 items-center justify-center rounded-full shadow-sm backdrop-blur-xl transition-all active:scale-95"
+							title="Informasi Laporan"
+						>
+							<span class="material-symbols-outlined text-[18px]">info</span>
+						</button>
+					</div>
+				</div>
+				<!-- Horizontal Scrollable Segmented Glass Filter -->
+				<div class="no-scrollbar -mx-5 w-full overflow-x-auto px-5">
+					<div
+						class="bg-surface-container-low/60 flex w-max items-center gap-1.5 rounded-full p-1 shadow-inner backdrop-blur-md"
+					>
+						<button
+							class="bg-surface-container-lowest text-primary font-headline text-footnote flex items-center gap-1 rounded-full px-4 py-1.5 font-semibold shadow-sm transition-all"
+						>
+							<span>Ringkasan</span>
+						</button>
+						<button
+							class="text-on-surface-variant hover:text-on-surface font-footnote text-footnote rounded-full px-3.5 py-1.5 transition-colors"
+						>
+							Kategori
+						</button>
+						<button
+							class="text-on-surface-variant hover:text-on-surface font-footnote text-footnote rounded-full px-3.5 py-1.5 transition-colors"
+						>
+							Dompet
+						</button>
+						<button
+							class="text-on-surface-variant hover:text-on-surface font-footnote text-footnote rounded-full px-3.5 py-1.5 transition-colors"
+						>
+							Tren
+						</button>
+						<button
+							class="text-on-surface-variant hover:text-on-surface font-footnote text-footnote rounded-full px-3.5 py-1.5 transition-colors"
+						>
+							Kalender
+						</button>
+					</div>
+				</div>
+				<!-- Key Stat Tiles (Refractive Glass Bento) -->
+				<div class="grid grid-cols-2 gap-3">
+					<!-- Pemasukan Card -->
+					<div
+						class="bg-surface-container-lowest/75 group relative flex flex-col justify-between overflow-hidden rounded-2xl p-4 shadow-sm backdrop-blur-2xl"
+					>
+						<div
+							class="bg-secondary-fixed/40 pointer-events-none absolute -top-6 -right-6 h-20 w-20 rounded-full blur-xl"
+						></div>
+						<div class="mb-2 flex items-center justify-between">
+							<span class="font-footnote text-footnote text-on-surface-variant">Pemasukan</span>
+							<div
+								class="bg-secondary/10 text-secondary flex h-7 w-7 items-center justify-center rounded-full"
+							>
+								<span class="material-symbols-outlined text-[16px] font-bold">arrow_upward</span>
+							</div>
+						</div>
+						<div>
+							<p class="font-title-3 text-title-3 text-secondary tracking-tight">Rp8.500.000</p>
+							<span class="font-caption-2 text-caption-2 text-on-surface-variant mt-0.5 block"
+								>+12.4% vs Sept</span
+							>
+						</div>
+					</div>
+					<!-- Pengeluaran Card -->
+					<div
+						class="bg-surface-container-lowest/75 relative flex flex-col justify-between overflow-hidden rounded-2xl p-4 shadow-sm backdrop-blur-2xl"
+					>
+						<div
+							class="bg-tertiary-fixed/40 pointer-events-none absolute -top-6 -right-6 h-20 w-20 rounded-full blur-xl"
+						></div>
+						<div class="mb-2 flex items-center justify-between">
+							<span class="font-footnote text-footnote text-on-surface-variant">Pengeluaran</span>
+							<div
+								class="bg-tertiary/10 text-tertiary flex h-7 w-7 items-center justify-center rounded-full"
+							>
+								<span class="material-symbols-outlined text-[16px] font-bold">arrow_downward</span>
+							</div>
+						</div>
+						<div>
+							<p class="font-title-3 text-title-3 text-on-surface tracking-tight">Rp4.320.000</p>
+							<span class="font-caption-2 text-caption-2 text-secondary mt-0.5 block"
+								>-18.0% vs Sept</span
+							>
+						</div>
+					</div>
+					<!-- Selisih Bersih (Cash Flow Hero Glass Span) -->
+					<div
+						class="from-surface-container-lowest/90 via-surface-container-lowest/70 to-primary-fixed/20 relative col-span-2 flex items-center justify-between overflow-hidden rounded-2xl bg-gradient-to-br p-4 shadow-sm backdrop-blur-2xl"
+					>
+						<div class="flex flex-col">
+							<div class="mb-1 flex items-center gap-1.5">
+								<span class="material-symbols-outlined text-primary text-[16px]"
+									>account_balance</span
+								>
+								<span class="font-footnote text-footnote text-on-surface-variant"
+									>Selisih Bersih (Net Cash Flow)</span
+								>
+							</div>
+							<p class="font-currency-card text-currency-card text-primary tracking-tight">
+								+Rp4.180.000
+							</p>
+							<span class="font-caption-2 text-caption-2 text-on-surface-variant"
+								>Rasio Tabungan Sehat: 49.2%</span
+							>
+						</div>
+						<div
+							class="bg-primary/10 text-primary flex h-12 w-12 items-center justify-center rounded-full shadow-inner"
+						>
+							<span
+								class="material-symbols-outlined text-[24px]"
+								style="font-variation-settings: 'FILL' 1"
+								>verified</span
+							>
+						</div>
+					</div>
+				</div>
+				<!-- Spending Trend Area Chart Glass Card -->
+				<div
+					class="bg-surface-container-lowest/75 flex flex-col gap-3 rounded-2xl p-4 shadow-sm backdrop-blur-2xl"
+				>
+					<div class="flex items-start justify-between">
+						<div>
+							<h3 class="font-headline text-headline text-on-surface">Arus Kas Harian</h3>
+							<p class="font-caption-1 text-caption-1 text-on-surface-variant">
+								Rata-rata pengeluaran Rp139.350 / hari
+							</p>
+						</div>
+						<span
+							class="bg-surface-container-high text-on-surface-variant font-caption-2 text-caption-2 rounded-full px-2 py-0.5"
+						>
+							31 Hari
+						</span>
+					</div>
+					<!-- Interactive Spline Area Chart (Inline Lightweight SVG) -->
+					<div class="relative h-44 w-full pt-2">
+						<!-- Tooltip Bubble on Peak (11 Okt) -->
+						<div
+							class="pointer-events-none absolute top-1 left-[34%] z-10 flex -translate-x-1/2 animate-pulse flex-col items-center"
+						>
+							<div
+								class="bg-on-surface text-surface-container-lowest flex flex-col items-center rounded-xl px-2.5 py-1 shadow-lg"
+							>
+								<span class="font-caption-2 text-caption-2 text-tertiary-fixed-dim"
+									>11 Okt • Belanja Bulanan</span
+								>
+								<span class="font-footnote text-footnote font-semibold">Rp485.000</span>
+							</div>
+							<div class="bg-on-surface -mt-1 h-2 w-2 rotate-45"></div>
+						</div>
+						<svg
+							class="h-full w-full overflow-visible"
+							fill="none"
+							preserveaspectratio="none"
+							viewbox="0 0 340 140"
+						>
+							<defs>
+								<lineargradient id="primaryAreaGrad" x1="0" x2="0" y1="0" y2="1">
+									<stop offset="0%" stop-color="#0058bc" stop-opacity="0.28"></stop>
+									<stop offset="85%" stop-color="#0058bc" stop-opacity="0.02"></stop>
+									<stop offset="100%" stop-color="#0058bc" stop-opacity="0.00"></stop>
+								</lineargradient>
+								<lineargradient id="lineStrokeGrad" x1="0" x2="1" y1="0" y2="0">
+									<stop offset="0%" stop-color="#0058bc"></stop>
+									<stop offset="38%" stop-color="#e2241f"></stop>
+									<stop offset="100%" stop-color="#0058bc"></stop>
+								</lineargradient>
+							</defs>
+							<!-- Horizontal Reference Grid Guides -->
+							<line
+								stroke="#c1c6d7"
+								stroke-dasharray="3 4"
+								stroke-opacity="0.35"
+								x1="0"
+								x2="340"
+								y1="30"
+								y2="30"
+							></line>
+							<line
+								stroke="#c1c6d7"
+								stroke-dasharray="3 4"
+								stroke-opacity="0.35"
+								x1="0"
+								x2="340"
+								y1="75"
+								y2="75"
+							></line>
+							<line
+								stroke="#c1c6d7"
+								stroke-dasharray="3 4"
+								stroke-opacity="0.35"
+								x1="0"
+								x2="340"
+								y1="120"
+								y2="120"
+							></line>
+							<!-- Smooth Fill Area -->
+							<path
+								d="M 0 110 
+                 C 25 110, 40 95, 60 90 
+                 C 80 85, 95 105, 115 28 
+                 C 135 110, 160 80, 185 85 
+                 C 210 90, 230 65, 255 70 
+                 C 280 75, 305 100, 340 95 
+                 L 340 135 
+                 L 0 135 Z"
+								fill="url(#primaryAreaGrad)"
+							></path>
+							<!-- Spline Stroke Curve -->
+							<path
+								d="M 0 110 
+                 C 25 110, 40 95, 60 90 
+                 C 80 85, 95 105, 115 28 
+                 C 135 110, 160 80, 185 85 
+                 C 210 90, 230 65, 255 70 
+                 C 280 75, 305 100, 340 95"
+								stroke="url(#lineStrokeGrad)"
+								stroke-linecap="round"
+								stroke-width="2.5"
+							></path>
+							<!-- Peak Point Marker with Pulsing Specular Glass Ring -->
+							<circle cx="115" cy="28" fill="#e2241f" r="4.5"></circle>
+							<circle
+								cx="115"
+								cy="28"
+								r="8"
+								stroke="#e2241f"
+								stroke-opacity="0.4"
+								stroke-width="2"
+							></circle>
+							<!-- Minor Day Milestone Data Dots -->
+							<circle cx="60" cy="90" fill="#0058bc" r="2.5"></circle>
+							<circle cx="185" cy="85" fill="#0058bc" r="2.5"></circle>
+							<circle cx="255" cy="70" fill="#0058bc" r="2.5"></circle>
+						</svg>
+					</div>
+					<!-- Day Markers Axis -->
+					<div
+						class="text-on-surface-variant font-caption-2 text-caption-2 flex items-center justify-between border-t-0 px-1"
+					>
+						<span>1</span>
+						<span>5</span>
+						<span class="text-tertiary font-bold">11</span>
+						<span>15</span>
+						<span>20</span>
+						<span>25</span>
+						<span>31</span>
+					</div>
+				</div>
+				<!-- Top 3 Categories Glass Breakdown -->
+				<div
+					class="bg-surface-container-lowest/75 flex flex-col gap-3.5 rounded-2xl p-4 shadow-sm backdrop-blur-2xl"
+				>
+					<div class="flex items-center justify-between">
+						<h3 class="font-headline text-headline text-on-surface">Pengeluaran Terbesar</h3>
+						<a
+							class="font-footnote text-footnote text-primary font-semibold hover:underline"
+							href="#"
+							>Detail</a
+						>
+					</div>
+					<div class="flex flex-col gap-3">
+						<!-- Item 1: Makan & Minum -->
+						<div class="flex flex-col gap-1.5">
+							<div class="flex items-center justify-between">
+								<div class="flex items-center gap-2.5">
+									<div
+										class="bg-tertiary-fixed text-tertiary flex h-9 w-9 items-center justify-center rounded-xl shadow-sm"
+									>
+										<span class="material-symbols-outlined text-[20px]">restaurant</span>
+									</div>
+									<div>
+										<p class="font-subhead text-subhead text-on-surface">Makan &amp; Minum</p>
+										<span class="font-caption-2 text-caption-2 text-on-surface-variant"
+											>42 Transaksi • 39%</span
+										>
+									</div>
+								</div>
+								<span class="font-subhead text-subhead text-on-surface font-semibold tracking-tight"
+									>Rp1.680.000</span
+								>
+							</div>
+							<!-- Specular Progress Pill -->
+							<div class="bg-surface-container h-1.5 w-full overflow-hidden rounded-full">
+								<div class="bg-tertiary-container h-full rounded-full" style="width: 39%"></div>
+							</div>
+						</div>
+						<!-- Item 2: Belanja & Kebutuhan -->
+						<div class="flex flex-col gap-1.5">
+							<div class="flex items-center justify-between">
+								<div class="flex items-center gap-2.5">
+									<div
+										class="bg-primary-fixed text-primary flex h-9 w-9 items-center justify-center rounded-xl shadow-sm"
+									>
+										<span class="material-symbols-outlined text-[20px]">shopping_bag</span>
+									</div>
+									<div>
+										<p class="font-subhead text-subhead text-on-surface">Belanja &amp; Kebutuhan</p>
+										<span class="font-caption-2 text-caption-2 text-on-surface-variant"
+											>18 Transaksi • 29%</span
+										>
+									</div>
+								</div>
+								<span class="font-subhead text-subhead text-on-surface font-semibold tracking-tight"
+									>Rp1.240.000</span
+								>
+							</div>
+							<!-- Specular Progress Pill -->
+							<div class="bg-surface-container h-1.5 w-full overflow-hidden rounded-full">
+								<div class="bg-primary h-full rounded-full" style="width: 29%"></div>
+							</div>
+						</div>
+						<!-- Item 3: Transportasi & Bahan Bakar -->
+						<div class="flex flex-col gap-1.5">
+							<div class="flex items-center justify-between">
+								<div class="flex items-center gap-2.5">
+									<div
+										class="bg-secondary-fixed text-secondary flex h-9 w-9 items-center justify-center rounded-xl shadow-sm"
+									>
+										<span class="material-symbols-outlined text-[20px]">directions_car</span>
+									</div>
+									<div>
+										<p class="font-subhead text-subhead text-on-surface">Transportasi</p>
+										<span class="font-caption-2 text-caption-2 text-on-surface-variant"
+											>24 Transaksi • 15%</span
+										>
+									</div>
+								</div>
+								<span class="font-subhead text-subhead text-on-surface font-semibold tracking-tight"
+									>Rp650.000</span
+								>
+							</div>
+							<!-- Specular Progress Pill -->
+							<div class="bg-surface-container h-1.5 w-full overflow-hidden rounded-full">
+								<div class="bg-secondary h-full rounded-full" style="width: 15%"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- Smart Insight Callout Capsule -->
+				<div
+					class="from-secondary-fixed/50 via-surface-container-lowest/80 to-surface-container-lowest/90 relative flex items-center gap-3 overflow-hidden rounded-2xl bg-gradient-to-r p-4 shadow-sm backdrop-blur-xl"
+				>
+					<div
+						class="bg-secondary/15 text-secondary flex h-10 w-10 shrink-0 items-center justify-center rounded-full"
+					>
+						<span
+							class="material-symbols-outlined text-[22px]"
+							style="font-variation-settings: 'FILL' 1"
+							>lightbulb</span
+						>
+					</div>
+					<div class="flex flex-col">
+						<p class="font-subhead text-subhead text-on-surface leading-snug">
+							Pengeluaran Anda
+							<span class="text-secondary font-semibold">18% lebih hemat</span> dibanding periode
+							yang sama bulan lalu.
+						</p>
+						<span class="font-caption-2 text-caption-2 text-on-surface-variant mt-0.5"
+							>Pertahankan anggaran untuk mencapai target tabungan.</span
+						>
+					</div>
+				</div>
+			</div>
+			<script>
+				// Dynamic Tab highlight switch for segmented preview
+				document.addEventListener('DOMContentLoaded', () => {
+					const segmentedButtons = document.querySelectorAll('.overflow-x-auto button');
+					segmentedButtons.forEach((btn) => {
+						btn.addEventListener('click', (e) => {
+							segmentedButtons.forEach((b) => {
+								b.className =
+									'px-3.5 py-1.5 rounded-full text-on-surface-variant hover:text-on-surface font-footnote text-footnote transition-colors';
+							});
+							btn.className =
+								'px-4 py-1.5 rounded-full bg-surface-container-lowest shadow-sm text-primary font-headline text-footnote font-semibold flex items-center gap-1 transition-all';
+						});
+					});
+
+					// Sync Bottom Navigation to highlight 'Laporan' tab as requested
+					const laporanNav = document.querySelector('nav a[data-path="laporan"]');
+					if (laporanNav) {
+						document.querySelectorAll('nav a').forEach((a) => {
+							a.classList.remove('text-primary');
+							a.classList.add('text-on-surface-variant');
+						});
+						laporanNav.classList.remove('text-on-surface-variant');
+						laporanNav.classList.add('text-primary');
+						const icon = laporanNav.querySelector('.material-symbols-outlined');
+						if (icon) {
+							icon.style.fontVariationSettings = "'FILL' 1";
+						}
+					}
+				});
+			</script>
+		</main>
+		<nav
+			class="pb-safe pointer-events-none fixed bottom-0 z-50 w-full"
+			data-active-classes="text-primary font-semibold"
+		>
+			<div class="px-4 pt-1 pb-3">
+				<div
+					class="bg-surface-container-lowest/80 pointer-events-auto flex h-16 w-full items-center justify-around rounded-full px-2 shadow-[0_12px_32px_-4px_rgba(27,39,87,0.08),0_4px_12px_-2px_rgba(27,39,87,0.04)] backdrop-blur-2xl"
+				>
+					<a
+						class="text-on-surface-variant hover:text-on-surface flex h-12 min-w-[52px] flex-col items-center justify-center"
+						data-path="beranda"
+						href="#"
+						><span class="material-symbols-outlined text-[22px]">home</span
+						><span class="font-caption-2 text-caption-2 mt-0.5">Beranda</span></a
+					><a
+						class="text-on-surface-variant hover:text-on-surface flex h-12 min-w-[52px] flex-col items-center justify-center"
+						data-path="transaksi"
+						href="#"
+						><span class="material-symbols-outlined text-[22px]">sync_alt</span
+						><span class="font-caption-2 text-caption-2 mt-0.5">Transaksi</span></a
+					>
+					<div class="relative -top-2 flex items-center justify-center">
+						<a
+							class="bg-primary-container text-on-primary-container flex h-13 h-[52px] w-13 w-[52px] items-center justify-center rounded-full shadow-[0_8px_20px_0_rgba(0,112,235,0.35)] transition-transform active:scale-95"
+							data-path="tambah-transaksi"
+							href="#"
+							><span class="material-symbols-outlined text-[28px]">add</span></a
+						>
+					</div>
+					<a
+						class="text-on-surface-variant hover:text-on-surface flex h-12 min-w-[52px] flex-col items-center justify-center"
+						data-path="dompet"
+						href="#"
+						><span class="material-symbols-outlined text-[22px]">account_balance_wallet</span
+						><span class="font-caption-2 text-caption-2 mt-0.5">Dompet</span></a
+					><a
+						class="text-on-surface-variant hover:text-on-surface flex h-12 min-w-[52px] flex-col items-center justify-center"
+						data-path="laporan"
+						href="#"
+						><span class="material-symbols-outlined text-[22px]">pie_chart</span
+						><span class="font-caption-2 text-caption-2 mt-0.5">Laporan</span></a
+					>
+				</div>
+				<div class="flex justify-center pt-2 pb-1">
+					<div class="bg-on-surface/20 h-1 w-32 rounded-full"></div>
+				</div>
+			</div>
+		</nav>
+	</body>
+</html>
