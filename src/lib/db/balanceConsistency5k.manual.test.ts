@@ -6,7 +6,9 @@ import { DexieWalletRepository } from './repositories/walletRepository';
 import { MoneyTrackerDatabase } from './schema';
 import { TransactionService } from './transactionService';
 
-describe('Uji Beban 5.000 Transaksi: Konsistensi Saldo Dompet & rebuildBalances() (Manual Test)', () => {
+describe.skipIf(!process.env.RUN_5K)(
+	'Uji Beban 5.000 Transaksi: Konsistensi Saldo Dompet & rebuildBalances() (Manual Test)',
+	() => {
 	let dbName: string;
 	let testDb: MoneyTrackerDatabase;
 	let txService: TransactionService;
