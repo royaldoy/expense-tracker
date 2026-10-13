@@ -4,39 +4,94 @@
 	import { platform } from '$lib/platform';
 	import type { CompressedImage, OcrResult } from '$lib/platform/types';
 
+	interface ExpectedFormItem {
+		name: string;
+		qty: string;
+		unitPrice: string;
+		totalPrice: string;
+	}
+
 	let image = $state<CompressedImage | null>(null);
 	let isProcessing = $state(false);
 	let ocrResult = $state<OcrResult | null>(null);
 	let errorMessage = $state('');
 	let copyToast = $state('');
+	let shareToast = $state('');
 
-	// JSON format template siap pakai untuk fixture
-	let fixtureJson = $derived.by(() => {
-		if (!ocrResult) return '';
-		const template = {
-			description: 'Struk transaksi asli',
-			ocr: ocrResult,
-			expected: {
-				merchantName: ocrResult.blocks[0]?.lines[0]?.text || 'NAMA MERCHANT',
-				date: new Date().toISOString().split('T')[0],
-				time: '12:00:00',
-				items: [
-					{
-						name: 'Contoh Item',
-						qty: 1,
-						unitPrice: 10000,
-						totalPrice: 10000
-					}
-				],
-				subtotal: 10000,
-				discountAmount: 0,
-				taxAmount: 0,
-				serviceCharge: 0,
-				grandTotal: 10000,
-				suggestedCategoryKeyword: 'Makan & Minum'
-			}
+	// Form input "Hasil yang Benar" (Ground Truth / Expected) - Seluruhnya opsional
+	let expectedMerchant = $state('');
+	let expectedDate = $state('');
+	let expectedTime = $state('');
+	let expectedTotal = $state('');
+	let expectedItems = $state<ExpectedFormItem[]>([]);
+
+	function addItem() {
+		expectedItems = [...expectedItems, { name: '', qty: '1', unitPrice: '', totalPrice: '' }];
+	}
+
+	function removeItem(index: number) {
+		expectedItems = expectedItems.filter((_, i) => i !== index);
+	}
+
+	function sanitizeSlug(str: string): string {
+		return (
+			str
+				.toLowerCase()
+				.replace(/[^a-z0-9]+/g, '-')
+				.replace(/^-+|-+$/g, '') || 'struk'
+		);
+	}
+
+	function buildFixtureObject() {
+		if (!ocrResult || !image) return null;
+
+		const lines = ocrResult.blocks.flatMap((b) =>
+			b.lines.map((l) => ({
+				text: l.text,
+				boundingBox: l.boundingBox
+			}))
+		);
+
+		const items = expectedItems
+			.filter((it) => it.name.trim().length > 0)
+			.map((it) => {
+				const qtyNum = it.qty ? parseInt(it.qty, 10) : undefined;
+				const unitPriceNum = it.unitPrice ? parseInt(it.unitPrice, 10) : undefined;
+				const totalPriceNum = it.totalPrice ? parseInt(it.totalPrice, 10) : undefined;
+				return {
+					name: it.name.trim(),
+					qty: Number.isFinite(qtyNum) ? qtyNum : undefined,
+					unitPrice: Number.isFinite(unitPriceNum) ? unitPriceNum : undefined,
+					totalPrice: Number.isFinite(totalPriceNum) ? totalPriceNum : undefined
+				};
+			});
+
+		const grandTotalNum = expectedTotal ? parseInt(expectedTotal, 10) : undefined;
+
+		const expected: Record<string, unknown> = {};
+		if (expectedMerchant.trim()) expected.merchantName = expectedMerchant.trim();
+		if (expectedDate.trim()) expected.date = expectedDate.trim();
+		if (expectedTime.trim()) expected.time = expectedTime.trim();
+		if (Number.isFinite(grandTotalNum)) expected.grandTotal = grandTotalNum;
+		if (items.length > 0) expected.items = items;
+
+		return {
+			description: `Struk fisik ${expectedMerchant.trim() || 'tanpa nama'}`,
+			image: {
+				width: image.width,
+				height: image.height
+			},
+			ocr: {
+				rawText: ocrResult.text,
+				lines
+			},
+			...(Object.keys(expected).length > 0 ? { expected } : {})
 		};
-		return JSON.stringify(template, null, 2);
+	}
+
+	let fixtureJson = $derived.by(() => {
+		const obj = buildFixtureObject();
+		return obj ? JSON.stringify(obj, null, 2) : '';
 	});
 
 	async function handlePickPhoto(source: 'camera' | 'photos') {
@@ -84,10 +139,54 @@
 		try {
 			const result = await platform.cameraOcr.recognizeText(img);
 			ocrResult = result;
+
+			// Prediksi awal merchant name dari baris pertama jika form masih kosong
+			if (!expectedMerchant && result.blocks[0]?.lines[0]?.text) {
+				expectedMerchant = result.blocks[0].lines[0].text.trim();
+			}
+			if (!expectedDate) {
+				expectedDate = new Date().toISOString().split('T')[0];
+			}
 		} catch (err: unknown) {
 			errorMessage = err instanceof Error ? err.message : 'Gagal menjalankan OCR';
 		} finally {
 			isProcessing = false;
+		}
+	}
+
+	async function handleShareFixture() {
+		const fixture = buildFixtureObject();
+		if (!fixture) return;
+
+		const jsonString = JSON.stringify(fixture, null, 2);
+		const merchantSlug = sanitizeSlug(expectedMerchant || 'struk');
+		const fileNumber = Date.now().toString().slice(-4);
+		const filename = `${merchantSlug}-${fileNumber}.json`;
+
+		try {
+			if (platform.isNative) {
+				const writeResult = await platform.filesystem.writeFile({
+					path: filename,
+					data: jsonString,
+					directory: 'cache'
+				});
+				await platform.share.share({
+					title: `Fixture Struk ${expectedMerchant || ''}`,
+					dialogTitle: 'Bagikan Fixture Struk',
+					files: [writeResult.uri]
+				});
+			} else {
+				await platform.filesystem.saveAndDownload(filename, jsonString, 'application/json');
+			}
+			shareToast = `Berkas ${filename} siap dibagikan!`;
+			setTimeout(() => {
+				shareToast = '';
+			}, 3000);
+		} catch (err: unknown) {
+			const msg = err instanceof Error ? err.message : String(err);
+			if (!msg.toLowerCase().includes('abort') && !msg.toLowerCase().includes('batal')) {
+				errorMessage = `Gagal membagikan fixture: ${msg}`;
+			}
 		}
 	}
 
@@ -109,7 +208,7 @@
 	}
 </script>
 
-<div class="pt-safe flex flex-col gap-4 px-4 pb-20">
+<div class="pt-safe flex flex-col gap-4 px-4 pb-24">
 	<!-- Top Bar -->
 	<header class="flex items-center justify-between pt-2">
 		<button
@@ -127,15 +226,13 @@
 	<!-- Panduan Pembuatan Fixture -->
 	<GlassCard class="flex flex-col gap-2 p-4">
 		<div class="flex items-center gap-2 text-primary">
-			<span class="material-symbols-outlined">developer_mode</span>
-			<h2 class="text-sm font-bold text-on-surface">Inspeksi OCR & Generator Fixture</h2>
+			<span class="material-symbols-outlined">document_scanner</span>
+			<h2 class="text-sm font-bold text-on-surface">Ambil Struk Asli & Buat Fixture</h2>
 		</div>
 		<p class="text-xs leading-relaxed text-on-surface-variant">
-			Halaman ini menjalankan pemindaian teks Google ML Kit pada foto struk asli, menampilkan posisi
-			bounding box per baris, dan menghasilkan JSON terstruktur untuk disimpan ke
-			<code class="rounded bg-surface-container px-1 py-0.5 text-primary"
-				>tests/fixtures/receipts/</code
-			>.
+			Foto struk asli dengan kamera HP atau galeri. Setelah teks terbaca, lengkapi form "Hasil yang
+			Benar", lalu tekan <strong class="text-on-surface">"Bagikan Fixture"</strong> untuk menghasilkan
+			berkas JSON tanpa foto.
 		</p>
 	</GlassCard>
 
@@ -186,7 +283,7 @@
 	{#if image}
 		<GlassCard class="flex flex-col gap-3 p-4">
 			<div class="flex items-center justify-between">
-				<span class="text-xs font-bold text-on-surface">Foto Struk (Terkonversi ke JPEG)</span>
+				<span class="text-xs font-bold text-on-surface">Pratinjau Foto (JPEG Maks 1600 px)</span>
 				<span
 					class="rounded-full bg-surface-container px-2 py-0.5 font-mono text-[11px] text-outline"
 				>
@@ -217,9 +314,165 @@
 		</div>
 	{/if}
 
-	<!-- Hasil OCR -->
+	<!-- Hasil OCR & Formulir Ground Truth -->
 	{#if ocrResult}
 		<div class="flex flex-col gap-4">
+			<!-- Formulir Hasil yang Benar (Expected Ground Truth) -->
+			<GlassCard class="flex flex-col gap-3 p-4">
+				<div class="flex items-center gap-2 text-primary">
+					<span class="material-symbols-outlined text-lg">check_circle</span>
+					<h3 class="text-sm font-bold text-on-surface">Hasil yang Benar (Ground Truth)</h3>
+				</div>
+				<p class="text-[11px] leading-relaxed text-on-surface-variant">
+					Seluruh kolom bersifat opsional. Lengkapi informasi yang terbaca jelas untuk data acuan
+					pengujian parser.
+				</p>
+
+				<div class="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+					<!-- Merchant -->
+					<div class="flex flex-col gap-1">
+						<span class="text-[11px] font-semibold text-outline">Nama Toko / Merchant</span>
+						<input
+							type="text"
+							placeholder="Misal: Indomaret, Kopi Kenangan"
+							class="rounded-lg bg-surface-container-low px-3 py-2 text-xs text-on-surface focus:outline-none"
+							bind:value={expectedMerchant}
+						/>
+					</div>
+
+					<!-- Total -->
+					<div class="flex flex-col gap-1">
+						<span class="text-[11px] font-semibold text-outline">Grand Total Tagihan (Rp)</span>
+						<input
+							type="number"
+							placeholder="Misal: 45000"
+							class="rounded-lg bg-surface-container-low px-3 py-2 text-xs text-on-surface focus:outline-none"
+							bind:value={expectedTotal}
+						/>
+					</div>
+
+					<!-- Tanggal -->
+					<div class="flex flex-col gap-1">
+						<span class="text-[11px] font-semibold text-outline">Tanggal Transaksi</span>
+						<input
+							type="date"
+							class="rounded-lg bg-surface-container-low px-3 py-2 text-xs text-on-surface focus:outline-none"
+							bind:value={expectedDate}
+						/>
+					</div>
+
+					<!-- Jam -->
+					<div class="flex flex-col gap-1">
+						<span class="text-[11px] font-semibold text-outline">Waktu / Jam (HH:mm)</span>
+						<input
+							type="text"
+							placeholder="Misal: 14:30"
+							class="rounded-lg bg-surface-container-low px-3 py-2 text-xs text-on-surface focus:outline-none"
+							bind:value={expectedTime}
+						/>
+					</div>
+				</div>
+
+				<!-- Daftar Item Pembelian -->
+				<div class="mt-2 flex flex-col gap-2">
+					<div class="flex items-center justify-between">
+						<span class="text-xs font-bold text-on-surface"
+							>Daftar Item ({expectedItems.length})</span
+						>
+						<button
+							type="button"
+							class="flex items-center gap-1 rounded-full bg-surface-container px-2.5 py-1 text-[11px] font-semibold text-primary transition-transform active:scale-95"
+							onclick={addItem}
+						>
+							<span class="material-symbols-outlined text-sm">add</span>
+							<span>Tambah Item</span>
+						</button>
+					</div>
+
+					{#if expectedItems.length === 0}
+						<p class="text-[11px] text-outline italic">
+							Belum ada rincian item. Tekan "Tambah Item" jika ingin melengkapi daftar barang.
+						</p>
+					{/if}
+
+					<div class="flex flex-col gap-2">
+						{#each expectedItems as item, idx (idx)}
+							<div
+								class="border-surface-variant/40 flex flex-col gap-1.5 rounded-lg border bg-surface-container-low/70 p-2.5 text-xs"
+							>
+								<div class="flex items-center justify-between gap-2">
+									<input
+										type="text"
+										placeholder="Nama barang / menu"
+										class="flex-1 rounded bg-surface-container px-2.5 py-1 text-xs text-on-surface focus:outline-none"
+										bind:value={item.name}
+									/>
+									<button
+										type="button"
+										class="hover:text-error flex h-7 w-7 items-center justify-center rounded-full text-outline"
+										onclick={() => removeItem(idx)}
+										aria-label="Hapus item"
+									>
+										<span class="material-symbols-outlined text-base">delete</span>
+									</button>
+								</div>
+								<div class="grid grid-cols-3 gap-2">
+									<input
+										type="number"
+										placeholder="Qty"
+										class="rounded bg-surface-container px-2 py-1 text-[11px] text-on-surface focus:outline-none"
+										bind:value={item.qty}
+									/>
+									<input
+										type="number"
+										placeholder="Harga (Rp)"
+										class="rounded bg-surface-container px-2 py-1 text-[11px] text-on-surface focus:outline-none"
+										bind:value={item.unitPrice}
+									/>
+									<input
+										type="number"
+										placeholder="Total (Rp)"
+										class="rounded bg-surface-container px-2 py-1 text-[11px] text-on-surface focus:outline-none"
+										bind:value={item.totalPrice}
+									/>
+								</div>
+							</div>
+						{/each}
+					</div>
+				</div>
+
+				<!-- Tombol Bagikan Fixture & Salin -->
+				<div class="mt-3 flex flex-col gap-2 pt-2">
+					<GlassButton
+						variant="primary"
+						class="flex items-center justify-center gap-2 py-3"
+						onclick={handleShareFixture}
+					>
+						<span class="material-symbols-outlined">share</span>
+						<span>Bagikan Fixture (File JSON)</span>
+					</GlassButton>
+
+					{#if shareToast}
+						<p class="text-secondary text-center text-xs font-bold">{shareToast}</p>
+					{/if}
+
+					<div class="flex items-center justify-between gap-2 pt-1">
+						<span class="text-[11px] text-outline">Atau salin teks JSON langsung:</span>
+						<button
+							type="button"
+							class="flex items-center gap-1 rounded-full bg-surface-container px-3 py-1 text-xs font-bold text-primary shadow-xs transition-transform active:scale-95"
+							onclick={() => copyToClipboard(fixtureJson)}
+						>
+							<span class="material-symbols-outlined text-sm">content_copy</span>
+							<span>Salin JSON</span>
+						</button>
+					</div>
+					{#if copyToast}
+						<p class="text-secondary text-right text-xs font-bold">{copyToast}</p>
+					{/if}
+				</div>
+			</GlassCard>
+
 			<!-- Visualisasi Baris Teks & Bounding Box -->
 			<GlassCard class="flex flex-col gap-3 p-4">
 				<div class="flex items-center justify-between">
@@ -232,7 +485,7 @@
 					<span class="text-[10px] text-outline">Koordinat: [L, T, R, B]</span>
 				</div>
 
-				<div class="flex max-h-80 flex-col gap-2 overflow-y-auto pr-1">
+				<div class="flex max-h-72 flex-col gap-2 overflow-y-auto pr-1">
 					{#each ocrResult.blocks as block, bIdx (bIdx)}
 						<div class="flex flex-col gap-1.5 rounded-lg bg-surface-container-low/80 p-2.5">
 							<span class="text-[10px] font-bold text-primary">Blok #{bIdx + 1}</span>
@@ -252,34 +505,6 @@
 						</div>
 					{/each}
 				</div>
-			</GlassCard>
-
-			<!-- Salin JSON Fixture Lengkap -->
-			<GlassCard class="flex flex-col gap-3 p-4">
-				<div class="flex items-center justify-between">
-					<div class="flex items-center gap-1.5">
-						<span class="material-symbols-outlined text-sm text-primary">data_object</span>
-						<h3 class="text-xs font-bold text-on-surface">JSON Fixture Siap Simpan</h3>
-					</div>
-					<button
-						type="button"
-						class="flex items-center gap-1 rounded-full bg-primary px-3 py-1 text-xs font-bold text-on-primary shadow-xs transition-transform active:scale-95"
-						onclick={() => copyToClipboard(fixtureJson)}
-					>
-						<span class="material-symbols-outlined text-sm">content_copy</span>
-						<span>Salin JSON Fixture</span>
-					</button>
-				</div>
-
-				{#if copyToast}
-					<p class="text-secondary text-xs font-bold">{copyToast}</p>
-				{/if}
-
-				<textarea
-					readonly
-					rows="12"
-					class="w-full rounded-lg bg-surface-container-highest p-3 font-mono text-[11px] text-on-surface focus:outline-none"
-					value={fixtureJson}></textarea>
 			</GlassCard>
 		</div>
 	{/if}
