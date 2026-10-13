@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import AppHeader from '$lib/components/glass/AppHeader.svelte';
 	import GlassButton from '$lib/components/glass/GlassButton.svelte';
 	import GlassCard from '$lib/components/glass/GlassCard.svelte';
 	import GlassEmptyState from '$lib/components/glass/GlassEmptyState.svelte';
@@ -49,22 +50,19 @@
 	let activeWalletsCount = $derived(wallets.filter((w) => w.archivedAt === null).length);
 </script>
 
-<div class="px-5 pt-6 pb-28">
-	<!-- Top App Bar -->
-	<header class="mb-5 flex items-center justify-between">
-		<div>
-			<h1 class="text-2xl font-black tracking-tight text-on-surface">
-				{t('wallets.title')}
-			</h1>
-			<p class="text-xs text-on-surface-variant">Kelola akun dan pantau saldo keuangan</p>
-		</div>
-		<a href="/wallets/new" data-testid="wallets-add-button">
-			<GlassButton variant="primary" size="sm">
-				<span class="material-symbols-outlined text-lg">add</span>
-				<span>Tambah</span>
-			</GlassButton>
-		</a>
-	</header>
+<div class="pt-safe flex flex-col gap-5 px-4 pb-28">
+	<!-- AppHeader Sesuai Aturan: Satu Judul Besar, Tanpa Subjudul, Maks 2 Ikon (Tambah) -->
+	<AppHeader
+		title={t('wallets.title')}
+		actions={[
+			{
+				icon: 'add',
+				label: t('wallets.tambahDompet'),
+				href: '/wallets/new',
+				testId: 'wallets-add-button'
+			}
+		]}
+	/>
 
 	{#if isLoading}
 		<div class="py-20 text-center text-xs font-semibold text-on-surface-variant">

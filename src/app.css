@@ -1,1 +1,354 @@
 @import 'tailwindcss';
+
+@theme {
+	--font-sans:
+		'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;
+
+	--color-surface: var(--color-surface);
+	--color-surface-container-lowest: var(--color-surface-container-lowest);
+	--color-surface-container-low: var(--color-surface-container-low);
+	--color-surface-container: var(--color-surface-container);
+	--color-surface-container-high: var(--color-surface-container-high);
+	--color-surface-container-highest: var(--color-surface-container-highest);
+	--color-surface-dim: var(--color-surface-dim);
+	--color-surface-bright: var(--color-surface-bright);
+	--color-inverse-surface: var(--color-inverse-surface);
+	--color-inverse-on-surface: var(--color-inverse-on-surface);
+	--color-on-surface: var(--color-on-surface);
+	--color-on-surface-variant: var(--color-on-surface-variant);
+	--color-outline: var(--color-outline);
+	--color-outline-variant: var(--color-outline-variant);
+
+	--color-primary: var(--color-primary);
+	--color-on-primary: var(--color-on-primary);
+	--color-primary-container: var(--color-primary-container);
+	--color-on-primary-container: var(--color-on-primary-container);
+
+	--color-income: var(--color-income);
+	--color-on-income: var(--color-on-income);
+	--color-income-container: var(--color-income-container);
+	--color-on-income-container: var(--color-on-income-container);
+
+	--color-expense: var(--color-expense);
+	--color-on-expense: var(--color-on-expense);
+	--color-expense-container: var(--color-expense-container);
+	--color-on-expense-container: var(--color-on-expense-container);
+
+	--color-transfer: var(--color-transfer);
+	--color-on-transfer: var(--color-on-transfer);
+	--color-warning: var(--color-warning);
+}
+
+:root {
+	/* Safe Area Insets */
+	--safe-top: env(safe-area-inset-top, 0px);
+	--safe-bottom: env(safe-area-inset-bottom, 0px);
+	--safe-left: env(safe-area-inset-left, 0px);
+	--safe-right: env(safe-area-inset-right, 0px);
+
+	/* Light Mode Palette */
+	--color-surface: #fcf8fb;
+	--color-surface-container-lowest: #ffffff;
+	--color-surface-container-low: #f6f3f5;
+	--color-surface-container: #f0edef;
+	--color-surface-container-high: #eae7ea;
+	--color-surface-container-highest: #e4e2e4;
+	--color-surface-dim: #dcd9dc;
+	--color-surface-bright: #fcf8fb;
+	--color-inverse-surface: #303032;
+	--color-inverse-on-surface: #f2f0f2;
+	--color-on-surface: #1b1b1d;
+	--color-on-surface-variant: #414755;
+	--color-outline: #717786;
+	--color-outline-variant: #c1c6d7;
+
+	--color-primary: #0058bc;
+	--color-on-primary: #ffffff;
+	--color-primary-container: #0070eb;
+	--color-on-primary-container: #ffffff;
+
+	--color-income: #006e28;
+	--color-on-income: #ffffff;
+	--color-income-container: #e8f8ec;
+	--color-on-income-container: #006e28;
+
+	--color-expense: #bc000a;
+	--color-on-expense: #ffffff;
+	--color-expense-container: #feeceb;
+	--color-on-expense-container: #bc000a;
+
+	--color-transfer: #5856d6;
+	--color-on-transfer: #ffffff;
+	--color-warning: #ff9500;
+
+	--color-ambient-orb-1: rgba(0, 122, 255, 0.12);
+	--color-ambient-orb-2: rgba(52, 199, 89, 0.1);
+	--color-ambient-orb-3: rgba(88, 86, 214, 0.08);
+
+	/* Glass Material Variables (Light Mode) */
+	--glass-tabbar-bg: rgba(255, 255, 255, 0.85);
+	--glass-tabbar-blur: 32px;
+	--glass-tabbar-border: rgba(255, 255, 255, 0.8);
+	--glass-tabbar-shadow: 0 16px 40px -8px rgba(0, 0, 0, 0.12);
+	--glass-tabbar-glow: inset 0 1px 1px rgba(255, 255, 255, 0.9);
+
+	--glass-sheet-bg: rgba(255, 255, 255, 0.88);
+	--glass-sheet-blur: 32px;
+	--glass-sheet-border: rgba(255, 255, 255, 0.8);
+	--glass-sheet-shadow: 0 20px 48px -10px rgba(0, 0, 0, 0.2);
+
+	--glass-card-bg: rgba(255, 255, 255, 0.72);
+	--glass-card-blur: 24px;
+	--glass-card-border: rgba(255, 255, 255, 0.7);
+	--glass-card-shadow: 0 12px 32px -4px rgba(27, 39, 87, 0.06);
+	--glass-card-glow: inset 0 1px 1px rgba(255, 255, 255, 0.8);
+
+	--glass-card-opaque-bg: rgba(255, 255, 255, 0.94);
+	--glass-card-opaque-blur: 12px;
+	--glass-card-opaque-border: rgba(228, 226, 228, 0.85);
+	--glass-card-opaque-shadow: 0 4px 16px -2px rgba(27, 39, 87, 0.04);
+
+	--glass-pill-bg: rgba(255, 255, 255, 0.6);
+	--glass-pill-blur: 16px;
+	--glass-pill-border: rgba(255, 255, 255, 0.65);
+	--glass-pill-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+
+	--glass-keypad-bg: rgba(255, 255, 255, 0.55);
+	--glass-keypad-blur: 16px;
+	--glass-keypad-border: rgba(255, 255, 255, 0.5);
+	--glass-keypad-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.03);
+
+	/* Corner Radiuses */
+	--radius-sm: 8px;
+	--radius-md: 16px;
+	--radius-lg: 24px;
+	--radius-xl: 32px;
+	--radius-full: 9999px;
+}
+
+/* Dark Mode Tokens (Turunan Spesifikasi) */
+:root[data-theme='dark'],
+.dark {
+	--color-surface: #121214;
+	--color-surface-container-lowest: #0a0a0c;
+	--color-surface-container-low: #18181b;
+	--color-surface-container: #202024;
+	--color-surface-container-high: #28282d;
+	--color-surface-container-highest: #323237;
+	--color-surface-dim: #141416;
+	--color-surface-bright: #38383e;
+	--color-inverse-surface: #e4e2e4;
+	--color-inverse-on-surface: #1b1b1d;
+	--color-on-surface: #f2f2f7;
+	--color-on-surface-variant: #a1a1aa;
+	--color-outline: #52525b;
+	--color-outline-variant: #3f4450;
+
+	--color-primary: #0a84ff;
+	--color-on-primary: #ffffff;
+	--color-primary-container: #00479e;
+	--color-on-primary-container: #d8e2ff;
+
+	--color-income: #30d158;
+	--color-on-income: #ffffff;
+	--color-income-container: #00531c;
+	--color-on-income-container: #72fe88;
+
+	--color-expense: #ff453a;
+	--color-on-expense: #ffffff;
+	--color-expense-container: #930005;
+	--color-on-expense-container: #ffdad5;
+
+	--color-transfer: #5e5ce6;
+	--color-on-transfer: #ffffff;
+	--color-warning: #ff9f0a;
+
+	--color-ambient-orb-1: rgba(10, 132, 255, 0.15);
+	--color-ambient-orb-2: rgba(48, 209, 88, 0.12);
+	--color-ambient-orb-3: rgba(94, 92, 230, 0.1);
+
+	/* Glass Material Variables (Dark Mode) */
+	--glass-tabbar-bg: rgba(28, 28, 30, 0.85);
+	--glass-tabbar-blur: 32px;
+	--glass-tabbar-border: rgba(255, 255, 255, 0.12);
+	--glass-tabbar-shadow: 0 16px 40px -8px rgba(0, 0, 0, 0.45);
+	--glass-tabbar-glow: inset 0 1px 1px rgba(255, 255, 255, 0.18);
+
+	--glass-sheet-bg: rgba(28, 28, 30, 0.9);
+	--glass-sheet-blur: 32px;
+	--glass-sheet-border: rgba(255, 255, 255, 0.15);
+	--glass-sheet-shadow: 0 20px 48px -10px rgba(0, 0, 0, 0.6);
+
+	--glass-card-bg: rgba(32, 32, 36, 0.72);
+	--glass-card-blur: 24px;
+	--glass-card-border: rgba(255, 255, 255, 0.1);
+	--glass-card-shadow: 0 12px 32px -4px rgba(0, 0, 0, 0.35);
+	--glass-card-glow: inset 0 1px 1px rgba(255, 255, 255, 0.12);
+
+	--glass-card-opaque-bg: rgba(32, 32, 36, 0.94);
+	--glass-card-opaque-blur: 12px;
+	--glass-card-opaque-border: rgba(60, 60, 65, 0.85);
+	--glass-card-opaque-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.25);
+
+	--glass-pill-bg: rgba(40, 40, 45, 0.6);
+	--glass-pill-blur: 16px;
+	--glass-pill-border: rgba(255, 255, 255, 0.12);
+	--glass-pill-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+
+	--glass-keypad-bg: rgba(35, 35, 40, 0.55);
+	--glass-keypad-blur: 16px;
+	--glass-keypad-border: rgba(255, 255, 255, 0.1);
+	--glass-keypad-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.15);
+}
+
+/* Fallback Tanpa Backdrop-Filter & Opsi Kurangi Transparansi */
+:root[data-reduce-transparency='true'],
+@media (prefers-reduced-transparency: reduce) {
+	:root {
+		--glass-tabbar-bg: #ffffff;
+		--glass-tabbar-blur: 0px;
+		--glass-tabbar-border: #c1c6d7;
+
+		--glass-sheet-bg: #ffffff;
+		--glass-sheet-blur: 0px;
+		--glass-sheet-border: #c1c6d7;
+
+		--glass-card-bg: #ffffff;
+		--glass-card-blur: 0px;
+		--glass-card-border: #c1c6d7;
+
+		--glass-card-opaque-bg: #ffffff;
+		--glass-card-opaque-blur: 0px;
+		--glass-card-opaque-border: #c1c6d7;
+
+		--glass-pill-bg: #f0edef;
+		--glass-pill-blur: 0px;
+		--glass-pill-border: #c1c6d7;
+
+		--glass-keypad-bg: #f0edef;
+		--glass-keypad-blur: 0px;
+		--glass-keypad-border: #c1c6d7;
+	}
+
+	:root[data-theme='dark'],
+	.dark {
+		--glass-tabbar-bg: #202024;
+		--glass-tabbar-blur: 0px;
+		--glass-tabbar-border: #3f4450;
+
+		--glass-sheet-bg: #202024;
+		--glass-sheet-blur: 0px;
+		--glass-sheet-border: #3f4450;
+
+		--glass-card-bg: #202024;
+		--glass-card-blur: 0px;
+		--glass-card-border: #3f4450;
+
+		--glass-card-opaque-bg: #202024;
+		--glass-card-opaque-blur: 0px;
+		--glass-card-opaque-border: #3f4450;
+
+		--glass-pill-bg: #28282d;
+		--glass-pill-blur: 0px;
+		--glass-pill-border: #3f4450;
+
+		--glass-keypad-bg: #28282d;
+		--glass-keypad-blur: 0px;
+		--glass-keypad-border: #3f4450;
+	}
+}
+
+@supports not (backdrop-filter: blur(1px)) {
+	:root {
+		--glass-tabbar-bg: #ffffff;
+		--glass-tabbar-blur: 0px;
+		--glass-tabbar-border: #c1c6d7;
+
+		--glass-sheet-bg: #ffffff;
+		--glass-sheet-blur: 0px;
+		--glass-sheet-border: #c1c6d7;
+
+		--glass-card-bg: #ffffff;
+		--glass-card-blur: 0px;
+		--glass-card-border: #c1c6d7;
+
+		--glass-card-opaque-bg: #ffffff;
+		--glass-card-opaque-blur: 0px;
+		--glass-card-opaque-border: #c1c6d7;
+
+		--glass-pill-bg: #f0edef;
+		--glass-pill-blur: 0px;
+		--glass-pill-border: #c1c6d7;
+
+		--glass-keypad-bg: #f0edef;
+		--glass-keypad-blur: 0px;
+		--glass-keypad-border: #c1c6d7;
+	}
+
+	:root[data-theme='dark'],
+	.dark {
+		--glass-tabbar-bg: #202024;
+		--glass-tabbar-blur: 0px;
+		--glass-tabbar-border: #3f4450;
+
+		--glass-sheet-bg: #202024;
+		--glass-sheet-blur: 0px;
+		--glass-sheet-border: #3f4450;
+
+		--glass-card-bg: #202024;
+		--glass-card-blur: 0px;
+		--glass-card-border: #3f4450;
+
+		--glass-card-opaque-bg: #202024;
+		--glass-card-opaque-blur: 0px;
+		--glass-card-opaque-border: #3f4450;
+
+		--glass-pill-bg: #28282d;
+		--glass-pill-blur: 0px;
+		--glass-pill-border: #3f4450;
+
+		--glass-keypad-bg: #28282d;
+		--glass-keypad-blur: 0px;
+		--glass-keypad-border: #3f4450;
+	}
+}
+
+/* Material Symbols Outlined helper */
+.material-symbols-outlined {
+	font-family: 'Material Symbols Outlined';
+	font-weight: normal;
+	font-style: normal;
+	font-size: 24px;
+	line-height: 1;
+	letter-spacing: normal;
+	text-transform: none;
+	display: inline-block;
+	white-space: nowrap;
+	word-wrap: normal;
+	direction: ltr;
+	-webkit-font-smoothing: antialiased;
+	font-feature-settings: 'liga';
+}
+
+/* Angka Moneter Tabular */
+.tabular-nums {
+	font-variant-numeric: tabular-nums;
+	font-feature-settings: 'tnum' 1;
+}
+
+/* Safe Area Utilities */
+.pt-safe {
+	padding-top: max(36px, calc(env(safe-area-inset-top, 0px) + 8px));
+}
+
+.pb-safe {
+	padding-bottom: max(16px, env(safe-area-inset-bottom, 0px));
+}
+
+.pl-safe {
+	padding-left: max(16px, env(safe-area-inset-left, 0px));
+}
+
+.pr-safe {
+	padding-right: max(16px, env(safe-area-inset-right, 0px));
+}

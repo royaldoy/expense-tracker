@@ -480,3 +480,40 @@
 - **Konsekuensi:**
   - Build Android `./gradlew assembleDebug` sukses bersih tanpa konflik dependensi dengan ukuran APK 31 MB.
   - Teks mentah dan koordinat spasial per baris tersedia secara deterministik untuk kebutuhan pembuatan fixture di `tests/fixtures/receipts/` dan pengujian TDD parser struk.
+
+## ADR-022: Standarisasi AppHeader, Mitigasi Safe-Area Status Bar Android, Simplifikasi Beranda, dan Segmented Control Beranimasi
+
+- **Status:** Diterima
+- **Tanggal:** 2026-10-13
+- **Konteks:**
+  Pengguna menetapkan keputusan desain baru yang menyederhanakan hierarki visual dan menstandardisasi komponen antarmuka, menggantikan spesifikasi rancangan mockup Stitch sebelumnya jika terdapat perbedaan:
+  1. Header halaman aplikasi memiliki variasi struktur yang tidak seragam (ada yang menggunakan avatar, subjudul deskriptif panjang, dan tombol aksi berlebihan). Diperlukan standarisasi komponen `AppHeader` dengan aturan ketat.
+  2. Pada platform Android (Capacitor 7 / target SDK 35), elemen header menabrak status bar sistem karena perilaku edge-to-edge default Android 15, ketidaktersediaan nilai `env(safe-area-inset-top)` pada Chromium WebView tanpa display cutout fisik, serta beberapa halaman yang membypass utility safe-area dengan hardcoded padding `pt-6`/`pt-8`.
+  3. Beranda (`/`): Kartu saldo memuat tombol redundan `Keluar`/`Masuk`/`Transfer` yang sebenarnya sudah terakomodasi di tombol aksi cepat (+) tab bar bawah. Daftar dompet juga memanjang vertikal/carousel lebar yang memakan ruang vertikal.
+  4. Komponen `GlassSegmented`: Tab aktif sebelumnya hanya berganti warna latar tombol statis tanpa indikator fisik beranimasi, kontras kurang tajam, dan bobot teks aktif sama dengan inaktif.
+- **Keputusan:**
+  1. **Standarisasi Komponen `AppHeader` (`src/lib/components/glass/AppHeader.svelte`)**:
+     - Aturan: Satu judul besar (`text-2xl font-bold tracking-tight text-on-surface`), **tanpa subjudul**, dan **maksimal dua tombol ikon** di sebelah kanan.
+     - Penerapan:
+       - **Beranda (`/`)**: Judul berupa sapaan dinamis berdasarkan waktu, tombol lonceng notifikasi (dengan badge unread), dan tombol pengaturan.
+       - **Transaksi (`/transactions`)**: Judul "Transaksi", tombol cari, tombol filter drawer (dengan indikator titik aktif), **tanpa tombol tambah**.
+       - **Dompet (`/wallets`)**: Judul "Dompet", tombol tambah dompet (`/wallets/new`).
+       - **Laporan (`/reports`)**: Judul "Laporan", tombol bagikan/ekspor (`ios_share`). Periode laporan ditempatkan sebagai pill independen di bawah judul.
+  2. **Mitigasi Safe-Area Inset Status Bar Android (Capacitor 7)**:
+     - Di `src/app.css`, memperbarui `.pt-safe` menjadi `padding-top: max(36px, calc(env(safe-area-inset-top, 0px) + 8px));` untuk menjamin jarak aman status bar minimal 36px di Android/Web dan otomatis bertambah bila ada notch/punch-hole.
+     - Di `capacitor.config.ts`, menambahkan `android: { adjustMarginsForEdgeToEdge: 'auto' }`.
+     - Menstandarisasi seluruh halaman (`/wallets`, `/wallets/new`, `/wallets/[id]`, `/wallets/[id]/edit`, `/settings/categories`, `/onboarding`) agar konsisten menggunakan `pt-safe px-4`.
+     - Pada `GlassSheet.svelte`, membatasi tinggi maksimum sheet menjadi `max-h-[calc(100vh-max(44px,env(safe-area-inset-top,0px))-16px)]` agar tidak pernah menabrak status bar saat konten sheet panjang.
+  3. **Penyegaran Beranda (`/`)**:
+     - Menghapus 3 tombol aksi (Keluar, Masuk, Transfer) dari kartu saldo agar kartu berfokus murni pada informasi saldo dan arus kas.
+     - Mengganti daftar dompet menjadi strip horizontal satu baris yang memuat maksimal 4 dompet (`wallets.slice(0, 4)`) dengan tautan "Lihat semua" menuju `/wallets`.
+  4. **Pembaruan `GlassSegmented` (Sliding Pill Thumb Beranimasi)**:
+     - Menggunakan sliding thumb `div` absolut dengan transisi halus `transform: translateX(...)` berdurasi 200ms ease-out.
+     - Kontras tinggi dengan latar `--color-surface-container-lowest` dan bayangan lembut.
+     - Teks aktif tebal (`font-bold text-on-surface`) dan teks inaktif berbobot sedang (`font-medium text-on-surface-variant`).
+     - Diterapkan pada filter Transaksi, filter Dompet, dan tab navigasi Laporan.
+  5. **Showcase di `/dev/gallery`**:
+     - Ditambahkan demonstrasi `AppHeader` dan `GlassSegmented` baru, serta dokumentasi kepatuhan terhadap token desain di `docs/design/tokens.md`.
+- **Konsekuensi:**
+  - Desain antarmuka terasa lebih bersih, konsisten, dan mematuhi ergonomi modern iOS Liquid Glass di atas Android Capacitor.
+  - Tampilan di perangkat Android tidak lagi tertimpa status bar sistem.

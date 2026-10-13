@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { SvelteMap } from 'svelte/reactivity';
+	import AppHeader, { type HeaderAction } from '$lib/components/glass/AppHeader.svelte';
 	import GlassButton from '$lib/components/glass/GlassButton.svelte';
 	import GlassCard from '$lib/components/glass/GlassCard.svelte';
 	import GlassEmptyState from '$lib/components/glass/GlassEmptyState.svelte';
 	import GlassListRow from '$lib/components/glass/GlassListRow.svelte';
-	import WalletCard from '$lib/components/glass/WalletCard.svelte';
 	import { aggregateSummary } from '$lib/domain/aggregation';
 	import { calculateOverallBudget, type OverallBudgetSummary } from '$lib/domain/budget';
 	import { formatRupiah } from '$lib/domain/money';
@@ -21,9 +21,6 @@
 	} from '$lib/services';
 	import { unreadNotificationsCount } from '$lib/stores/notificationStore';
 	import { hideBalance, toggleHideBalance } from '$lib/stores/uiStore';
-	import { isDevToolsEnabled } from '$lib/config/dev';
-
-	const isDevTools = isDevToolsEnabled();
 
 	let wallets = $state<Wallet[]>([]);
 	let totalBalance = $state(0);
@@ -139,69 +136,38 @@
 		return tx.type === 'income' ? 'var(--color-income)' : 'var(--color-expense)';
 	}
 
+	function getGreeting(): string {
+		const hour = new Date().getHours();
+		if (hour >= 4 && hour < 11) return 'Selamat Pagi';
+		if (hour >= 11 && hour < 15) return 'Selamat Siang';
+		if (hour >= 15 && hour < 18) return 'Selamat Sore';
+		return 'Selamat Malam';
+	}
+
+	let headerActions = $derived<HeaderAction[]>([
+		{
+			icon: 'notifications',
+			label: t('routes.notifikasi'),
+			href: '/notifications',
+			badgeCount: $unreadNotificationsCount,
+			testId: 'btn-notifications-bell'
+		},
+		{
+			icon: 'settings',
+			label: t('nav.pengaturan'),
+			href: '/settings',
+			testId: 'btn-settings'
+		}
+	]);
+
 	onMount(() => {
 		loadDashboardData();
 	});
 </script>
 
 <div class="pt-safe flex flex-col gap-5 px-4 pb-28">
-	<!-- Top App Bar -->
-	<header class="flex items-center justify-between pt-2">
-		<div class="flex items-center gap-3">
-			<div
-				class="flex h-10 w-10 items-center justify-center rounded-full text-white shadow-xs"
-				style="background: var(--color-primary);"
-			>
-				<span class="material-symbols-outlined text-xl">account_balance_wallet</span>
-			</div>
-			<div>
-				<h1 class="text-xs font-semibold tracking-wider text-on-surface-variant uppercase">
-					Money Tracker
-				</h1>
-				<p class="text-base font-bold text-on-surface">Beranda Finansial</p>
-			</div>
-		</div>
-
-		<div class="flex items-center gap-2">
-			{#if isDevTools}
-				<a
-					href="/dev/gallery"
-					class="flex h-9 items-center justify-center rounded-full px-2.5 text-xs font-semibold text-primary transition-all active:scale-95"
-					style="background: var(--glass-pill-bg); border: 1px solid var(--glass-pill-border);"
-					data-testid="header-dev-gallery-button"
-				>
-					<span class="material-symbols-outlined mr-1 text-base">widgets</span>
-					Galeri
-				</a>
-			{/if}
-			<a
-				href="/notifications"
-				class="relative flex h-9 w-9 items-center justify-center rounded-full text-on-surface-variant transition-colors hover:bg-surface-container active:scale-95"
-				aria-label={t('routes.notifikasi')}
-				data-testid="btn-notifications-bell"
-			>
-				<span class="material-symbols-outlined text-xl">notifications</span>
-				{#if $unreadNotificationsCount > 0}
-					<span
-						class="absolute top-1.5 right-1.5 flex h-2.5 w-2.5"
-						data-testid="notifications-unread-badge"
-					>
-						<span
-							class="bg-error absolute inline-flex h-full w-full animate-ping rounded-full opacity-75"
-						></span>
-						<span class="bg-error relative inline-flex h-2.5 w-2.5 rounded-full"></span>
-					</span>
-				{/if}
-			</a>
-			<a
-				href="/settings"
-				class="flex h-9 w-9 items-center justify-center rounded-full text-on-surface-variant transition-colors hover:bg-surface-container active:scale-95"
-				aria-label={t('nav.pengaturan')}
-			>
-				<span class="material-symbols-outlined text-xl">settings</span>
-			</a>
-		</div>
-	</header>
+	<!-- AppHeader Sesuai Aturan: Satu Judul Besar (Sapaan), Tanpa Subjudul, Maks 2 Tombol Ikon -->
+	<AppHeader title={getGreeting()} actions={headerActions} />
 
 	<!-- Hero Card: Total Saldo Aktif -->
 	<GlassCard class="p-6">
@@ -275,31 +241,6 @@
 					</p>
 				</div>
 			</div>
-		</div>
-
-		<!-- Tombol Aksi Cepat Finansial -->
-		<div class="mt-4 grid grid-cols-3 gap-2">
-			<a
-				href="/transactions/new?type=expense"
-				class="flex items-center justify-center gap-1.5 rounded-xl border border-expense/20 bg-expense/5 px-3 py-2 text-xs font-semibold text-expense transition-all hover:bg-expense/10 active:scale-95"
-			>
-				<span class="material-symbols-outlined text-base">arrow_upward</span>
-				Keluar
-			</a>
-			<a
-				href="/transactions/new?type=income"
-				class="flex items-center justify-center gap-1.5 rounded-xl border border-income/20 bg-income/5 px-3 py-2 text-xs font-semibold text-income transition-all hover:bg-income/10 active:scale-95"
-			>
-				<span class="material-symbols-outlined text-base">arrow_downward</span>
-				Masuk
-			</a>
-			<a
-				href="/transfer"
-				class="flex items-center justify-center gap-1.5 rounded-xl border border-primary/20 bg-primary/5 px-3 py-2 text-xs font-semibold text-primary transition-all hover:bg-primary/10 active:scale-95"
-			>
-				<span class="material-symbols-outlined text-base">sync_alt</span>
-				Transfer
-			</a>
 		</div>
 	</GlassCard>
 
@@ -406,12 +347,12 @@
 		</section>
 	{/if}
 
-	<!-- Carousel Dompet Aktif -->
+	<!-- Strip Dompet Horizontal (Maksimal 4 Dompet) -->
 	<section class="flex flex-col gap-2.5">
 		<div class="flex items-center justify-between">
 			<h3 class="text-sm font-bold text-on-surface">{t('nav.dompet')}</h3>
 			<a href="/wallets" class="text-xs font-semibold text-primary hover:underline">
-				Lihat Semua ({wallets.length})
+				Lihat semua
 			</a>
 		</div>
 
@@ -427,11 +368,32 @@
 				</GlassButton>
 			</GlassCard>
 		{:else}
-			<div class="flex snap-x snap-mandatory scrollbar-none gap-3 overflow-x-auto pb-1">
-				{#each wallets as w (w.id)}
-					<div class="min-w-[210px] snap-start">
-						<WalletCard wallet={w} variant="compact" href="/wallets/{w.id}" />
-					</div>
+			<div class="no-scrollbar flex gap-2.5 overflow-x-auto pb-1">
+				{#each wallets.slice(0, 4) as w (w.id)}
+					<a
+						href="/wallets/{w.id}"
+						class="flex min-w-[140px] flex-1 items-center gap-2.5 rounded-2xl p-2.5 transition-all hover:bg-surface-container active:scale-95"
+						style="
+							background: var(--glass-card-bg);
+							backdrop-filter: blur(var(--glass-card-blur));
+							-webkit-backdrop-filter: blur(var(--glass-card-blur));
+							border: 1px solid var(--glass-card-border);
+						"
+						data-testid="home-wallet-chip"
+					>
+						<div
+							class="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl text-white shadow-xs"
+							style="background: {w.color};"
+						>
+							<span class="material-symbols-outlined text-base">{w.icon}</span>
+						</div>
+						<div class="min-w-0 flex-1">
+							<p class="truncate text-xs font-bold text-on-surface">{w.name}</p>
+							<p class="truncate text-[11px] font-semibold text-on-surface-variant tabular-nums">
+								{$hideBalance ? '••••' : formatRupiah(w.balance)}
+							</p>
+						</div>
+					</a>
 				{/each}
 			</div>
 		{/if}
