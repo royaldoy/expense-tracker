@@ -9,6 +9,7 @@
 	import GlassListRow from '$lib/components/glass/GlassListRow.svelte';
 	import GlassSegmented from '$lib/components/glass/GlassSegmented.svelte';
 	import GlassSheet from '$lib/components/glass/GlassSheet.svelte';
+	import GlassSkeleton from '$lib/components/glass/GlassSkeleton.svelte';
 	import { formatRupiah } from '$lib/domain/money';
 	import type { Category, TransactionType, Wallet } from '$lib/domain/types';
 	import t from '$lib/i18n';
@@ -484,8 +485,13 @@
 
 	<!-- List Transaksi Dikelompokkan per Tanggal -->
 	{#if isLoading}
-		<div class="py-20 text-center text-xs font-semibold text-on-surface-variant">
-			Memuat riwayat transaksi...
+		<div class="flex flex-col gap-3 py-4" data-testid="transactions-loading-skeleton">
+			<GlassSkeleton height="h-5" width="w-28" delayMs={150} />
+			<GlassCard variant="opaque" class="flex flex-col gap-3 p-4">
+				<GlassSkeleton height="h-10" delayMs={150} />
+				<GlassSkeleton height="h-10" delayMs={150} />
+				<GlassSkeleton height="h-10" delayMs={150} />
+			</GlassCard>
 		</div>
 	{:else if groups.length === 0}
 		<GlassCard variant="regular" class="p-6">
@@ -555,7 +561,10 @@
 							<a
 								href="/transactions/{tx.id}"
 								data-testid="transaction-row"
-								class="block transition-colors hover:bg-surface-container-high/40"
+								class="block transition-transform duration-150 select-none hover:bg-surface-container-high/40 active:scale-[0.985]"
+								style={i < 6
+									? `animation: vt-fade-in 250ms var(--motion-ease-decelerate, cubic-bezier(0, 0, 0.2, 1)) both; animation-delay: ${i * 35}ms;`
+									: ''}
 							>
 								<GlassListRow
 									{title}

@@ -160,6 +160,31 @@ export interface ICameraOcrAdapter {
 	recognizeText(image: CompressedImage | string): Promise<OcrResult>;
 }
 
+export type HapticImpactStyle = 'light' | 'medium' | 'heavy';
+export type HapticNotificationType = 'success' | 'warning' | 'error';
+
+export interface IHapticsAdapter {
+	/**
+	 * Memicu getaran benturan haptic fisik (light, medium, heavy).
+	 */
+	impact(style?: HapticImpactStyle): Promise<void>;
+
+	/**
+	 * Memicu getaran notifikasi (success, warning, error).
+	 */
+	notification(type?: HapticNotificationType): Promise<void>;
+
+	/**
+	 * Memicu getaran halus saat pergantian seleksi (misal tab atau item slider).
+	 */
+	selection(): Promise<void>;
+
+	/**
+	 * Memicu getaran durasi khusus (fallback web).
+	 */
+	vibrate(durationMs?: number): Promise<void>;
+}
+
 export interface IPlatform {
 	readonly type: PlatformType;
 	readonly isNative: boolean;
@@ -170,4 +195,5 @@ export interface IPlatform {
 	readonly notifications: INotificationsAdapter;
 	readonly biometrics: IBiometricsAdapter;
 	readonly cameraOcr: ICameraOcrAdapter;
+	readonly haptics: IHapticsAdapter;
 }

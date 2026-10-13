@@ -124,6 +124,19 @@
 	--radius-lg: 24px;
 	--radius-xl: 32px;
 	--radius-full: 9999px;
+
+	/* Motion Tokens (Durasi & Kurva) */
+	--motion-duration-instant: 100ms;
+	--motion-duration-fast: 150ms;
+	--motion-duration-normal: 250ms;
+	--motion-duration-moderate: 350ms;
+	--motion-duration-slow: 500ms;
+
+	--motion-ease-standard: cubic-bezier(0.2, 0, 0, 1);
+	--motion-ease-decelerate: cubic-bezier(0, 0, 0.2, 1);
+	--motion-ease-accelerate: cubic-bezier(0.4, 0, 1, 1);
+	--motion-ease-spring: cubic-bezier(0.34, 1.35, 0.64, 1);
+	--motion-ease-spring-gentle: cubic-bezier(0.25, 1.1, 0.5, 1);
 }
 
 /* Dark Mode Tokens (Turunan Spesifikasi) */
@@ -351,4 +364,62 @@
 
 .pr-safe {
 	padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+
+/* Mode Animasi (data-motion) & Aksesibilitas Reduced Motion */
+:root[data-motion='minimal'] {
+	--motion-duration-normal: 150ms;
+	--motion-duration-moderate: 200ms;
+	--motion-duration-slow: 250ms;
+	--motion-ease-spring: cubic-bezier(0.2, 0, 0, 1);
+	--motion-ease-spring-gentle: cubic-bezier(0.2, 0, 0, 1);
+}
+
+:root[data-motion='off'] *,
+:root[data-motion='off'] *::before,
+:root[data-motion='off'] *::after,
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+	}
+}
+
+/* View Transitions API (Hanya transform dan opacity, durasi maks 250ms) */
+@keyframes vt-fade-in {
+	from {
+		opacity: 0;
+		transform: translateY(6px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@keyframes vt-fade-out {
+	from {
+		opacity: 1;
+		transform: translateY(0);
+	}
+	to {
+		opacity: 0;
+		transform: translateY(-6px);
+	}
+}
+
+::view-transition-old(root) {
+	animation: var(--motion-duration-fast) var(--motion-ease-accelerate) both vt-fade-out;
+}
+
+::view-transition-new(root) {
+	animation: var(--motion-duration-normal) var(--motion-ease-decelerate) both vt-fade-in;
+}
+
+/* Isolasi Tab Bar dari snapshot View Transition */
+.glass-tab-bar-nav {
+	view-transition-name: app-tab-bar;
 }

@@ -196,4 +196,27 @@ test.describe('Pengaturan & Keamanan (Settings & Security E2E)', () => {
 		await page.goto('/settings');
 		await expect(page.locator('[data-testid="dev-ocr-button"]')).toHaveCount(0);
 	});
+
+	test('Pengaturan Animasi dan Getaran Haptic dapat diubah dan bereaksi di /settings', async ({
+		page
+	}) => {
+		await page.goto('/settings');
+
+		// 1. Verifikasi seksi Animasi dan Getaran
+		await expect(page.locator('[data-testid="settings-motion-section"]')).toBeVisible();
+		await expect(page.locator('[data-testid="settings-haptics-section"]')).toBeVisible();
+
+		// 2. Klik opsi 'Minimal' pada animasi
+		await page.getByRole('tab', { name: 'Minimal' }).click();
+		await expect(page.locator('html')).toHaveAttribute('data-motion', 'minimal');
+
+		// 3. Klik opsi 'Mati' pada animasi
+		await page.getByRole('tab', { name: 'Mati' }).click();
+		await expect(page.locator('html')).toHaveAttribute('data-motion', 'off');
+
+		// 4. Toggle switch getaran
+		const hapticSwitch = page.locator('[data-testid="toggle-haptics-switch"]');
+		await expect(hapticSwitch).toBeVisible();
+		await hapticSwitch.click();
+	});
 });

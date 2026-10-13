@@ -13,6 +13,7 @@
 	import { categoryService } from '$lib/services/categoryService';
 	import { transactionService } from '$lib/services/transactionService';
 	import { walletService } from '$lib/services/walletService';
+	import { triggerHapticNotification } from '$lib/stores/uiStore';
 
 	// Query param & status reaktif tipe transaksi
 	let txType = $state<string>(
@@ -106,6 +107,7 @@
 				note: note.trim() || null
 			});
 
+			triggerHapticNotification('success');
 			goto('/transactions');
 		} catch (err: unknown) {
 			errorMessage = err instanceof Error ? err.message : 'Gagal menyimpan transaksi';

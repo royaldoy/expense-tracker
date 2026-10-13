@@ -2,6 +2,7 @@ import { App } from '@capacitor/app';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { Capacitor } from '@capacitor/core';
 import { Directory, Encoding, Filesystem } from '@capacitor/filesystem';
+import { Haptics, ImpactStyle, NotificationType } from '@capacitor/haptics';
 import { LocalNotifications } from '@capacitor/local-notifications';
 import { Share } from '@capacitor/share';
 import { StatusBar, Style } from '@capacitor/status-bar';
@@ -14,10 +15,13 @@ import type {
 	CompressedImage,
 	FileReadOptions,
 	FileWriteOptions,
+	HapticImpactStyle,
+	HapticNotificationType,
 	IBackButtonAdapter,
 	IBiometricsAdapter,
 	ICameraOcrAdapter,
 	IFilesystemAdapter,
+	IHapticsAdapter,
 	INotificationsAdapter,
 	IPlatform,
 	IShareAdapter,
@@ -352,6 +356,46 @@ export class CapacitorCameraOcrAdapter implements ICameraOcrAdapter {
 	}
 }
 
+export class CapacitorHapticsAdapter implements IHapticsAdapter {
+	async impact(style: HapticImpactStyle = 'light'): Promise<void> {
+		try {
+			let s = ImpactStyle.Light;
+			if (style === 'medium') s = ImpactStyle.Medium;
+			if (style === 'heavy') s = ImpactStyle.Heavy;
+			await Haptics.impact({ style: s });
+		} catch {
+			// Abaikan kegagalan haptic pada emulator / perangkat tanpa vibrator
+		}
+	}
+
+	async notification(type: HapticNotificationType = 'success'): Promise<void> {
+		try {
+			let t = NotificationType.Success;
+			if (type === 'warning') t = NotificationType.Warning;
+			if (type === 'error') t = NotificationType.Error;
+			await Haptics.notification({ type: t });
+		} catch {
+			// Abaikan
+		}
+	}
+
+	async selection(): Promise<void> {
+		try {
+			await Haptics.selectionChanged();
+		} catch {
+			// Abaikan
+		}
+	}
+
+	async vibrate(durationMs = 20): Promise<void> {
+		try {
+			await Haptics.vibrate({ duration: durationMs });
+		} catch {
+			// Abaikan
+		}
+	}
+}
+
 export class CapacitorPlatform implements IPlatform {
 	readonly type: PlatformType;
 	readonly isNative: boolean;
@@ -362,6 +406,7 @@ export class CapacitorPlatform implements IPlatform {
 	readonly notifications = new CapacitorNotificationsAdapter();
 	readonly biometrics = new CapacitorBiometricsAdapter();
 	readonly cameraOcr = new CapacitorCameraOcrAdapter();
+	readonly haptics = new CapacitorHapticsAdapter();
 
 	constructor() {
 		const p = Capacitor.getPlatform();

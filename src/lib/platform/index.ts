@@ -3,6 +3,7 @@ import {
 	CapacitorBackButtonAdapter,
 	CapacitorBiometricsAdapter,
 	CapacitorFilesystemAdapter,
+	CapacitorHapticsAdapter,
 	CapacitorNotificationsAdapter,
 	CapacitorPlatform,
 	capacitorPlatform,
@@ -14,6 +15,7 @@ import {
 	WebBackButtonAdapter,
 	WebBiometricsAdapter,
 	WebFilesystemAdapter,
+	WebHapticsAdapter,
 	WebNotificationsAdapter,
 	WebPlatform,
 	webPlatform,
@@ -30,7 +32,8 @@ export {
 	WebBackButtonAdapter,
 	WebStatusBarAdapter,
 	WebNotificationsAdapter,
-	WebBiometricsAdapter
+	WebBiometricsAdapter,
+	WebHapticsAdapter
 };
 
 export {
@@ -41,7 +44,8 @@ export {
 	CapacitorBackButtonAdapter,
 	CapacitorStatusBarAdapter,
 	CapacitorNotificationsAdapter,
-	CapacitorBiometricsAdapter
+	CapacitorBiometricsAdapter,
+	CapacitorHapticsAdapter
 };
 
 /**

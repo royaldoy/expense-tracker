@@ -26,6 +26,9 @@ importers:
       '@capacitor/filesystem':
         specifier: ^7.0.0
         version: 7.1.9(@capacitor/core@7.6.9)
+      '@capacitor/haptics':
+        specifier: 7.0.5
+        version: 7.0.5(@capacitor/core@7.6.9)
       '@capacitor/local-notifications':
         specifier: ^7.0.0
         version: 7.0.7(@capacitor/core@7.6.9)
@@ -176,6 +179,11 @@ packages:
 
   '@capacitor/filesystem@7.1.9':
     resolution: {integrity: sha512-HBr3NwENo/Fm7Cmm6Cvps255OIdgQ2VXtSNZK+2Nkw0Y7EMid9y5AS9XfEzGmsC7MXbC6Hx2yXV/hvnuifsSXA==}
+    peerDependencies:
+      '@capacitor/core': '>=7.0.0'
+
+  '@capacitor/haptics@7.0.5':
+    resolution: {integrity: sha512-ujXuUkL8UG1YLhuJo/q+jiHr0K5JmclGZHmV1RttmiUBRG1XpC4Fc4gXUJyEX+6IoyfwWhgtPvJFRUB31HYnRQ==}
     peerDependencies:
       '@capacitor/core': '>=7.0.0'
 
@@ -2030,6 +2038,10 @@ snapshots:
     dependencies:
       '@capacitor/core': 7.6.9
       '@capacitor/synapse': 1.0.4
+
+  '@capacitor/haptics@7.0.5(@capacitor/core@7.6.9)':
+    dependencies:
+      '@capacitor/core': 7.6.9
 
   '@capacitor/local-notifications@7.0.7(@capacitor/core@7.6.9)':
     dependencies:

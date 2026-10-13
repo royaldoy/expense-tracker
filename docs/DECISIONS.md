@@ -517,3 +517,36 @@
 - **Konsekuensi:**
   - Desain antarmuka terasa lebih bersih, konsisten, dan mematuhi ergonomi modern iOS Liquid Glass di atas Android Capacitor.
   - Tampilan di perangkat Android tidak lagi tertimpa status bar sistem.
+
+## ADR-023: Sistem Animasi Terpadu (Motion Tokens, View Transitions, Haptics, Spring Gesture, dan Animasi Grafik)
+
+- **Status:** Diterima
+- **Tanggal:** 2026-10-13
+- **Konteks:**
+  Aplikasi memerlukan sistem animasi terpadu yang menyeluruh dan konsisten di seluruh layar dengan kriteria performa dan aksesibilitas ketat:
+  1. Hanya menganimasikan `transform` dan `opacity` (GPU composited). Dilarang keras menganimasikan `blur` atau `backdrop-filter` karena menyebabkan frame drop berat di mobile GPU.
+  2. Transisi halaman menggunakan View Transitions API di Android WebView / browser dengan fallback instan tanpa error.
+  3. Umpan balik haptic menggunakan `@capacitor/haptics@7` pada aksi-aksi penting, dengan toggle terpisah di Pengaturan.
+  4. Pengaturan mode animasi (`full`, `minimal`, `off`) yang menghormati `prefers-reduced-motion` sistem OS secara otomatis.
+  5. Animasi grafik finansial harus muncul bertahap tanpa membebani thread rendering.
+- **Keputusan:**
+  1. **Token Gerak & Kurva Pegas**:
+     - Ditambahkan durasi standar `--motion-duration-*` (instant 100ms, fast 150ms, normal 250ms, moderate 350ms, slow 500ms) dan kurva bezier `--motion-ease-*` (termasuk kurva pegas `--motion-ease-spring: cubic-bezier(0.34, 1.35, 0.64, 1)`) pada `src/app.css` dan `docs/design/tokens.md`.
+  2. **View Transitions API**:
+     - Diterapkan via `onNavigate` di `src/routes/+layout.svelte` dengan durasi maksimum 250ms.
+     - Mengisolasi tab bar melayang menggunakan `view-transition-name: app-tab-bar` agar tidak ikut di-snapshot bersama halaman.
+     - Navigasi yang hanya menutup modal sheet (di dalam pathname yang sama) tidak memicu transisi halaman.
+  3. **Animasi Grafik Berbasis `stroke-dashoffset` dan `clip-path`**:
+     - **Grafik Donut (`DonutChart.svelte`)**: Menggunakan animasi `stroke-dashoffset` pada setiap elemen SVG `<circle>` (`stroke-dashoffset={seg.dashOffset + (1 - revealProgress) * CIRCUMFERENCE}`) berdurasi 500ms untuk efek lingkaran yang terisi bertahap.
+     - **Grafik Kurva Tren (`SplineAreaChart.svelte`)**: Menggunakan `<clipPath>` SVG horizontal (`width: clipWidth` bertransisi 0px ke 320px) yang membuka garis kurva dan area gradien secara sinkron dari kiri ke kanan.
+     - **Grafik Batang Arus Kas (`CashflowBarChart.svelte`)**: Menggunakan `<clipPath>` SVG vertikal (`height: clipHeight` bertransisi 0px ke 120px) yang menumbuhkan seluruh batang dari bawah ke atas.
+     - Seluruh animasi grafik otomatis dinonaktifkan (instan) saat mode `minimal` atau `off`.
+  4. **Gesture Spring & Pull-to-Close pada `GlassSheet`**:
+     - Mendukung gesture tarik-ke-bawah hanya dari grabber/header atau saat scroll berada di `scrollTop <= 0`.
+     - Ambang jarak pelepasan (>90px) atau ambang kecepatan lepas (>0.45 px/ms) menutup sheet melalui jalur riwayat yang sama (`window.history.back()`) dan memicu getaran haptic.
+  5. **Hitung Naik Saldo (Count-up) & Skeleton Loader**:
+     - `animateCount`: Animasi hitung naik bertahap dengan durasi maksimum 600ms, di mana angka akhir selalu persis 100% sama dengan nilai asli integer Rupiah.
+     - `GlassSkeleton`: Komponen shimmer dengan penundaan tampilan ~150ms sehingga tidak berkedip pada pemuatan cepat.
+- **Konsekuensi:**
+  - Animasi berjalan stabil pada 60fps tanpa lagging di ponsel Android.
+  - Aksesibilitas terjamin dan dapat dinonaktifkan sepenuhnya oleh pengguna.

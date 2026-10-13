@@ -3,10 +3,20 @@
 	import GlassButton from '$lib/components/glass/GlassButton.svelte';
 	import GlassCard from '$lib/components/glass/GlassCard.svelte';
 	import GlassListRow from '$lib/components/glass/GlassListRow.svelte';
+	import GlassSegmented from '$lib/components/glass/GlassSegmented.svelte';
 	import t from '$lib/i18n';
 	import { categoryService, seedService, settingService } from '$lib/services';
 	import { isPinSet, lockApp, refreshPinStatus } from '$lib/stores/securityStore';
-	import { hideBalance, toggleHideBalance } from '$lib/stores/uiStore';
+	import {
+		animationMode,
+		hapticsEnabled,
+		hideBalance,
+		setAnimationModePreference,
+		setHapticsPreference,
+		toggleHideBalance,
+		triggerHapticImpact,
+		type AnimationMode
+	} from '$lib/stores/uiStore';
 	import { isDevToolsEnabled } from '$lib/config/dev';
 
 	let isDarkMode = $state(false);
@@ -16,6 +26,12 @@
 	let isSeeding = $state(false);
 	let seedMessage = $state<string | null>(null);
 	const isDevTools = isDevToolsEnabled();
+
+	const motionOptions = [
+		{ value: 'full', label: 'Penuh' },
+		{ value: 'minimal', label: 'Minimal' },
+		{ value: 'off', label: 'Mati' }
+	];
 
 	function toggleTheme() {
 		isDarkMode = !isDarkMode;
@@ -28,6 +44,7 @@
 				document.documentElement.classList.remove('dark');
 			}
 		}
+		triggerHapticImpact('light');
 	}
 
 	function toggleReduceTransparency() {
@@ -38,6 +55,15 @@
 			} else {
 				document.documentElement.removeAttribute('data-reduce-transparency');
 			}
+		}
+		triggerHapticImpact('light');
+	}
+
+	function handleToggleHaptics() {
+		const next = !$hapticsEnabled;
+		setHapticsPreference(next);
+		if (next) {
+			triggerHapticImpact('medium');
 		}
 	}
 
@@ -327,6 +353,64 @@
 					<span
 						class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out"
 						style="transform: {reduceTransparency
+							? 'translateX(20px)'
+							: 'translateX(2px)'}; margin-top: 2px;"
+					></span>
+				</button>
+			</div>
+
+			<!-- Pengaturan Animasi (Penuh, Minimal, Mati) -->
+			<div class="flex flex-col gap-2.5 p-4" data-testid="settings-motion-section">
+				<div class="flex items-center gap-3">
+					<div
+						class="flex h-10 w-10 items-center justify-center rounded-xl text-white shadow-xs"
+						style="background: #34C759;"
+					>
+						<span class="material-symbols-outlined text-xl">animation</span>
+					</div>
+					<div>
+						<p class="text-sm font-semibold text-on-surface">Animasi</p>
+						<p class="text-xs text-on-surface-variant">Penuh, Minimal (tanpa pegas), atau Mati</p>
+					</div>
+				</div>
+				<div class="mt-1">
+					<GlassSegmented
+						options={motionOptions}
+						value={$animationMode}
+						onchange={(val) => setAnimationModePreference(val as AnimationMode)}
+					/>
+				</div>
+			</div>
+
+			<!-- Toggle Getaran (Haptic Feedback Terpisah) -->
+			<div class="flex items-center justify-between p-4" data-testid="settings-haptics-section">
+				<div class="flex items-center gap-3">
+					<div
+						class="flex h-10 w-10 items-center justify-center rounded-xl text-white shadow-xs"
+						style="background: #FF2D55;"
+					>
+						<span class="material-symbols-outlined text-xl">vibration</span>
+					</div>
+					<div>
+						<p class="text-sm font-semibold text-on-surface">Getaran (Haptic)</p>
+						<p class="text-xs text-on-surface-variant">Respon getar saat menekan tombol & aksi</p>
+					</div>
+				</div>
+				<button
+					type="button"
+					class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full transition-colors duration-200 ease-in-out focus:outline-hidden"
+					style="background: {$hapticsEnabled
+						? 'var(--color-primary)'
+						: 'var(--color-outline-variant)'};"
+					onclick={handleToggleHaptics}
+					role="switch"
+					aria-checked={$hapticsEnabled}
+					aria-label="Getaran Haptic"
+					data-testid="toggle-haptics-switch"
+				>
+					<span
+						class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out"
+						style="transform: {$hapticsEnabled
 							? 'translateX(20px)'
 							: 'translateX(2px)'}; margin-top: 2px;"
 					></span>

@@ -21,6 +21,7 @@ describe('Platform Abstraction Layer', () => {
 		expect(webPlatform.notifications).toBeDefined();
 		expect(webPlatform.biometrics).toBeDefined();
 		expect(webPlatform.cameraOcr).toBeDefined();
+		expect(webPlatform.haptics).toBeDefined();
 	});
 
 	it('WebFilesystemAdapter dapat menulis dan membaca data di lingkungan simulasi', async () => {
@@ -89,6 +90,19 @@ describe('Platform Abstraction Layer', () => {
 		expect(capPlatform.notifications).toBeDefined();
 		expect(capPlatform.biometrics).toBeDefined();
 		expect(capPlatform.cameraOcr).toBeDefined();
+		expect(capPlatform.haptics).toBeDefined();
+	});
+
+	it('WebHapticsAdapter tidak melempar error di lingkungan browser', async () => {
+		const haptics = webPlatform.haptics;
+		await expect(haptics.impact('light')).resolves.not.toThrow();
+		await expect(haptics.impact('medium')).resolves.not.toThrow();
+		await expect(haptics.impact('heavy')).resolves.not.toThrow();
+		await expect(haptics.notification('success')).resolves.not.toThrow();
+		await expect(haptics.notification('warning')).resolves.not.toThrow();
+		await expect(haptics.notification('error')).resolves.not.toThrow();
+		await expect(haptics.selection()).resolves.not.toThrow();
+		await expect(haptics.vibrate(10)).resolves.not.toThrow();
 	});
 
 	it('webPlatform.cameraOcr dapat menjalankan OCR fallback dan mengompresi gambar', async () => {

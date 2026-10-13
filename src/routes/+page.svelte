@@ -6,6 +6,7 @@
 	import GlassCard from '$lib/components/glass/GlassCard.svelte';
 	import GlassEmptyState from '$lib/components/glass/GlassEmptyState.svelte';
 	import GlassListRow from '$lib/components/glass/GlassListRow.svelte';
+	import GlassSkeleton from '$lib/components/glass/GlassSkeleton.svelte';
 	import { aggregateSummary } from '$lib/domain/aggregation';
 	import { calculateOverallBudget, type OverallBudgetSummary } from '$lib/domain/budget';
 	import { formatRupiah } from '$lib/domain/money';
@@ -21,9 +22,13 @@
 	} from '$lib/services';
 	import { unreadNotificationsCount } from '$lib/stores/notificationStore';
 	import { hideBalance, toggleHideBalance } from '$lib/stores/uiStore';
+	import { animateCount } from '$lib/utils/motion';
 
 	let wallets = $state<Wallet[]>([]);
 	let totalBalance = $state(0);
+	let animatedBalance = $state(0);
+	let countCancel: (() => void) | null = null;
+	let isLoading = $state(true);
 	let currentPeriod = $state<Period | null>(null);
 	let periodSummary = $state({ income: 0, expense: 0, net: 0 });
 	let budgetSummary = $state<OverallBudgetSummary | null>(null);
@@ -87,8 +92,25 @@
 			recentTransactions = allTxs.slice(0, 5);
 		} catch (error) {
 			console.error('Gagal memuat data dashboard:', error);
+		} finally {
+			isLoading = false;
 		}
 	}
+
+	$effect(() => {
+		const target = totalBalance;
+		if (countCancel) countCancel();
+		countCancel = animateCount(animatedBalance, target, {
+			durationMs: 500,
+			onUpdate: (val) => {
+				animatedBalance = val;
+			}
+		});
+
+		return () => {
+			if (countCancel) countCancel();
+		};
+	});
 
 	function getTransactionTitle(tx: Transaction): string {
 		if (tx.note && tx.note.trim()) {
@@ -192,7 +214,7 @@
 				class="text-3xl font-bold tracking-tight text-on-surface tabular-nums"
 				data-testid="dashboard-total-balance"
 			>
-				{$hideBalance ? '••••••••' : formatRupiah(totalBalance)}
+				{$hideBalance ? '••••••••' : formatRupiah(animatedBalance)}
 			</h2>
 			{#if currentPeriod}
 				<p class="mt-1 text-[11px] font-medium text-on-surface-variant">
@@ -406,7 +428,13 @@
 			<a href="/transactions" class="text-xs font-semibold text-primary hover:underline"> Semua </a>
 		</div>
 
-		{#if recentTransactions.length === 0}
+		{#if isLoading}
+			<GlassCard variant="opaque" class="flex flex-col gap-3 p-4">
+				<GlassSkeleton height="h-10" delayMs={150} />
+				<GlassSkeleton height="h-10" delayMs={150} />
+				<GlassSkeleton height="h-10" delayMs={150} />
+			</GlassCard>
+		{:else if recentTransactions.length === 0}
 			<GlassCard variant="opaque" class="p-6">
 				<GlassEmptyState
 					icon="receipt_long"
@@ -419,7 +447,13 @@
 		{:else}
 			<GlassCard variant="opaque" class="divide-y divide-surface-container-highest">
 				{#each recentTransactions as tx, idx (tx.id)}
-					<a href="/transactions/{tx.id}" class="block">
+					<a
+						href="/transactions/{tx.id}"
+						class="block transition-transform duration-150 select-none active:scale-[0.985]"
+						style={idx < 6
+							? `animation: vt-fade-in 250ms var(--motion-ease-decelerate, cubic-bezier(0, 0, 0.2, 1)) both; animation-delay: ${idx * 40}ms;`
+							: ''}
+					>
 						<GlassListRow
 							title={getTransactionTitle(tx)}
 							subtitle={getTransactionSubtitle(tx)}

@@ -4,10 +4,13 @@ import type {
 	CompressedImage,
 	FileReadOptions,
 	FileWriteOptions,
+	HapticImpactStyle,
+	HapticNotificationType,
 	IBackButtonAdapter,
 	IBiometricsAdapter,
 	ICameraOcrAdapter,
 	IFilesystemAdapter,
+	IHapticsAdapter,
 	INotificationsAdapter,
 	IPlatform,
 	IShareAdapter,
@@ -280,6 +283,51 @@ export class WebCameraOcrAdapter implements ICameraOcrAdapter {
 	}
 }
 
+export class WebHapticsAdapter implements IHapticsAdapter {
+	async impact(_style?: HapticImpactStyle): Promise<void> {
+		void _style;
+		if (typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function') {
+			try {
+				navigator.vibrate(10);
+			} catch {
+				// Abaikan jika tidak didukung
+			}
+		}
+	}
+
+	async notification(type: HapticNotificationType = 'success'): Promise<void> {
+		if (typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function') {
+			try {
+				if (type === 'success') navigator.vibrate([15, 40, 15]);
+				else if (type === 'warning') navigator.vibrate([25, 30, 25]);
+				else navigator.vibrate([40, 40, 40]);
+			} catch {
+				// Abaikan jika tidak didukung
+			}
+		}
+	}
+
+	async selection(): Promise<void> {
+		if (typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function') {
+			try {
+				navigator.vibrate(5);
+			} catch {
+				// Abaikan jika tidak didukung
+			}
+		}
+	}
+
+	async vibrate(durationMs = 20): Promise<void> {
+		if (typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function') {
+			try {
+				navigator.vibrate(durationMs);
+			} catch {
+				// Abaikan jika tidak didukung
+			}
+		}
+	}
+}
+
 export class WebPlatform implements IPlatform {
 	readonly type = 'web';
 	readonly isNative = false;
@@ -290,6 +338,7 @@ export class WebPlatform implements IPlatform {
 	readonly notifications = new WebNotificationsAdapter();
 	readonly biometrics = new WebBiometricsAdapter();
 	readonly cameraOcr = new WebCameraOcrAdapter();
+	readonly haptics = new WebHapticsAdapter();
 }
 
 export const webPlatform = new WebPlatform();

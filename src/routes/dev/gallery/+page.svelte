@@ -6,13 +6,67 @@
 	import GlassSegmented from '$lib/components/glass/GlassSegmented.svelte';
 	import GlassListRow from '$lib/components/glass/GlassListRow.svelte';
 	import GlassKeypad from '$lib/components/glass/GlassKeypad.svelte';
+	import GlassSkeleton from '$lib/components/glass/GlassSkeleton.svelte';
 	import { formatRupiah } from '$lib/domain/money';
+	import {
+		animationMode,
+		hapticsEnabled,
+		setAnimationModePreference,
+		setHapticsPreference,
+		triggerHapticImpact,
+		triggerHapticNotification,
+		triggerHapticSelection,
+		type AnimationMode
+	} from '$lib/stores/uiStore';
+	import { animateCount } from '$lib/utils/motion';
 
 	let isDarkMode = $state(false);
 	let reduceTransparency = $state(false);
 
 	let isSheetOpen = $state(false);
 	let isDialogSheetOpen = $state(false);
+
+	let demoCountDisplay = $state(1250000);
+	let demoCountCancel: (() => void) | null = null;
+	let demoSkeletonLoading = $state(false);
+	let hapticToast = $state('');
+
+	const motionModeOptions = [
+		{ value: 'full', label: 'Penuh' },
+		{ value: 'minimal', label: 'Minimal' },
+		{ value: 'off', label: 'Mati' }
+	];
+
+	function triggerDemoCount(target: number) {
+		if (demoCountCancel) demoCountCancel();
+		demoCountCancel = animateCount(demoCountDisplay, target, {
+			durationMs: 500,
+			onUpdate: (v) => {
+				demoCountDisplay = v;
+			}
+		});
+	}
+
+	function triggerDemoSkeleton() {
+		demoSkeletonLoading = true;
+		setTimeout(() => {
+			demoSkeletonLoading = false;
+		}, 1200);
+	}
+
+	async function testHaptic(type: 'light' | 'medium' | 'heavy' | 'success' | 'selection') {
+		if (type === 'light' || type === 'medium' || type === 'heavy') {
+			await triggerHapticImpact(type);
+		} else if (type === 'success') {
+			await triggerHapticNotification('success');
+		} else {
+			await triggerHapticSelection();
+		}
+		hapticToast = `Getaran ${type} dipicu!`;
+		setTimeout(() => {
+			hapticToast = '';
+		}, 1500);
+	}
 
 	let segValue = $state('pemasukan');
 	const segOptions = [
@@ -373,6 +427,119 @@
 				Buka Dialog Hapus
 			</GlassButton>
 		</div>
+	</section>
+
+	<!-- 7. Sistem Animasi Terpadu & Haptics -->
+	<section class="flex flex-col gap-3" data-testid="section-motion-system">
+		<h2 class="text-xs font-bold tracking-wider text-on-surface-variant uppercase">
+			7. Sistem Animasi & Haptics (@capacitor/haptics)
+		</h2>
+
+		<!-- Mode Animasi Selector -->
+		<GlassCard class="flex flex-col gap-2 p-3">
+			<span class="text-xs font-bold text-on-surface">Mode Animasi Global</span>
+			<GlassSegmented
+				options={motionModeOptions}
+				value={$animationMode}
+				onchange={(val) => setAnimationModePreference(val as AnimationMode)}
+			/>
+		</GlassCard>
+
+		<!-- Count-up Saldo Simulation -->
+		<GlassCard class="flex flex-col gap-2.5 p-4">
+			<div class="flex items-center justify-between">
+				<span class="text-xs font-bold text-on-surface">Count-up Angka Moneter</span>
+				<span class="text-[11px] text-on-surface-variant">Maks 600ms</span>
+			</div>
+			<div
+				class="text-2xl font-bold tracking-tight text-primary tabular-nums"
+				data-testid="gallery-countup-display"
+			>
+				{formatRupiah(demoCountDisplay)}
+			</div>
+			<div class="flex gap-2">
+				<GlassButton
+					variant="secondary"
+					size="sm"
+					class="flex-1"
+					onclick={() => triggerDemoCount(0)}
+				>
+					Reset ke Rp0
+				</GlassButton>
+				<GlassButton
+					variant="primary"
+					size="sm"
+					class="flex-1"
+					onclick={() => triggerDemoCount(1250000)}
+				>
+					Hitung Rp1.250.000
+				</GlassButton>
+				<GlassButton
+					variant="secondary"
+					size="sm"
+					class="flex-1"
+					onclick={() => triggerDemoCount(3500000)}
+				>
+					Hitung Rp3.500.000
+				</GlassButton>
+			</div>
+		</GlassCard>
+
+		<!-- Skeleton Loader Simulation (Delay 150ms) -->
+		<GlassCard class="flex flex-col gap-2.5 p-4">
+			<div class="flex items-center justify-between">
+				<span class="text-xs font-bold text-on-surface">Skeleton Shimmer (Delay 150ms)</span>
+				<GlassButton variant="secondary" size="sm" onclick={triggerDemoSkeleton}>
+					Simulasi Muat (1.2 detik)
+				</GlassButton>
+			</div>
+			{#if demoSkeletonLoading}
+				<div class="flex flex-col gap-2">
+					<GlassSkeleton height="h-4" width="w-24" delayMs={150} />
+					<GlassSkeleton height="h-8" delayMs={150} />
+					<GlassSkeleton height="h-8" delayMs={150} />
+				</div>
+			{:else}
+				<p class="text-xs text-on-surface-variant">
+					Data telah termuat. Tekan tombol di atas untuk mensimulasikan pemuatan dengan shimmer
+					skeleton.
+				</p>
+			{/if}
+		</GlassCard>
+
+		<!-- Haptics Trigger Deck -->
+		<GlassCard class="flex flex-col gap-2.5 p-4">
+			<div class="flex items-center justify-between">
+				<span class="text-xs font-bold text-on-surface">Pengujian Umpan Balik Haptic</span>
+				<span class="text-secondary text-[11px] font-semibold"
+					>{hapticToast || ($hapticsEnabled ? 'Getaran Aktif' : 'Getaran Mati')}</span
+				>
+			</div>
+			<div class="grid grid-cols-3 gap-2">
+				<GlassButton variant="secondary" size="sm" onclick={() => testHaptic('light')}>
+					Impact Light
+				</GlassButton>
+				<GlassButton variant="secondary" size="sm" onclick={() => testHaptic('medium')}>
+					Impact Medium
+				</GlassButton>
+				<GlassButton variant="secondary" size="sm" onclick={() => testHaptic('heavy')}>
+					Impact Heavy
+				</GlassButton>
+				<GlassButton variant="secondary" size="sm" onclick={() => testHaptic('selection')}>
+					Selection Tab
+				</GlassButton>
+				<GlassButton variant="primary" size="sm" onclick={() => testHaptic('success')}>
+					Sukses Simpan
+				</GlassButton>
+				<GlassButton
+					variant="danger"
+					size="sm"
+					onclick={() => setHapticsPreference(!$hapticsEnabled)}
+				>
+					Toggle Haptic
+				</GlassButton>
+			</div>
+		</GlassCard>
 	</section>
 </div>
 
