@@ -1,7 +1,8 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
+	import type { HTMLAttributes } from 'svelte/elements';
 
-	interface Props {
+	interface Props extends HTMLAttributes<HTMLElement> {
 		variant?: 'regular' | 'opaque';
 		glow?: boolean;
 		class?: string;
@@ -14,7 +15,8 @@
 		glow = true,
 		class: className = '',
 		onclick,
-		children
+		children,
+		...restProps
 	}: Props = $props();
 </script>
 
@@ -36,6 +38,7 @@
 			box-shadow: {variant === 'opaque' ? 'var(--glass-card-opaque-shadow)' : 'var(--glass-card-shadow)'};
 		"
 		{onclick}
+		{...restProps}
 	>
 		{#if glow && variant === 'regular'}
 			<!-- Specular light edge catch di tepi atas -->
@@ -65,6 +68,7 @@
 			: 'var(--glass-card-border)'};
 			box-shadow: {variant === 'opaque' ? 'var(--glass-card-opaque-shadow)' : 'var(--glass-card-shadow)'};
 		"
+		{...restProps}
 	>
 		{#if glow && variant === 'regular'}
 			<!-- Specular light edge catch di tepi atas -->

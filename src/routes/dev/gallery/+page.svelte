@@ -138,10 +138,9 @@
 			Kontrol Lingkungan Tampilan
 		</h2>
 		<div class="flex flex-wrap gap-2">
-			<button
-				type="button"
-				class="inline-flex cursor-pointer items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-semibold select-none active:scale-95"
-				style="background: var(--color-surface-container-high); border: 1px solid var(--color-outline-variant);"
+			<GlassButton
+				variant="secondary"
+				size="sm"
 				onclick={toggleTheme}
 				data-testid="toggle-dark-mode"
 			>
@@ -149,12 +148,11 @@
 					{isDarkMode ? 'light_mode' : 'dark_mode'}
 				</span>
 				Mode: {isDarkMode ? 'Dark' : 'Light'}
-			</button>
+			</GlassButton>
 
-			<button
-				type="button"
-				class="inline-flex cursor-pointer items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-semibold select-none active:scale-95"
-				style="background: var(--color-surface-container-high); border: 1px solid var(--color-outline-variant);"
+			<GlassButton
+				variant="secondary"
+				size="sm"
 				onclick={toggleReduceTransparency}
 				data-testid="toggle-reduce-transparency"
 			>
@@ -162,7 +160,7 @@
 					{reduceTransparency ? 'blur_on' : 'blur_off'}
 				</span>
 				Transparansi: {reduceTransparency ? 'Dikurangi (Opak)' : 'Normal (Glass)'}
-			</button>
+			</GlassButton>
 		</div>
 	</GlassCard>
 
@@ -214,15 +212,11 @@
 			>
 			<AppHeader title="Laporan" actions={[{ icon: 'ios_share', label: 'Share' }]} />
 			<div class="flex items-center gap-1.5 pt-1">
-				<button
-					type="button"
-					class="flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold text-primary"
-					style="background: var(--glass-pill-bg); border: 1px solid var(--glass-pill-border);"
-				>
+				<GlassButton variant="secondary" size="sm" class="!rounded-full text-primary">
 					<span class="material-symbols-outlined text-sm">calendar_month</span>
 					<span>Oktober 2026</span>
 					<span class="material-symbols-outlined text-xs">keyboard_arrow_down</span>
-				</button>
+				</GlassButton>
 			</div>
 		</GlassCard>
 	</section>
@@ -249,24 +243,85 @@
 	</section>
 
 	<!-- 2. GlassButton Showcase -->
-	<section class="flex flex-col gap-2.5">
+	<section class="flex flex-col gap-3.5">
 		<h2 class="text-xs font-bold tracking-wider text-on-surface-variant uppercase">
-			2. GlassButton (Varian & Ukuran)
+			2. GlassButton (5 Varian & 5 Keadaan Interaktif)
 		</h2>
 
-		<div class="flex flex-wrap gap-2">
-			<GlassButton variant="primary" size="md">Primary</GlassButton>
-			<GlassButton variant="secondary" size="md">Secondary</GlassButton>
-			<GlassButton variant="danger" size="md">Danger</GlassButton>
-			<GlassButton variant="ghost" size="md">Ghost</GlassButton>
-		</div>
+		<!-- 5 Varian Utama -->
+		<GlassCard class="flex flex-col gap-3 p-4">
+			<h3 class="text-xs font-bold text-on-surface">5 Varian Kanonikal (Zero Backdrop-Filter)</h3>
+			<div class="flex flex-wrap items-center gap-2.5">
+				<GlassButton variant="primary" size="md">
+					<span class="material-symbols-outlined text-lg">check</span>
+					Primary
+				</GlassButton>
+				<GlassButton variant="secondary" size="md">
+					<span class="material-symbols-outlined text-lg">settings</span>
+					Secondary
+				</GlassButton>
+				<GlassButton variant="icon" size="md" aria-label="Icon variant">
+					<span class="material-symbols-outlined text-xl">favorite</span>
+				</GlassButton>
+				<GlassButton variant="destructive" size="md">
+					<span class="material-symbols-outlined text-lg">delete</span>
+					Destructive
+				</GlassButton>
+				<GlassButton variant="text" size="md">Text / Ghost</GlassButton>
+			</div>
+		</GlassCard>
 
-		<div class="flex items-center gap-2">
-			<GlassButton variant="primary" size="sm">Small</GlassButton>
-			<GlassButton variant="primary" size="md">Medium</GlassButton>
-			<GlassButton variant="primary" size="lg">Large</GlassButton>
-			<GlassButton variant="primary" size="md" disabled={true}>Disabled</GlassButton>
-		</div>
+		<!-- 5 Keadaan Interaktif -->
+		<GlassCard class="flex flex-col gap-3 p-4">
+			<h3 class="text-xs font-bold text-on-surface">5 Keadaan Interaktif (State Matrix)</h3>
+			<div class="grid grid-cols-2 gap-2.5 sm:grid-cols-3">
+				<div class="flex flex-col gap-1">
+					<span class="text-[10px] text-on-surface-variant">1. Normal</span>
+					<GlassButton variant="primary" size="sm">Normal</GlassButton>
+				</div>
+				<div class="flex flex-col gap-1">
+					<span class="text-[10px] text-on-surface-variant">2. Pressed (Spring Active)</span>
+					<GlassButton variant="secondary" size="sm">Tekan Saya</GlassButton>
+				</div>
+				<div class="flex flex-col gap-1">
+					<span class="text-[10px] text-on-surface-variant">3. Disabled (Opacity 40%)</span>
+					<GlassButton variant="primary" size="sm" disabled={true}>Disabled</GlassButton>
+				</div>
+				<div class="flex flex-col gap-1">
+					<span class="text-[10px] text-on-surface-variant">4. Loading (Primary Spinner)</span>
+					<GlassButton variant="primary" size="sm" loading={true}>Memuat...</GlassButton>
+				</div>
+				<div class="flex flex-col gap-1">
+					<span class="text-[10px] text-on-surface-variant">5. Loading (Secondary Spinner)</span>
+					<GlassButton variant="secondary" size="sm" loading={true}>Proses</GlassButton>
+				</div>
+				<div class="flex flex-col gap-1">
+					<span class="text-[10px] text-on-surface-variant">Focus-Visible (Keyboard Tab)</span>
+					<GlassButton variant="destructive" size="sm">Destructive</GlassButton>
+				</div>
+			</div>
+		</GlassCard>
+
+		<!-- Ukuran & Ikon Bulat -->
+		<GlassCard class="flex flex-col gap-3 p-4">
+			<h3 class="text-xs font-bold text-on-surface">Ukuran (sm, md, lg) & Varian Ikon</h3>
+			<div class="flex flex-wrap items-center gap-3">
+				<GlassButton variant="primary" size="sm">Small (32px)</GlassButton>
+				<GlassButton variant="primary" size="md">Medium (44px)</GlassButton>
+				<GlassButton variant="primary" size="lg">Large (52px)</GlassButton>
+			</div>
+			<div class="flex items-center gap-3 pt-1">
+				<GlassButton variant="icon" size="sm" aria-label="Icon sm">
+					<span class="material-symbols-outlined text-sm">add</span>
+				</GlassButton>
+				<GlassButton variant="icon" size="md" aria-label="Icon md">
+					<span class="material-symbols-outlined text-base">add</span>
+				</GlassButton>
+				<GlassButton variant="icon" size="lg" aria-label="Icon lg">
+					<span class="material-symbols-outlined text-lg">add</span>
+				</GlassButton>
+			</div>
+		</GlassCard>
 	</section>
 
 	<!-- 3. GlassSegmented Showcase (Sliding Pill Thumb Beranimasi & Kontras Tinggi) -->
@@ -537,6 +592,38 @@
 					onclick={() => setHapticsPreference(!$hapticsEnabled)}
 				>
 					Toggle Haptic
+				</GlassButton>
+			</div>
+		</GlassCard>
+
+		<!-- 8. GlassDock & GlassFab Showcase -->
+		<GlassCard class="flex flex-col gap-3 p-4">
+			<div class="flex items-center justify-between">
+				<span class="text-xs font-bold text-on-surface">8. GlassDock &amp; GlassFab</span>
+				<span class="text-[11px] font-semibold text-primary">Floating Navigation</span>
+			</div>
+			<p class="text-xs text-on-surface-variant">
+				GlassDock memuat 4 tab simetris dengan indikator bergeser via translateX dan ikon terisi.
+				GlassFab melayang 56px di kanan atas dock dengan scroll auto-hide.
+			</p>
+			<div class="flex gap-2">
+				<GlassButton
+					variant="secondary"
+					size="sm"
+					onclick={() => {
+						window.scrollTo({ top: 300, behavior: 'smooth' });
+					}}
+				>
+					Simulasi Scroll Bawah
+				</GlassButton>
+				<GlassButton
+					variant="secondary"
+					size="sm"
+					onclick={() => {
+						window.scrollTo({ top: 0, behavior: 'smooth' });
+					}}
+				>
+					Simulasi Scroll Atas
 				</GlassButton>
 			</div>
 		</GlassCard>

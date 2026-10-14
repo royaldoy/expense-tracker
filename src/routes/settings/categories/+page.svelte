@@ -197,24 +197,20 @@
 <div class="pt-safe flex flex-col gap-5 px-4 pb-28">
 	<!-- Top Bar -->
 	<header class="mb-5 flex items-center justify-between">
-		<button
-			type="button"
-			class="flex h-9 w-9 items-center justify-center rounded-full bg-surface-container-high/60 text-on-surface transition-transform active:scale-95"
-			onclick={() => history.back()}
-			aria-label="Kembali"
-		>
+		<GlassButton variant="icon" size="sm" onclick={() => history.back()} aria-label="Kembali">
 			<span class="material-symbols-outlined text-xl">arrow_back</span>
-		</button>
+		</GlassButton>
 		<h1 class="text-base font-bold text-on-surface">{t('categories.title')}</h1>
-		<button
-			type="button"
-			class="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-white shadow-md transition-transform active:scale-95"
+		<GlassButton
+			variant="primary"
+			size="sm"
+			class="h-9 min-h-[36px] w-9 min-w-[36px] rounded-full p-0"
 			onclick={() => openAddModal(null)}
 			data-testid="category-add-header-btn"
 			aria-label="Tambah Kategori"
 		>
 			<span class="material-symbols-outlined text-xl">add</span>
-		</button>
+		</GlassButton>
 	</header>
 
 	<!-- Kind Tabs (Pengeluaran vs Pemasukan) -->
@@ -236,14 +232,15 @@
 				data-testid="category-search-input"
 			/>
 			{#if searchQuery}
-				<button
-					type="button"
-					class="text-on-surface-variant hover:text-on-surface"
+				<GlassButton
+					variant="icon"
+					size="sm"
+					class="h-6 min-h-[24px] w-6 min-w-[24px]"
 					onclick={() => (searchQuery = '')}
 					aria-label="Hapus pencarian"
 				>
 					<span class="material-symbols-outlined text-base">close</span>
-				</button>
+				</GlassButton>
 			{/if}
 		</div>
 	</section>
@@ -270,9 +267,9 @@
 				<GlassCard variant="opaque" class="p-3.5 transition-all">
 					<!-- Parent Row -->
 					<div class="flex items-center justify-between">
-						<button
-							type="button"
-							class="flex flex-1 cursor-pointer items-center gap-3 text-left select-none"
+						<GlassButton
+							variant="text"
+							class="flex min-h-0 flex-1 items-center gap-3 p-0 text-left hover:bg-transparent"
 							onclick={() => toggleExpand(category.id)}
 						>
 							<div
@@ -306,18 +303,19 @@
 									expand_more
 								</span>
 							{/if}
-						</button>
+						</GlassButton>
 
 						<!-- Edit Parent Button -->
-						<button
-							type="button"
-							class="ml-2 flex h-8 w-8 items-center justify-center rounded-full text-on-surface-variant hover:bg-surface-container active:scale-95"
+						<GlassButton
+							variant="icon"
+							size="sm"
+							class="ml-2 h-8 min-h-[32px] w-8 min-w-[32px]"
 							onclick={() => openEditModal(category)}
 							data-testid="edit-category-{category.id}"
 							aria-label="Edit Kategori"
 						>
 							<span class="material-symbols-outlined text-base">edit</span>
-						</button>
+						</GlassButton>
 					</div>
 
 					<!-- Subcategories Drawer -->
@@ -336,26 +334,28 @@
 										</div>
 										<span class="text-xs font-semibold text-on-surface">{sub.name}</span>
 									</div>
-									<button
-										type="button"
-										class="flex h-7 w-7 items-center justify-center rounded-full text-on-surface-variant hover:bg-surface-container"
+									<GlassButton
+										variant="icon"
+										size="sm"
+										class="h-7 min-h-[28px] w-7 min-w-[28px]"
 										onclick={() => openEditModal(sub)}
 										aria-label="Edit Subkategori"
 									>
 										<span class="material-symbols-outlined text-sm">edit</span>
-									</button>
+									</GlassButton>
 								</div>
 							{/each}
 
 							<!-- Add Subcategory Button -->
-							<button
-								type="button"
-								class="mt-2 flex w-full items-center justify-center gap-1.5 rounded-xl border border-dashed border-outline-variant/50 py-2 text-xs font-bold text-primary transition-colors hover:bg-primary/5"
+							<GlassButton
+								variant="text"
+								size="sm"
+								class="mt-2 w-full rounded-xl border border-dashed border-outline-variant/50 py-2 text-xs font-bold text-primary"
 								onclick={() => openAddModal(category.id)}
 							>
 								<span class="material-symbols-outlined text-sm">add</span>
 								<span>{t('categories.tambahSubkategori')}</span>
-							</button>
+							</GlassButton>
 						</div>
 					{/if}
 				</GlassCard>
@@ -425,19 +425,20 @@
 			<div class="flex flex-wrap gap-2">
 				{#each colorOptions as c (c)}
 					{@const isSelected = formColor === c}
-					<button
-						type="button"
-						class="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full transition-transform active:scale-90 {isSelected
+					<GlassButton
+						variant="icon"
+						size="sm"
+						class="h-8 min-h-[32px] w-8 min-w-[32px] {isSelected
 							? 'ring-2 ring-primary ring-offset-2 ring-offset-surface'
 							: ''}"
-						style="background: {c};"
+						style="background: {c}; border: none;"
 						onclick={() => (formColor = c)}
 						aria-label="Pilih warna {c}"
 					>
 						{#if isSelected}
 							<span class="material-symbols-outlined text-xs text-white">check</span>
 						{/if}
-					</button>
+					</GlassButton>
 				{/each}
 			</div>
 		</div>
@@ -450,16 +451,15 @@
 			<div class="grid max-h-32 grid-cols-8 gap-1.5 overflow-y-auto p-1">
 				{#each iconOptions as icon (icon)}
 					{@const isSelected = formIcon === icon}
-					<button
-						type="button"
-						class="flex h-9 cursor-pointer items-center justify-center rounded-xl transition-all {isSelected
-							? 'bg-primary text-white shadow-sm'
-							: 'bg-surface-container-high/60 text-on-surface-variant hover:text-on-surface'}"
+					<GlassButton
+						variant={isSelected ? 'primary' : 'secondary'}
+						size="sm"
+						class="h-9 min-h-[36px] p-0"
 						onclick={() => (formIcon = icon)}
 						aria-label="Pilih ikon {icon}"
 					>
 						<span class="material-symbols-outlined text-base">{icon}</span>
-					</button>
+					</GlassButton>
 				{/each}
 			</div>
 		</div>
@@ -487,14 +487,15 @@
 			</GlassButton>
 
 			{#if isEditing && !isEditingSystem}
-				<button
-					type="button"
-					class="text-error bg-error/10 hover:bg-error/20 w-full rounded-2xl py-2.5 text-xs font-bold transition-colors"
+				<GlassButton
+					variant="destructive"
+					size="md"
+					class="w-full"
 					onclick={() => (showDeleteDialog = true)}
 					data-testid="category-delete-btn"
 				>
 					{t('common.hapus')} Kategori
-				</button>
+				</GlassButton>
 			{/if}
 		</div>
 	</form>

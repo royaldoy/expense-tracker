@@ -144,17 +144,9 @@
 		<div class="grid grid-cols-2 gap-2.5" data-testid="onboarding-preset-grid">
 			{#each presets as preset (preset.id)}
 				{@const isSelected = selectedPreset.id === preset.id}
-				<button
-					type="button"
-					class="relative flex items-center gap-3 rounded-2xl p-3 text-left transition-all active:scale-[0.98] {isSelected
-						? 'shadow-md ring-2 ring-primary'
-						: 'hover:bg-surface-container-high/40'}"
-					style="
-						background: var(--glass-card-bg);
-						backdrop-filter: blur(var(--glass-card-blur));
-						border: 1px solid {isSelected ? 'var(--color-primary)' : 'var(--glass-card-border)'};
-					"
+				<GlassCard
 					onclick={() => selectPreset(preset)}
+					class="flex items-center gap-3 p-3 {isSelected ? 'shadow-md ring-2 ring-primary' : ''}"
 				>
 					<div
 						class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-white shadow-xs"
@@ -173,7 +165,7 @@
 							<span class="material-symbols-outlined text-xs">check</span>
 						</div>
 					{/if}
-				</button>
+				</GlassCard>
 			{/each}
 		</div>
 	</section>
@@ -221,34 +213,30 @@
 
 			<!-- Quick Input Buttons -->
 			<div class="mt-4 flex flex-wrap items-center justify-center gap-2">
-				<button
-					type="button"
-					class="rounded-full bg-surface-container-high/60 px-3 py-1.5 text-xs font-bold text-on-surface transition-transform active:scale-95"
-					onclick={() => addAmount(100000)}
+				<GlassButton
+					variant="secondary"
+					size="sm"
+					class="min-h-[30px] rounded-full px-3 py-1 text-xs"
+					onclick={() => addAmount(100000)}>+Rp100.000</GlassButton
 				>
-					+Rp100.000
-				</button>
-				<button
-					type="button"
-					class="rounded-full bg-surface-container-high/60 px-3 py-1.5 text-xs font-bold text-on-surface transition-transform active:scale-95"
-					onclick={() => addAmount(500000)}
+				<GlassButton
+					variant="secondary"
+					size="sm"
+					class="min-h-[30px] rounded-full px-3 py-1 text-xs"
+					onclick={() => addAmount(500000)}>+Rp500.000</GlassButton
 				>
-					+Rp500.000
-				</button>
-				<button
-					type="button"
-					class="rounded-full bg-surface-container-high/60 px-3 py-1.5 text-xs font-bold text-on-surface transition-transform active:scale-95"
-					onclick={() => addAmount(1000000)}
+				<GlassButton
+					variant="secondary"
+					size="sm"
+					class="min-h-[30px] rounded-full px-3 py-1 text-xs"
+					onclick={() => addAmount(1000000)}>+Rp1.000.000</GlassButton
 				>
-					+Rp1.000.000
-				</button>
-				<button
-					type="button"
-					class="rounded-full bg-surface-container/40 px-3 py-1.5 text-xs font-semibold text-on-surface-variant transition-transform active:scale-95"
-					onclick={resetAmount}
+				<GlassButton
+					variant="text"
+					size="sm"
+					class="min-h-[30px] rounded-full px-3 py-1 text-xs"
+					onclick={resetAmount}>Reset</GlassButton
 				>
-					Reset
-				</button>
 			</div>
 
 			<!-- Custom input field -->

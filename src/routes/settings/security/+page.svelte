@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import GlassButton from '$lib/components/glass/GlassButton.svelte';
+	import GlassSwitch from '$lib/components/glass/GlassSwitch.svelte';
 	import GlassCard from '$lib/components/glass/GlassCard.svelte';
 	import GlassKeypad from '$lib/components/glass/GlassKeypad.svelte';
 	import GlassSheet from '$lib/components/glass/GlassSheet.svelte';
@@ -193,13 +194,15 @@
 				{feedbackMessage.type === 'success' ? 'check_circle' : 'error'}
 			</span>
 			<p class="flex-1 text-xs font-semibold">{feedbackMessage.text}</p>
-			<button
-				type="button"
-				class="text-on-surface-variant hover:text-on-surface"
+			<GlassButton
+				variant="icon"
+				size="sm"
+				class="h-6 min-h-[24px] w-6 min-w-[24px]"
 				onclick={() => (feedbackMessage = null)}
+				aria-label="Tutup pesan"
 			>
 				<span class="material-symbols-outlined text-sm">close</span>
-			</button>
+			</GlassButton>
 		</div>
 	{/if}
 
@@ -292,9 +295,10 @@
 			</h2>
 			<GlassCard variant="opaque" class="divide-y divide-surface-container-highest overflow-hidden">
 				{#each timeoutOptions as opt (opt.value)}
-					<button
-						type="button"
-						class="flex w-full cursor-pointer items-center justify-between p-3.5 text-left transition-colors hover:bg-surface-container/30"
+					<GlassButton
+						variant="text"
+						size="sm"
+						class="flex min-h-[44px] w-full items-center justify-between rounded-none p-3.5 text-left font-normal hover:bg-surface-container/30"
 						onclick={() => handleTimeoutChange(opt.value)}
 						data-testid="timeout-opt-{opt.value}"
 					>
@@ -302,7 +306,7 @@
 						{#if autoLockTimeout === opt.value}
 							<span class="material-symbols-outlined text-lg text-primary">check_circle</span>
 						{/if}
-					</button>
+					</GlassButton>
 				{/each}
 			</GlassCard>
 		</section>
@@ -329,25 +333,12 @@
 						<p class="text-xs text-on-surface-variant">Sembunyikan nominal saldo di layar utama</p>
 					</div>
 				</div>
-				<button
-					type="button"
-					class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full transition-colors duration-200 ease-in-out focus:outline-hidden"
-					style="background: {$hideBalance
-						? 'var(--color-primary)'
-						: 'var(--color-outline-variant)'};"
-					onclick={toggleHideBalance}
-					role="switch"
-					aria-checked={$hideBalance}
+				<GlassSwitch
+					checked={$hideBalance}
+					onchange={toggleHideBalance}
 					aria-label="Sensor Saldo Beranda"
 					data-testid="security-toggle-hide-balance"
-				>
-					<span
-						class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out"
-						style="transform: {$hideBalance
-							? 'translateX(20px)'
-							: 'translateX(2px)'}; margin-top: 2px;"
-					></span>
-				</button>
+				/>
 			</div>
 			<p class="text-xs text-on-surface-variant">
 				Saat fitur ini aktif, total saldo dan arus kas pada Beranda disamarkan menjadi

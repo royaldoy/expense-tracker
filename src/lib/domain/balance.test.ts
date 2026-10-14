@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { calculateTotalBalance, calculateWalletBalance, calculateWalletBalances } from './balance';
+import {
+	calculateCashflow,
+	calculateTotalBalance,
+	calculateWalletBalance,
+	calculateWalletBalances
+} from './balance';
 import type { Transaction, Wallet } from './types';
 
 function createMockWallet(overrides: Partial<Wallet> = {}): Wallet {
@@ -179,6 +184,43 @@ describe('domain/balance', () => {
 			]);
 
 			expect(calculateTotalBalance([w1, w2], freshBalances)).toBe(1000000);
+		});
+	});
+
+	describe('calculateCashflow', () => {
+		it('menghitung total income dan expense dari transaksi aktif', () => {
+			const txs: Transaction[] = [
+				createMockTransaction({ id: 't1', type: 'income', amount: 500000 }),
+				createMockTransaction({ id: 't2', type: 'expense', amount: 150000 }),
+				createMockTransaction({ id: 't3', type: 'expense', amount: 50000, deletedAt: 999 })
+			];
+
+			const cashflow = calculateCashflow(txs);
+			expect(cashflow.income).toBe(500000);
+			expect(cashflow.expense).toBe(150000);
+			expect(cashflow.net).toBe(350000);
+		});
+
+		it('memastikan nominal transfer tidak masuk income maupun expense, tapi fee transfer dihitung sebagai expense', () => {
+			const txs: Transaction[] = [
+				createMockTransaction({ id: 't1', type: 'income', amount: 1000000 }),
+				createMockTransaction({ id: 't2', type: 'expense', amount: 200000 }),
+				createMockTransaction({
+					id: 't3',
+					type: 'transfer',
+					amount: 500000,
+					fee: 6500,
+					walletId: 'w1',
+					toWalletId: 'w2'
+				})
+			];
+
+			const cashflow = calculateCashflow(txs);
+			// Income: hanya 1.000.000 (transfer 500.000 tidak dihitung)
+			expect(cashflow.income).toBe(1000000);
+			// Expense: 200.000 (expense) + 6.500 (fee transfer) = 206.500
+			expect(cashflow.expense).toBe(206500);
+			expect(cashflow.net).toBe(1000000 - 206500);
 		});
 	});
 });

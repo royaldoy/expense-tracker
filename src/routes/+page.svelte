@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { goto } from '$app/navigation';
 	import { SvelteMap } from 'svelte/reactivity';
 	import AppHeader, { type HeaderAction } from '$lib/components/glass/AppHeader.svelte';
 	import GlassButton from '$lib/components/glass/GlassButton.svelte';
@@ -7,11 +8,18 @@
 	import GlassEmptyState from '$lib/components/glass/GlassEmptyState.svelte';
 	import GlassListRow from '$lib/components/glass/GlassListRow.svelte';
 	import GlassSkeleton from '$lib/components/glass/GlassSkeleton.svelte';
+	import VoiceInputModal from '$lib/components/voice/VoiceInputModal.svelte';
 	import { aggregateSummary } from '$lib/domain/aggregation';
 	import { calculateOverallBudget, type OverallBudgetSummary } from '$lib/domain/budget';
 	import { formatRupiah } from '$lib/domain/money';
 	import { formatPeriod, type Period } from '$lib/domain/period';
 	import type { Category, Transaction, Wallet } from '$lib/domain/types';
+	import {
+		classifyGesture,
+		type GestureMoveContext,
+		type GestureStartContext,
+		type GestureType
+	} from '$lib/gestures/classify';
 	import t from '$lib/i18n';
 	import {
 		budgetService,
@@ -21,7 +29,12 @@
 		walletService
 	} from '$lib/services';
 	import { unreadNotificationsCount } from '$lib/stores/notificationStore';
-	import { hideBalance, toggleHideBalance } from '$lib/stores/uiStore';
+	import {
+		hideBalance,
+		quickGesturesEnabled,
+		toggleHideBalance,
+		triggerHapticImpact
+	} from '$lib/stores/uiStore';
 	import { animateCount } from '$lib/utils/motion';
 
 	let wallets = $state<Wallet[]>([]);
@@ -34,6 +47,18 @@
 	let budgetSummary = $state<OverallBudgetSummary | null>(null);
 	let recentTransactions = $state<Transaction[]>([]);
 	let categories = $state<Category[]>([]);
+
+	// Gestur Cepat State
+	let isVoiceModalOpen = $state(false);
+	let showHintBanner = $state(false);
+	let isDragging = $state(false);
+	let gestureType = $state<GestureType>('none');
+	let displacement = $state(0);
+	let progress = $state(0);
+	let isExceeded = $state(false);
+	let hasFiredHaptic = false;
+	let startCtx: GestureStartContext | null = null;
+	let springResetTimeout: ReturnType<typeof setTimeout> | null = null;
 
 	let categoryMap = $derived.by(() => {
 		const map = new SvelteMap<string, Category>();
@@ -182,14 +207,258 @@
 		}
 	]);
 
-	onMount(() => {
+	async function dismissHint() {
+		showHintBanner = false;
+		try {
+			await settingService.setGestureHintSeen(true);
+			triggerHapticImpact('light');
+		} catch (e) {
+			console.error('Gagal menyimpan status hint gestur:', e);
+		}
+	}
+
+	function handleTouchStart(e: TouchEvent) {
+		if (!$quickGesturesEnabled) return;
+		if (e.touches.length !== 1) return;
+
+		if (springResetTimeout) {
+			clearTimeout(springResetTimeout);
+			springResetTimeout = null;
+		}
+
+		const touch = e.touches[0];
+		const target = e.target as HTMLElement | null;
+		const isIgnored = Boolean(target?.closest('[data-no-gesture]'));
+
+		const scrollTop =
+			typeof window !== 'undefined' ? window.scrollY || document.documentElement.scrollTop || 0 : 0;
+
+		startCtx = {
+			startX: touch.clientX,
+			startY: touch.clientY,
+			startTime: Date.now(),
+			scrollTop,
+			statusBarHeight: 36,
+			edgeZoneMargin: 32,
+			isIgnoredElement: isIgnored
+		};
+
+		hasFiredHaptic = false;
+		isDragging = false;
+		displacement = 0;
+		progress = 0;
+		isExceeded = false;
+		gestureType = 'none';
+	}
+
+	function handleTouchMove(e: TouchEvent) {
+		if (!startCtx || !$quickGesturesEnabled) return;
+		if (e.touches.length !== 1) return;
+
+		const touch = e.touches[0];
+		const moveCtx: GestureMoveContext = {
+			...startCtx,
+			currentX: touch.clientX,
+			currentY: touch.clientY,
+			currentTime: Date.now()
+		};
+
+		const result = classifyGesture(moveCtx);
+
+		if (result.type !== 'none') {
+			gestureType = result.type;
+			displacement = result.displacement;
+			progress = result.progress;
+			isExceeded = result.isExceeded;
+			isDragging = true;
+
+			// Cegah pull-to-refresh / overscroll bawaan WebView/browser
+			if (e.cancelable) {
+				e.preventDefault();
+			}
+
+			// Getaran haptic sekali saat menyentuh ambang aktivasi
+			if (result.isExceeded && !hasFiredHaptic) {
+				hasFiredHaptic = true;
+				triggerHapticImpact('medium');
+			} else if (!result.isExceeded && hasFiredHaptic) {
+				hasFiredHaptic = false;
+			}
+		} else if (isDragging) {
+			displacement = 0;
+			progress = 0;
+			isExceeded = false;
+		}
+	}
+
+	function handleTouchEnd() {
+		if (!startCtx || !$quickGesturesEnabled) {
+			resetGesture();
+			return;
+		}
+
+		if (isDragging && isExceeded) {
+			const action = gestureType;
+			triggerHapticImpact('light');
+			resetGesture();
+
+			if (action === 'swipe_right') {
+				goto('/scan');
+			} else if (action === 'pull_down') {
+				isVoiceModalOpen = true;
+			}
+			return;
+		}
+
+		// Gerak balik pegas (spring back) saat dilepas di bawah ambang batas
+		resetGesture();
+	}
+
+	function handleTouchCancel() {
+		resetGesture();
+	}
+
+	function resetGesture() {
+		startCtx = null;
+		isDragging = false;
+		hasFiredHaptic = false;
+		displacement = 0;
+		progress = 0;
+		isExceeded = false;
+
+		if (springResetTimeout) clearTimeout(springResetTimeout);
+		springResetTimeout = setTimeout(() => {
+			gestureType = 'none';
+			springResetTimeout = null;
+		}, 300);
+	}
+
+	onMount(async () => {
 		loadDashboardData();
+		try {
+			const [seen, gesturesEnabled] = await Promise.all([
+				settingService.getGestureHintSeen(),
+				settingService.getQuickGesturesEnabled()
+			]);
+			showHintBanner = !seen;
+			quickGesturesEnabled.set(gesturesEnabled);
+		} catch {
+			showHintBanner = false;
+		}
 	});
 </script>
 
-<div class="pt-safe flex flex-col gap-5 px-4 pb-28">
+<div
+	role="region"
+	aria-label="Beranda"
+	class="pt-safe flex flex-col gap-5 px-4 pb-28 select-none"
+	style="
+		overscroll-behavior-y: contain;
+		touch-action: pan-y;
+		transform: {gestureType === 'pull_down'
+		? `translate3d(0, ${displacement}px, 0)`
+		: gestureType === 'swipe_right'
+			? `translate3d(${displacement}px, 0, 0)`
+			: 'translate3d(0, 0, 0)'};
+		transition: {isDragging ? 'none' : 'transform 300ms cubic-bezier(0.175, 0.885, 0.32, 1.275)'};
+	"
+	ontouchstart={handleTouchStart}
+	ontouchmove={handleTouchMove}
+	ontouchend={handleTouchEnd}
+	ontouchcancel={handleTouchCancel}
+	data-testid="home-gesture-container"
+>
+	<!-- Indikator Visual Gestur: Tarik Turun (Suara) -->
+	{#if gestureType === 'pull_down' && displacement > 0}
+		<div
+			class="pointer-events-none fixed top-6 left-1/2 z-50 flex -translate-x-1/2 items-center gap-2.5 rounded-full px-4 py-2 shadow-lg"
+			style="
+				background: var(--glass-card-bg);
+				backdrop-filter: blur(var(--glass-card-blur));
+				-webkit-backdrop-filter: blur(var(--glass-card-blur));
+				border: 1px solid {isExceeded ? 'var(--color-primary)' : 'var(--glass-card-border)'};
+				opacity: {Math.min(1, Math.max(0.3, progress))};
+				transform: translate(-50%, {displacement * 0.35}px) scale({isExceeded
+				? 1.06
+				: 0.95 + progress * 0.05});
+			"
+			data-testid="gesture-pull-down-indicator"
+		>
+			<div
+				class="flex h-7 w-7 items-center justify-center rounded-full text-white transition-colors duration-150"
+				style="background: {isExceeded ? 'var(--color-primary)' : 'var(--color-secondary)'};"
+			>
+				<span class="material-symbols-outlined text-base">mic</span>
+			</div>
+			<span class="text-xs font-bold {isExceeded ? 'text-primary' : 'text-on-surface'}">
+				{isExceeded ? t('gestures.pullDownAction') : t('gestures.pullDownPrompt')}
+			</span>
+		</div>
+	{/if}
+
+	<!-- Indikator Visual Gestur: Swipe Kanan (Scan Struk) -->
+	{#if gestureType === 'swipe_right' && displacement > 0}
+		<div
+			class="pointer-events-none fixed top-1/3 left-4 z-50 flex items-center gap-2.5 rounded-full px-4 py-2 shadow-lg"
+			style="
+				background: var(--glass-card-bg);
+				backdrop-filter: blur(var(--glass-card-blur));
+				-webkit-backdrop-filter: blur(var(--glass-card-blur));
+				border: 1px solid {isExceeded ? 'var(--color-primary)' : 'var(--glass-card-border)'};
+				opacity: {Math.min(1, Math.max(0.3, progress))};
+				transform: translate({displacement * 0.35}px, 0) scale({isExceeded
+				? 1.06
+				: 0.95 + progress * 0.05});
+			"
+			data-testid="gesture-swipe-right-indicator"
+		>
+			<div
+				class="flex h-7 w-7 items-center justify-center rounded-full text-white transition-colors duration-150"
+				style="background: {isExceeded ? 'var(--color-primary)' : 'var(--color-tertiary)'};"
+			>
+				<span class="material-symbols-outlined text-base">document_scanner</span>
+			</div>
+			<span class="text-xs font-bold {isExceeded ? 'text-primary' : 'text-on-surface'}">
+				{isExceeded ? t('gestures.swipeRightAction') : t('gestures.swipeRightPrompt')}
+			</span>
+		</div>
+	{/if}
+
 	<!-- AppHeader Sesuai Aturan: Satu Judul Besar (Sapaan), Tanpa Subjudul, Maks 2 Tombol Ikon -->
 	<AppHeader title={getGreeting()} actions={headerActions} />
+
+	<!-- Petunjuk Edukasi Gestur Cepat (Tampil Sekali Setelah Onboarding) -->
+	{#if showHintBanner && $quickGesturesEnabled}
+		<GlassCard
+			variant="regular"
+			class="relative flex items-center justify-between gap-3 border-primary/20 p-3.5"
+			data-testid="gesture-hint-banner"
+		>
+			<div class="flex items-center gap-3">
+				<div
+					class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-white shadow-xs"
+					style="background: linear-gradient(135deg, var(--color-primary), #0070EB);"
+				>
+					<span class="material-symbols-outlined text-xl">swipe</span>
+				</div>
+				<div class="min-w-0 flex-1">
+					<p class="text-xs font-bold text-on-surface">{t('gestures.hintTitle')}</p>
+					<p class="text-[11px] leading-tight text-on-surface-variant">
+						{t('gestures.hintDesc')}
+					</p>
+				</div>
+			</div>
+			<GlassButton
+				variant="secondary"
+				size="sm"
+				class="shrink-0 px-2.5 py-1 text-[11px]"
+				onclick={dismissHint}
+				data-testid="gesture-hint-dismiss-button"
+			>
+				{t('gestures.hintDismiss')}
+			</GlassButton>
+		</GlassCard>
+	{/if}
 
 	<!-- Hero Card: Total Saldo Aktif -->
 	<GlassCard class="p-6">
@@ -197,16 +466,18 @@
 			<span class="text-xs font-semibold tracking-wider text-on-surface-variant uppercase">
 				Total Saldo Aktif
 			</span>
-			<button
-				type="button"
-				class="flex h-7 w-7 items-center justify-center rounded-full text-on-surface-variant transition-colors hover:text-on-surface"
+			<GlassButton
+				variant="icon"
+				size="sm"
+				class="h-7 min-h-[28px] w-7 min-w-[28px] text-on-surface-variant"
 				onclick={toggleHideBalance}
 				aria-label={$hideBalance ? 'Tampilkan saldo' : 'Sembunyikan saldo'}
+				data-testid="toggle-hide-balance"
 			>
 				<span class="material-symbols-outlined text-lg">
 					{$hideBalance ? 'visibility_off' : 'visibility'}
 				</span>
-			</button>
+			</GlassButton>
 		</div>
 
 		<div class="mt-2 mb-4">
@@ -390,7 +661,11 @@
 				</GlassButton>
 			</GlassCard>
 		{:else}
-			<div class="no-scrollbar flex gap-2.5 overflow-x-auto pb-1">
+			<div
+				class="no-scrollbar flex gap-2.5 overflow-x-auto pb-1"
+				data-no-gesture="true"
+				data-testid="home-wallet-strip"
+			>
 				{#each wallets.slice(0, 4) as w (w.id)}
 					<a
 						href="/wallets/{w.id}"
@@ -477,3 +752,6 @@
 		{/if}
 	</section>
 </div>
+
+<!-- Modal Input Suara untuk Pintasan Gestur Tarik Turun -->
+<VoiceInputModal bind:isOpen={isVoiceModalOpen} />

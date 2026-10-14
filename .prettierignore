@@ -9,3 +9,5 @@ bun.lockb
 /static/
 /build/
 /.svelte-kit/
+docs/design/screens/
+/android/

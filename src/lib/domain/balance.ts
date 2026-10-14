@@ -100,3 +100,39 @@ export function calculateTotalBalance(
 
 	return total;
 }
+
+export interface CashflowSummary {
+	income: number;
+	expense: number;
+	net: number;
+}
+
+/**
+ * Hitung arus kas dari kumpulan transaksi:
+ * Aturan wajib: Transfer tidak dihitung sebagai pemasukan atau pengeluaran;
+ * namun biaya admin (fee) transfer dicatat sebagai pengeluaran.
+ */
+export function calculateCashflow(transactions: Transaction[]): CashflowSummary {
+	let income = 0;
+	let expense = 0;
+
+	for (const tx of transactions) {
+		if (tx.deletedAt !== null) continue;
+
+		if (tx.type === 'income') {
+			income += tx.amount;
+		} else if (tx.type === 'expense') {
+			expense += tx.amount;
+		} else if (tx.type === 'transfer') {
+			if (tx.fee && tx.fee > 0) {
+				expense += tx.fee;
+			}
+		}
+	}
+
+	return {
+		income,
+		expense,
+		net: income - expense
+	};
+}

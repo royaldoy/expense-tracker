@@ -53,12 +53,42 @@
 	},
 	"quickAction": {
 		"title": "Aksi Cepat",
-		"subtitle": "Pilih pencatatan finansial Anda",
+		"subtitle": "Pilih metode pencatatan finansial Anda",
+		"catat": "Catat",
+		"catatDesc": "Manual dengan keypad cepat",
+		"suara": "Suara",
+		"suaraDesc": "Bicara santai bahasa Indonesia",
+		"scanStruk": "Scan Struk",
+		"scanStrukDesc": "Pindai struk belanja via kamera",
 		"catatPengeluaran": "Catat Pengeluaran",
 		"catatPemasukan": "Catat Pemasukan",
 		"transferDompet": "Transfer Saldo",
 		"tambahDompet": "Tambah Dompet",
 		"badgeSering": "Sering"
+	},
+	"voice": {
+		"title": "Catat Lewat Suara",
+		"subtitle": "Sebutkan transaksi, contoh: Beli kopi 25rb pakai GoPay kemarin",
+		"prompt": "Sebutkan transaksimu",
+		"listening": "Mendengarkan...",
+		"listeningDesc": "Katakan misalnya: Beli kopi 25rb pakai GoPay kemarin",
+		"processing": "Memproses suara...",
+		"stop": "Selesai",
+		"cancel": "Batal",
+		"cobaLagi": "Coba Lagi",
+		"catatManual": "Catat Manual",
+		"permissionTitle": "Izin Mikrofon Diperlukan",
+		"permissionDesc": "Money Tracker memerlukan akses mikrofon untuk mendeteksi ujaran suara transaksi Anda. Audio pengenalan suara mungkin diproses oleh server Google bila paket bahasa offline belum tersedia di perangkat Anda.",
+		"permissionGrant": "Izinkan Mikrofon",
+		"permissionCancel": "Batal",
+		"errPermissionDenied": "Izin mikrofon tidak diberikan. Aktifkan izin mikrofon untuk menggunakan fitur suara.",
+		"errNoSpeech": "Tidak ada suara yang terdeteksi. Silakan coba lagi dan bicara lebih dekat ke mikrofon.",
+		"errNotUnderstood": "Suara tidak terdengar jelas atau tidak dapat dikenali. Silakan coba lagi.",
+		"errServiceUnavailable": "Layanan pengenalan suara tidak tersedia atau perangkat sedang offline.",
+		"errUnknown": "Terjadi kendala saat memproses rekaman suara.",
+		"uncertainBadge": "Perlu Konfirmasi",
+		"uncertainTip": "Beberapa data ditandai oranye karena belum yakin terdeteksi. Silakan periksa sebelum menyimpan.",
+		"spokenPromptPrefix": "Hasil Suara:"
 	},
 	"deleteConfirm": {
 		"title": "Konfirmasi Hapus",
@@ -298,5 +328,14 @@
 		"generating": "Membuat dokumen...",
 		"successToast": "Laporan berhasil diekspor!",
 		"errorToast": "Gagal mengekspor laporan"
+	},
+	"gestures": {
+		"hintTitle": "Pintasan Gestur Cepat",
+		"hintDesc": "Geser ke kanan untuk scan struk, atau tarik ke bawah untuk mencatat dengan suara.",
+		"hintDismiss": "Oke, Paham",
+		"pullDownAction": "Lepas untuk Catat Suara",
+		"pullDownPrompt": "Tarik untuk Catat Suara",
+		"swipeRightAction": "Lepas untuk Scan Struk",
+		"swipeRightPrompt": "Geser untuk Scan Struk"
 	}
 }

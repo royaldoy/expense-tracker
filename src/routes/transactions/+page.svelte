@@ -321,17 +321,18 @@
 				data-testid="transaction-search-input"
 			/>
 			{#if searchQuery}
-				<button
-					type="button"
+				<GlassButton
+					variant="text"
+					size="sm"
 					onclick={() => {
 						searchQuery = '';
 						fetchTransactions();
 					}}
-					class="text-on-surface-variant hover:text-on-surface"
+					class="!h-6 !min-h-0 !w-6 !min-w-0 !p-0 text-on-surface-variant hover:text-on-surface"
 					aria-label="Hapus kata kunci pencarian"
 				>
 					<span class="material-symbols-outlined text-sm">close</span>
-				</button>
+				</GlassButton>
 			{/if}
 		</div>
 	{/if}
@@ -352,15 +353,16 @@
 					data-testid="chip-search"
 				>
 					<span>Cari: "{searchQuery.trim()}"</span>
-					<button
-						type="button"
-						class="flex h-4 w-4 items-center justify-center rounded-full hover:bg-primary/20"
+					<GlassButton
+						variant="text"
+						size="sm"
+						class="!flex !h-4 !min-h-0 !w-4 !min-w-0 items-center justify-center rounded-full !p-0 hover:bg-primary/20"
 						onclick={removeSearchChip}
 						aria-label="Hapus filter pencarian"
 						data-testid="btn-remove-chip-search"
 					>
 						<span class="material-symbols-outlined text-xs">close</span>
-					</button>
+					</GlassButton>
 				</div>
 			{/if}
 
@@ -373,15 +375,16 @@
 					data-testid="chip-type"
 				>
 					<span>Tipe: {typeLabel}</span>
-					<button
-						type="button"
-						class="flex h-4 w-4 items-center justify-center rounded-full hover:bg-primary/20"
+					<GlassButton
+						variant="text"
+						size="sm"
+						class="!flex !h-4 !min-h-0 !w-4 !min-w-0 items-center justify-center rounded-full !p-0 hover:bg-primary/20"
 						onclick={removeTypeChip}
 						aria-label="Hapus filter tipe"
 						data-testid="btn-remove-chip-type"
 					>
 						<span class="material-symbols-outlined text-xs">close</span>
-					</button>
+					</GlassButton>
 				</div>
 			{/if}
 
@@ -392,15 +395,16 @@
 					data-testid="chip-dates"
 				>
 					<span>{filterStartDate || '...'} s/d {filterEndDate || '...'}</span>
-					<button
-						type="button"
-						class="flex h-4 w-4 items-center justify-center rounded-full hover:bg-primary/20"
+					<GlassButton
+						variant="text"
+						size="sm"
+						class="!flex !h-4 !min-h-0 !w-4 !min-w-0 items-center justify-center rounded-full !p-0 hover:bg-primary/20"
 						onclick={removeDateChip}
 						aria-label="Hapus filter tanggal"
 						data-testid="btn-remove-chip-dates"
 					>
 						<span class="material-symbols-outlined text-xs">close</span>
-					</button>
+					</GlassButton>
 				</div>
 			{/if}
 
@@ -412,15 +416,16 @@
 					data-testid="chip-wallets"
 				>
 					<span>Dompet: {wNames.join(', ')}</span>
-					<button
-						type="button"
-						class="flex h-4 w-4 items-center justify-center rounded-full hover:bg-primary/20"
+					<GlassButton
+						variant="text"
+						size="sm"
+						class="!flex !h-4 !min-h-0 !w-4 !min-w-0 items-center justify-center rounded-full !p-0 hover:bg-primary/20"
 						onclick={removeWalletChip}
 						aria-label="Hapus filter dompet"
 						data-testid="btn-remove-chip-wallets"
 					>
 						<span class="material-symbols-outlined text-xs">close</span>
-					</button>
+					</GlassButton>
 				</div>
 			{/if}
 
@@ -432,15 +437,16 @@
 					data-testid="chip-categories"
 				>
 					<span>Kategori: {cNames.join(', ')}</span>
-					<button
-						type="button"
-						class="flex h-4 w-4 items-center justify-center rounded-full hover:bg-primary/20"
+					<GlassButton
+						variant="text"
+						size="sm"
+						class="!flex !h-4 !min-h-0 !w-4 !min-w-0 items-center justify-center rounded-full !p-0 hover:bg-primary/20"
 						onclick={removeCategoryChip}
 						aria-label="Hapus filter kategori"
 						data-testid="btn-remove-chip-categories"
 					>
 						<span class="material-symbols-outlined text-xs">close</span>
-					</button>
+					</GlassButton>
 				</div>
 			{/if}
 
@@ -456,29 +462,31 @@
 							? formatRupiah(Number(filterMaxAmount))
 							: 'Bebas'}</span
 					>
-					<button
-						type="button"
-						class="flex h-4 w-4 items-center justify-center rounded-full hover:bg-primary/20"
+					<GlassButton
+						variant="text"
+						size="sm"
+						class="!flex !h-4 !min-h-0 !w-4 !min-w-0 items-center justify-center rounded-full !p-0 hover:bg-primary/20"
 						onclick={removeAmountChip}
 						aria-label="Hapus filter nominal"
 						data-testid="btn-remove-chip-amounts"
 					>
 						<span class="material-symbols-outlined text-xs">close</span>
-					</button>
+					</GlassButton>
 				</div>
 			{/if}
 
 			<!-- Tombol Hapus Semua (jika filter aktif > 1) -->
 			{#if activeFilterCount > 1}
-				<button
-					type="button"
+				<GlassButton
+					variant="secondary"
+					size="sm"
 					onclick={clearAllActiveFilters}
-					class="inline-flex shrink-0 items-center gap-1 rounded-full bg-surface-container px-2.5 py-1 text-[11px] font-semibold text-on-surface-variant hover:text-on-surface"
+					class="!inline-flex !min-h-0 shrink-0 items-center gap-1 !rounded-full !px-2.5 !py-1 text-[11px] font-semibold text-on-surface-variant hover:text-on-surface"
 					data-testid="btn-clear-all-filters"
 				>
 					<span class="material-symbols-outlined text-xs">clear_all</span>
 					<span>{t('transactions.hapusSemuaFilter')}</span>
-				</button>
+				</GlassButton>
 			{/if}
 		</div>
 	{/if}
@@ -595,28 +603,31 @@
 					{t('transactions.rentangTanggal')}
 				</span>
 				<div class="flex items-center gap-1.5 text-[10px]">
-					<button
-						type="button"
-						class="rounded-md bg-surface-container px-2 py-0.5 font-medium text-primary hover:bg-primary/10"
+					<GlassButton
+						variant="secondary"
+						size="sm"
+						class="!min-h-0 !rounded-md !px-2 !py-0.5 font-medium text-primary hover:bg-primary/10"
 						onclick={() => applyDatePreset('thisMonth')}
 						data-testid="preset-this-month"
 					>
 						Bulan Ini
-					</button>
-					<button
-						type="button"
-						class="rounded-md bg-surface-container px-2 py-0.5 font-medium text-primary hover:bg-primary/10"
+					</GlassButton>
+					<GlassButton
+						variant="secondary"
+						size="sm"
+						class="!min-h-0 !rounded-md !px-2 !py-0.5 font-medium text-primary hover:bg-primary/10"
 						onclick={() => applyDatePreset('last30Days')}
 					>
 						30 Hari
-					</button>
-					<button
-						type="button"
-						class="hover:bg-surface-variant rounded-md bg-surface-container px-2 py-0.5 font-medium text-on-surface-variant"
+					</GlassButton>
+					<GlassButton
+						variant="text"
+						size="sm"
+						class="hover:bg-surface-variant !min-h-0 !rounded-md !px-2 !py-0.5 font-medium text-on-surface-variant"
 						onclick={() => applyDatePreset('allTime')}
 					>
 						Semua
-					</button>
+					</GlassButton>
 				</div>
 			</div>
 
@@ -651,31 +662,33 @@
 					{t('transactions.pilihBanyakDompet')}
 				</span>
 				{#if draftWalletIds.length > 0}
-					<button
-						type="button"
-						class="text-[10px] font-medium text-primary hover:underline"
+					<GlassButton
+						variant="text"
+						size="sm"
+						class="!min-h-0 !p-0 text-[10px] font-medium text-primary hover:underline"
 						onclick={() => (draftWalletIds = [])}
 					>
 						Reset ({draftWalletIds.length})
-					</button>
+					</GlassButton>
 				{/if}
 			</div>
 
 			<div class="flex flex-wrap gap-1.5" data-testid="filter-wallet-chips">
 				{#each wallets as w (w.id)}
 					{@const selected = draftWalletIds.includes(w.id)}
-					<button
-						type="button"
-						class="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition-all active:scale-95 {selected
-							? 'bg-primary text-white shadow-xs'
-							: 'border border-outline-variant/30 bg-surface-container-lowest/70 text-on-surface-variant hover:text-on-surface'}"
+					<GlassButton
+						variant={selected ? 'primary' : 'secondary'}
+						size="sm"
+						class="!inline-flex !min-h-0 items-center gap-1.5 !rounded-full !px-3 !py-1.5 text-xs font-semibold {selected
+							? 'shadow-xs'
+							: 'border-outline-variant/30 text-on-surface-variant hover:text-on-surface'}"
 						onclick={() => toggleDraftWallet(w.id)}
 						data-testid="filter-wallet-option-{w.id}"
 					>
 						<span class="h-2 w-2 rounded-full" style="background: {selected ? '#ffffff' : w.color};"
 						></span>
 						<span>{w.name}</span>
-					</button>
+					</GlassButton>
 				{/each}
 			</div>
 		</div>
@@ -687,13 +700,14 @@
 					{t('transactions.pilihBanyakKategori')}
 				</span>
 				{#if draftCategoryIds.length > 0}
-					<button
-						type="button"
-						class="text-[10px] font-medium text-primary hover:underline"
+					<GlassButton
+						variant="text"
+						size="sm"
+						class="!min-h-0 !p-0 text-[10px] font-medium text-primary hover:underline"
 						onclick={() => (draftCategoryIds = [])}
 					>
 						Reset ({draftCategoryIds.length})
-					</button>
+					</GlassButton>
 				{/if}
 			</div>
 
@@ -703,17 +717,18 @@
 			>
 				{#each categories as cat (cat.id)}
 					{@const selected = draftCategoryIds.includes(cat.id)}
-					<button
-						type="button"
-						class="flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-semibold transition-all active:scale-95 {selected
-							? 'bg-primary text-white shadow-xs'
-							: 'border border-outline-variant/30 bg-surface-container-lowest/70 text-on-surface-variant hover:text-on-surface'}"
+					<GlassButton
+						variant={selected ? 'primary' : 'secondary'}
+						size="sm"
+						class="!inline-flex !min-h-0 items-center gap-1 !rounded-full !px-2.5 !py-1 text-[11px] font-semibold {selected
+							? 'shadow-xs'
+							: 'border-outline-variant/30 text-on-surface-variant hover:text-on-surface'}"
 						onclick={() => toggleDraftCategory(cat.id)}
 						data-testid="filter-category-option-{cat.id}"
 					>
 						<span class="material-symbols-outlined text-xs">{cat.icon}</span>
 						<span>{cat.name}</span>
-					</button>
+					</GlassButton>
 				{/each}
 			</div>
 		</div>

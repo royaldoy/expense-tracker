@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import { triggerHapticImpact } from '$lib/stores/uiStore';
+	import GlassButton from './GlassButton.svelte';
 
 	interface Props {
 		isOpen: boolean;
@@ -203,15 +204,16 @@
 							</p>
 						{/if}
 					</div>
-					<button
-						type="button"
-						class="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full text-on-surface-variant transition-colors hover:bg-surface-container active:scale-95"
+					<GlassButton
+						variant="icon"
+						size="sm"
+						class="text-on-surface-variant"
 						data-testid="glass-sheet-close"
 						onclick={close}
 						aria-label="Tutup"
 					>
 						<span class="material-symbols-outlined text-xl">close</span>
-					</button>
+					</GlassButton>
 				</div>
 			{/if}
 

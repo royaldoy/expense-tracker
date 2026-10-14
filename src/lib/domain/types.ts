@@ -30,6 +30,7 @@ export interface Category extends BaseEntity {
 	icon: string;
 	color: string;
 	order: number;
+	isSystem?: boolean;
 }
 
 export type TransactionType = 'income' | 'expense' | 'transfer';
@@ -74,3 +75,27 @@ export interface Setting extends BaseEntity {
 	key: string;
 	value: unknown;
 }
+
+export type NotificationType = 'recurring_due' | 'budget_alert' | 'daily_reminder' | 'system';
+
+export interface Notification extends BaseEntity {
+	type: NotificationType;
+	title: string;
+	message: string;
+	readAt: Timestamp | null;
+	refId: string | null;
+}
+
+export interface NotificationSettings {
+	recurringDueEnabled: boolean;
+	budgetAlertEnabled: boolean;
+	dailyReminderEnabled: boolean;
+	dailyReminderTime: string; // Format HH:mm, e.g. "20:00"
+}
+
+export const DEFAULT_NOTIFICATION_SETTINGS: NotificationSettings = {
+	recurringDueEnabled: true,
+	budgetAlertEnabled: true,
+	dailyReminderEnabled: true,
+	dailyReminderTime: '20:00'
+};

@@ -525,11 +525,15 @@ describe('BackupService (Versioned JSON, Valibot Validation, Migrations & RFC 41
 		const parsed = JSON.parse(jsonString);
 
 		// Verifikasi pin_security sama sekali TIDAK ADA di settings data cadangan
-		const exportedPinSetting = parsed.data.settings.find((s: { key: string }) => s.key === 'pin_security');
+		const exportedPinSetting = parsed.data.settings.find(
+			(s: { key: string }) => s.key === 'pin_security'
+		);
 		expect(exportedPinSetting).toBeUndefined();
 
 		// Pengaturan lain (salary_day) tetap ada
-		const exportedSalarySetting = parsed.data.settings.find((s: { key: string }) => s.key === 'salary_day');
+		const exportedSalarySetting = parsed.data.settings.find(
+			(s: { key: string }) => s.key === 'salary_day'
+		);
 		expect(exportedSalarySetting).toBeDefined();
 		expect(exportedSalarySetting.value).toBe(25);
 	});

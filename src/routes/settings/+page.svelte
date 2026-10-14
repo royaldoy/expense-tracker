@@ -4,6 +4,7 @@
 	import GlassCard from '$lib/components/glass/GlassCard.svelte';
 	import GlassListRow from '$lib/components/glass/GlassListRow.svelte';
 	import GlassSegmented from '$lib/components/glass/GlassSegmented.svelte';
+	import GlassSwitch from '$lib/components/glass/GlassSwitch.svelte';
 	import t from '$lib/i18n';
 	import { categoryService, seedService, settingService } from '$lib/services';
 	import { isPinSet, lockApp, refreshPinStatus } from '$lib/stores/securityStore';
@@ -11,8 +12,10 @@
 		animationMode,
 		hapticsEnabled,
 		hideBalance,
+		quickGesturesEnabled,
 		setAnimationModePreference,
 		setHapticsPreference,
+		setQuickGesturesPreference,
 		toggleHideBalance,
 		triggerHapticImpact,
 		type AnimationMode
@@ -65,6 +68,12 @@
 		if (next) {
 			triggerHapticImpact('medium');
 		}
+	}
+
+	async function handleToggleQuickGestures(val?: boolean) {
+		const next = typeof val === 'boolean' ? val : !$quickGesturesEnabled;
+		await setQuickGesturesPreference(next);
+		triggerHapticImpact('light');
 	}
 
 	async function handleRunSeed() {
@@ -244,25 +253,12 @@
 						<p class="text-xs text-on-surface-variant">Samarkan nominal menjadi ••••••••</p>
 					</div>
 				</div>
-				<button
-					type="button"
-					class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full transition-colors duration-200 ease-in-out focus:outline-hidden"
-					style="background: {$hideBalance
-						? 'var(--color-primary)'
-						: 'var(--color-outline-variant)'};"
-					onclick={toggleHideBalance}
-					role="switch"
-					aria-checked={$hideBalance}
+				<GlassSwitch
+					checked={$hideBalance}
+					onchange={toggleHideBalance}
 					aria-label="Sensor Saldo di Beranda"
 					data-testid="toggle-hide-balance"
-				>
-					<span
-						class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out"
-						style="transform: {$hideBalance
-							? 'translateX(20px)'
-							: 'translateX(2px)'}; margin-top: 2px;"
-					></span>
-				</button>
+				/>
 			</div>
 
 			{#if $isPinSet}
@@ -305,24 +301,7 @@
 						<p class="text-xs text-on-surface-variant">Gunakan tema kontras gelap</p>
 					</div>
 				</div>
-				<button
-					type="button"
-					class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full transition-colors duration-200 ease-in-out focus:outline-hidden"
-					style="background: {isDarkMode
-						? 'var(--color-primary)'
-						: 'var(--color-outline-variant)'};"
-					onclick={toggleTheme}
-					role="switch"
-					aria-checked={isDarkMode}
-					aria-label="Mode Gelap"
-				>
-					<span
-						class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out"
-						style="transform: {isDarkMode
-							? 'translateX(20px)'
-							: 'translateX(2px)'}; margin-top: 2px;"
-					></span>
-				</button>
+				<GlassSwitch checked={isDarkMode} onchange={toggleTheme} aria-label="Mode Gelap" />
 			</div>
 
 			<!-- Toggle Kurangi Transparansi -->
@@ -339,24 +318,11 @@
 						<p class="text-xs text-on-surface-variant">Nonaktifkan efek blur latar</p>
 					</div>
 				</div>
-				<button
-					type="button"
-					class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full transition-colors duration-200 ease-in-out focus:outline-hidden"
-					style="background: {reduceTransparency
-						? 'var(--color-primary)'
-						: 'var(--color-outline-variant)'};"
-					onclick={toggleReduceTransparency}
-					role="switch"
-					aria-checked={reduceTransparency}
+				<GlassSwitch
+					checked={reduceTransparency}
+					onchange={toggleReduceTransparency}
 					aria-label="Kurangi Transparansi"
-				>
-					<span
-						class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out"
-						style="transform: {reduceTransparency
-							? 'translateX(20px)'
-							: 'translateX(2px)'}; margin-top: 2px;"
-					></span>
-				</button>
+				/>
 			</div>
 
 			<!-- Pengaturan Animasi (Penuh, Minimal, Mati) -->
@@ -396,25 +362,36 @@
 						<p class="text-xs text-on-surface-variant">Respon getar saat menekan tombol & aksi</p>
 					</div>
 				</div>
-				<button
-					type="button"
-					class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full transition-colors duration-200 ease-in-out focus:outline-hidden"
-					style="background: {$hapticsEnabled
-						? 'var(--color-primary)'
-						: 'var(--color-outline-variant)'};"
-					onclick={handleToggleHaptics}
-					role="switch"
-					aria-checked={$hapticsEnabled}
+				<GlassSwitch
+					checked={$hapticsEnabled}
+					onchange={handleToggleHaptics}
 					aria-label="Getaran Haptic"
 					data-testid="toggle-haptics-switch"
-				>
-					<span
-						class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out"
-						style="transform: {$hapticsEnabled
-							? 'translateX(20px)'
-							: 'translateX(2px)'}; margin-top: 2px;"
-					></span>
-				</button>
+				/>
+			</div>
+
+			<!-- Toggle Gestur Cepat di Beranda -->
+			<div class="flex items-center justify-between p-4" data-testid="settings-gestures-section">
+				<div class="flex items-center gap-3">
+					<div
+						class="flex h-10 w-10 items-center justify-center rounded-xl text-white shadow-xs"
+						style="background: #0070EB;"
+					>
+						<span class="material-symbols-outlined text-xl">swipe</span>
+					</div>
+					<div>
+						<p class="text-sm font-semibold text-on-surface">Gestur Cepat</p>
+						<p class="text-xs text-on-surface-variant">
+							Geser kanan untuk scan, tarik turun untuk suara
+						</p>
+					</div>
+				</div>
+				<GlassSwitch
+					checked={$quickGesturesEnabled}
+					onchange={handleToggleQuickGestures}
+					aria-label="Gestur Cepat"
+					data-testid="toggle-quick-gestures-switch"
+				/>
 			</div>
 		</GlassCard>
 	</section>

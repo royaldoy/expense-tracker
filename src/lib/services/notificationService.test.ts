@@ -51,7 +51,9 @@ describe('NotificationService - Inbox & Deduplikasi Idempoten', () => {
 				checkPermissions: vi.fn().mockResolvedValue(true)
 			},
 			biometrics: {} as unknown as IPlatform['biometrics'],
-			cameraOcr: {} as unknown as IPlatform['cameraOcr']
+			cameraOcr: {} as unknown as IPlatform['cameraOcr'],
+			haptics: {} as unknown as IPlatform['haptics'],
+			voice: {} as unknown as IPlatform['voice']
 		};
 
 		notifService = new NotificationService(

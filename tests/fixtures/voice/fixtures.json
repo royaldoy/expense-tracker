@@ -1,0 +1,534 @@
+{
+	"version": 1,
+	"description": "Kumpulan kalimat ujaran transaksi suara bahasa Indonesia dan ekspektasi hasil parsing",
+	"fixtures": [
+		{
+			"id": "exp-mkn-01",
+			"sentence": "beli kopi kenangan 25 ribu pakai gopay kemarin",
+			"description": "Pengeluaran makanan dengan bilangan ribu dan tanggal kemarin",
+			"expected": {
+				"type": "expense",
+				"amount": 25000,
+				"categoryName": "Makanan & Minuman",
+				"walletName": "GoPay",
+				"toWalletName": null,
+				"relativeDays": -1,
+				"note": "Kopi kenangan",
+				"uncertain": {
+					"type": false,
+					"amount": false,
+					"category": false,
+					"wallet": false,
+					"date": false
+				}
+			}
+		},
+		{
+			"id": "exp-mkn-02",
+			"sentence": "makan siang nasi padang tiga puluh lima ribu pakai tunai hari ini",
+			"description": "Pengeluaran makanan dengan bilangan teks penuh",
+			"expected": {
+				"type": "expense",
+				"amount": 35000,
+				"categoryName": "Makanan & Minuman",
+				"walletName": "Tunai",
+				"toWalletName": null,
+				"relativeDays": 0,
+				"note": "Makan siang nasi padang",
+				"uncertain": {
+					"type": false,
+					"amount": false,
+					"category": false,
+					"wallet": false,
+					"date": false
+				}
+			}
+		},
+		{
+			"id": "exp-slang-goceng",
+			"sentence": "jajan boba goceng pakai shopeepay",
+			"description": "Pengeluaran dengan slang goceng (5.000)",
+			"expected": {
+				"type": "expense",
+				"amount": 5000,
+				"categoryName": "Makanan & Minuman",
+				"walletName": "ShopeePay",
+				"toWalletName": null,
+				"relativeDays": 0,
+				"note": "Jajan boba",
+				"uncertain": {
+					"type": false,
+					"amount": false,
+					"category": false,
+					"wallet": false,
+					"date": false
+				}
+			}
+		},
+		{
+			"id": "exp-slang-ceban",
+			"sentence": "beli kaos kaki ceban pakai tunai tadi siang",
+			"description": "Pengeluaran belanja dengan slang ceban (10.000)",
+			"expected": {
+				"type": "expense",
+				"amount": 10000,
+				"categoryName": "Belanja",
+				"walletName": "Tunai",
+				"toWalletName": null,
+				"relativeDays": 0,
+				"note": "Kaos kaki",
+				"uncertain": {
+					"type": false,
+					"amount": false,
+					"category": false,
+					"wallet": false,
+					"date": false
+				}
+			}
+		},
+		{
+			"id": "exp-slang-gocap",
+			"sentence": "beli bensin gocap lewat bca",
+			"description": "Pengeluaran transportasi dengan slang gocap (50.000)",
+			"expected": {
+				"type": "expense",
+				"amount": 50000,
+				"categoryName": "Transportasi",
+				"walletName": "BCA",
+				"toWalletName": null,
+				"relativeDays": 0,
+				"note": "Bensin",
+				"uncertain": {
+					"type": false,
+					"amount": false,
+					"category": false,
+					"wallet": false,
+					"date": false
+				}
+			}
+		},
+		{
+			"id": "exp-slang-multi-ceban",
+			"sentence": "beli martabak tiga ceban pakai gopay",
+			"description": "Pengeluaran dengan perkalian slang: tiga ceban (30.000)",
+			"expected": {
+				"type": "expense",
+				"amount": 30000,
+				"categoryName": "Makanan & Minuman",
+				"walletName": "GoPay",
+				"toWalletName": null,
+				"relativeDays": 0,
+				"note": "Martabak",
+				"uncertain": {
+					"type": false,
+					"amount": false,
+					"category": false,
+					"wallet": false,
+					"date": false
+				}
+			}
+		},
+		{
+			"id": "exp-abbr-k",
+			"sentence": "bayar parkir motor 5k pakai uang tunai",
+			"description": "Nominal dengan singkatan k (5.000)",
+			"expected": {
+				"type": "expense",
+				"amount": 5000,
+				"categoryName": "Transportasi",
+				"walletName": "Tunai",
+				"toWalletName": null,
+				"relativeDays": 0,
+				"note": "Parkir motor",
+				"uncertain": {
+					"type": false,
+					"amount": false,
+					"category": false,
+					"wallet": false,
+					"date": false
+				}
+			}
+		},
+		{
+			"id": "exp-abbr-rb",
+			"sentence": "isi pulsa 50rb pakai bca semalam",
+			"description": "Nominal dengan singkatan rb (50.000) dan tanggal semalam (-1)",
+			"expected": {
+				"type": "expense",
+				"amount": 50000,
+				"categoryName": "Tagihan & Utilitas",
+				"walletName": "BCA",
+				"toWalletName": null,
+				"relativeDays": -1,
+				"note": "Pulsa",
+				"uncertain": {
+					"type": false,
+					"amount": false,
+					"category": false,
+					"wallet": false,
+					"date": false
+				}
+			}
+		},
+		{
+			"id": "exp-abbr-jt",
+			"sentence": "beli laptop 8.5jt lewat bca kemarin lusa",
+			"description": "Nominal desimal singkatan jt (8.500.000) dan kemarin lusa (-2)",
+			"expected": {
+				"type": "expense",
+				"amount": 8500000,
+				"categoryName": "Belanja",
+				"walletName": "BCA",
+				"toWalletName": null,
+				"relativeDays": -2,
+				"note": "Laptop",
+				"uncertain": {
+					"type": false,
+					"amount": false,
+					"category": false,
+					"wallet": false,
+					"date": false
+				}
+			}
+		},
+		{
+			"id": "exp-fraction-setengah-juta",
+			"sentence": "bayar servis motor setengah juta pakai tunai",
+			"description": "Pola fraksi: setengah juta (500.000)",
+			"expected": {
+				"type": "expense",
+				"amount": 500000,
+				"categoryName": "Transportasi",
+				"walletName": "Tunai",
+				"toWalletName": null,
+				"relativeDays": 0,
+				"note": "Servis motor",
+				"uncertain": {
+					"type": false,
+					"amount": false,
+					"category": false,
+					"wallet": false,
+					"date": false
+				}
+			}
+		},
+		{
+			"id": "exp-fraction-satu-setengah-juta",
+			"sentence": "bayar sewa kos satu setengah juta pakai bca",
+			"description": "Pola fraksi: satu setengah juta (1.500.000)",
+			"expected": {
+				"type": "expense",
+				"amount": 1500000,
+				"categoryName": "Tagihan & Utilitas",
+				"walletName": "BCA",
+				"toWalletName": null,
+				"relativeDays": 0,
+				"note": "Sewa kos",
+				"uncertain": {
+					"type": false,
+					"amount": false,
+					"category": false,
+					"wallet": false,
+					"date": false
+				}
+			}
+		},
+		{
+			"id": "exp-fraction-dua-setengah-ribu",
+			"sentence": "beli gorengan dua setengah ribu pakai cash",
+			"description": "Pola fraksi: dua setengah ribu (2.500)",
+			"expected": {
+				"type": "expense",
+				"amount": 2500,
+				"categoryName": "Makanan & Minuman",
+				"walletName": "Tunai",
+				"toWalletName": null,
+				"relativeDays": 0,
+				"note": "Gorengan",
+				"uncertain": {
+					"type": false,
+					"amount": false,
+					"category": false,
+					"wallet": false,
+					"date": false
+				}
+			}
+		},
+		{
+			"id": "exp-formatted-number",
+			"sentence": "belanja di supermarket Rp 125.500 pakai bca",
+			"description": "Angka berformat Rp 125.500 dengan titik ribuan",
+			"expected": {
+				"type": "expense",
+				"amount": 125500,
+				"categoryName": "Belanja",
+				"walletName": "BCA",
+				"toWalletName": null,
+				"relativeDays": 0,
+				"note": "Supermarket",
+				"uncertain": {
+					"type": false,
+					"amount": false,
+					"category": false,
+					"wallet": false,
+					"date": false
+				}
+			}
+		},
+		{
+			"id": "exp-complex-words",
+			"sentence": "bayar listrik seratus empat puluh dua ribu lima ratus rupiah pakai gopay",
+			"description": "Kata bilangan panjang dan lengkap dalam bahasa Indonesia",
+			"expected": {
+				"type": "expense",
+				"amount": 142500,
+				"categoryName": "Tagihan & Utilitas",
+				"walletName": "GoPay",
+				"toWalletName": null,
+				"relativeDays": 0,
+				"note": "Listrik",
+				"uncertain": {
+					"type": false,
+					"amount": false,
+					"category": false,
+					"wallet": false,
+					"date": false
+				}
+			}
+		},
+		{
+			"id": "inc-gaji",
+			"sentence": "terima gaji delapan juta lima ratus ribu di bca hari ini",
+			"description": "Pemasukan gaji dengan teks kata bilangan ke rekening BCA",
+			"expected": {
+				"type": "income",
+				"amount": 8500000,
+				"categoryName": "Gaji Utama",
+				"walletName": "BCA",
+				"toWalletName": null,
+				"relativeDays": 0,
+				"note": "Gaji",
+				"uncertain": {
+					"type": false,
+					"amount": false,
+					"category": false,
+					"wallet": false,
+					"date": false
+				}
+			}
+		},
+		{
+			"id": "inc-bonus",
+			"sentence": "dapat bonus 500k masuk ke gopay kemarin",
+			"description": "Pemasukan bonus dengan singkatan k",
+			"expected": {
+				"type": "income",
+				"amount": 500000,
+				"categoryName": "Bonus & THR",
+				"walletName": "GoPay",
+				"toWalletName": null,
+				"relativeDays": -1,
+				"note": "Bonus",
+				"uncertain": {
+					"type": false,
+					"amount": false,
+					"category": false,
+					"wallet": false,
+					"date": false
+				}
+			}
+		},
+		{
+			"id": "inc-cashback",
+			"sentence": "dapat cashback dua puluh lima ribu di shopeepay",
+			"description": "Pemasukan cashback",
+			"expected": {
+				"type": "income",
+				"amount": 25000,
+				"categoryName": "Pemasukan Lainnya",
+				"walletName": "ShopeePay",
+				"toWalletName": null,
+				"relativeDays": 0,
+				"note": "Cashback",
+				"uncertain": {
+					"type": false,
+					"amount": false,
+					"category": false,
+					"wallet": false,
+					"date": false
+				}
+			}
+		},
+		{
+			"id": "trf-simple",
+			"sentence": "transfer lima ratus ribu dari bca ke gopay",
+			"description": "Transfer antar dompet standar",
+			"expected": {
+				"type": "transfer",
+				"amount": 500000,
+				"categoryName": null,
+				"walletName": "BCA",
+				"toWalletName": "GoPay",
+				"relativeDays": 0,
+				"note": "Transfer BCA ke GoPay",
+				"uncertain": {
+					"type": false,
+					"amount": false,
+					"category": false,
+					"wallet": false,
+					"toWallet": false,
+					"date": false
+				}
+			}
+		},
+		{
+			"id": "trf-topup",
+			"sentence": "top up shopeepay seratus ribu dari bca kemarin",
+			"description": "Transfer berupa topup dengan urutan dompet tujuan dulu",
+			"expected": {
+				"type": "transfer",
+				"amount": 100000,
+				"categoryName": null,
+				"walletName": "BCA",
+				"toWalletName": "ShopeePay",
+				"relativeDays": -1,
+				"note": "Top up ShopeePay dari BCA",
+				"uncertain": {
+					"type": false,
+					"amount": false,
+					"category": false,
+					"wallet": false,
+					"toWallet": false,
+					"date": false
+				}
+			}
+		},
+		{
+			"id": "trf-tarik-tunai",
+			"sentence": "tarik tunai dua ratus ribu dari bca",
+			"description": "Tarik tunai dari bank ke dompet tunai",
+			"expected": {
+				"type": "transfer",
+				"amount": 200000,
+				"categoryName": null,
+				"walletName": "BCA",
+				"toWalletName": "Tunai",
+				"relativeDays": 0,
+				"note": "Tarik tunai dari BCA",
+				"uncertain": {
+					"type": false,
+					"amount": false,
+					"category": false,
+					"wallet": false,
+					"toWallet": false,
+					"date": false
+				}
+			}
+		},
+		{
+			"id": "amb-tipe-tidak-jelas",
+			"sentence": "kopi kenangan 25 ribu",
+			"description": "Kalimat tanpa kata kerja tipe transaksi -> default expense dengan uncertain.type = true",
+			"expected": {
+				"type": "expense",
+				"amount": 25000,
+				"categoryName": "Makanan & Minuman",
+				"walletName": null,
+				"toWalletName": null,
+				"relativeDays": 0,
+				"note": "Kopi kenangan",
+				"uncertain": {
+					"type": true,
+					"amount": false,
+					"category": false,
+					"wallet": true,
+					"date": false
+				}
+			}
+		},
+		{
+			"id": "amb-tanpa-dompet",
+			"sentence": "beli bensin tiga puluh ribu",
+			"description": "Dompet tidak disebutkan -> walletId null, uncertain.wallet = true",
+			"expected": {
+				"type": "expense",
+				"amount": 30000,
+				"categoryName": "Transportasi",
+				"walletName": null,
+				"toWalletName": null,
+				"relativeDays": 0,
+				"note": "Bensin",
+				"uncertain": {
+					"type": false,
+					"amount": false,
+					"category": false,
+					"wallet": true,
+					"date": false
+				}
+			}
+		},
+		{
+			"id": "amb-kategori-tidak-jelas",
+			"sentence": "bayar barang misterius lima puluh ribu pakai gopay",
+			"description": "Kategori tidak cocok dengan apa pun -> category null, uncertain.category = true",
+			"expected": {
+				"type": "expense",
+				"amount": 50000,
+				"categoryName": null,
+				"walletName": "GoPay",
+				"toWalletName": null,
+				"relativeDays": 0,
+				"note": "Barang misterius",
+				"uncertain": {
+					"type": false,
+					"amount": false,
+					"category": true,
+					"wallet": false,
+					"date": false
+				}
+			}
+		},
+		{
+			"id": "amb-tanpa-nominal",
+			"sentence": "beli makan malam pakai tunai",
+			"description": "Nominal tidak disebutkan sama sekali -> amount null, uncertain.amount = true",
+			"expected": {
+				"type": "expense",
+				"amount": null,
+				"categoryName": "Makanan & Minuman",
+				"walletName": "Tunai",
+				"toWalletName": null,
+				"relativeDays": 0,
+				"note": "Makan malam",
+				"uncertain": {
+					"type": false,
+					"amount": true,
+					"category": false,
+					"wallet": false,
+					"date": false
+				}
+			}
+		},
+		{
+			"id": "date-lusa",
+			"sentence": "bayar langganan netflix 186 ribu pakai bca lusa",
+			"description": "Tanggal lusa (+2)",
+			"expected": {
+				"type": "expense",
+				"amount": 186000,
+				"categoryName": "Tagihan & Utilitas",
+				"walletName": "BCA",
+				"toWalletName": null,
+				"relativeDays": 2,
+				"note": "Langganan netflix",
+				"uncertain": {
+					"type": false,
+					"amount": false,
+					"category": false,
+					"wallet": false,
+					"date": false
+				}
+			}
+		}
+	]
+}

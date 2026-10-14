@@ -8,9 +8,11 @@ import {
 	CapacitorPlatform,
 	capacitorPlatform,
 	CapacitorShareAdapter,
-	CapacitorStatusBarAdapter
+	CapacitorStatusBarAdapter,
+	CapacitorVoiceAdapter
 } from './capacitor';
 import type { IPlatform } from './types';
+import { VOICE_RECOGNITION_CONFIG } from './voiceConfig';
 import {
 	WebBackButtonAdapter,
 	WebBiometricsAdapter,
@@ -20,10 +22,12 @@ import {
 	WebPlatform,
 	webPlatform,
 	WebShareAdapter,
-	WebStatusBarAdapter
+	WebStatusBarAdapter,
+	WebVoiceAdapter
 } from './web';
 
 export * from './types';
+export * from './voiceConfig';
 export {
 	WebPlatform,
 	webPlatform,
@@ -33,7 +37,8 @@ export {
 	WebStatusBarAdapter,
 	WebNotificationsAdapter,
 	WebBiometricsAdapter,
-	WebHapticsAdapter
+	WebHapticsAdapter,
+	WebVoiceAdapter
 };
 
 export {
@@ -45,7 +50,9 @@ export {
 	CapacitorStatusBarAdapter,
 	CapacitorNotificationsAdapter,
 	CapacitorBiometricsAdapter,
-	CapacitorHapticsAdapter
+	CapacitorHapticsAdapter,
+	CapacitorVoiceAdapter,
+	VOICE_RECOGNITION_CONFIG
 };
 
 /**

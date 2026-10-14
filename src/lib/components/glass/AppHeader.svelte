@@ -1,4 +1,6 @@
 <script lang="ts">
+	import GlassButton from './GlassButton.svelte';
+
 	export interface HeaderAction {
 		icon: string;
 		label: string;
@@ -62,10 +64,10 @@
 						{/if}
 					</a>
 				{:else}
-					<button
-						type="button"
-						class="relative flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-on-surface-variant shadow-xs transition-transform hover:bg-surface-container active:scale-90"
-						style="background: var(--glass-pill-bg); border: 1px solid var(--glass-pill-border);"
+					<GlassButton
+						variant="icon"
+						size="md"
+						class="relative text-on-surface-variant"
 						onclick={action.onclick}
 						aria-label={action.label}
 						data-testid={action.testId}
@@ -91,7 +93,7 @@
 								data-testid="filter-active-indicator"
 							></span>
 						{/if}
-					</button>
+					</GlassButton>
 				{/if}
 			{/each}
 		</div>

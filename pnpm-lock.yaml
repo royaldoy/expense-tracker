@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@capacitor-community/speech-recognition':
+        specifier: 7.0.0
+        version: 7.0.0(@capacitor/core@7.6.9)
       '@capacitor-community/sqlite':
         specifier: ^7.0.0
         version: 7.0.3(@capacitor/core@7.6.9)
@@ -147,6 +150,11 @@ packages:
 
   '@cacheable/utils@2.5.0':
     resolution: {integrity: sha512-buipgOVDkkPXNR5+xBpDw7Zk2n1EvU7qBJCNUcL7rhQ//kfpOXPAvQ511Os0vpLYJ1pZnvudNytkQt2hst3wqA==}
+
+  '@capacitor-community/speech-recognition@7.0.0':
+    resolution: {integrity: sha512-GwNaijf0Q2LilNtlnfKL2dJB6voZYOm95D6dbhzPwa1mV+PnzwcGCaeipjbID3oRlAnsDUFEFiakbdZDyxe54w==}
+    peerDependencies:
+      '@capacitor/core': '>=7.0.0'
 
   '@capacitor-community/sqlite@7.0.3':
     resolution: {integrity: sha512-aKOCM3RglhF9Q2XA7NMyT923tc+dY9ANLzB+FgKy6Q6jxJIHuJ6YRZbFHJKicBjheCOP1k7HpPIdnZ05GpsGVg==}
@@ -1990,6 +1998,10 @@ snapshots:
     dependencies:
       hashery: 1.5.1
       keyv: 5.6.0
+
+  '@capacitor-community/speech-recognition@7.0.0(@capacitor/core@7.6.9)':
+    dependencies:
+      '@capacitor/core': 7.6.9
 
   '@capacitor-community/sqlite@7.0.3(@capacitor/core@7.6.9)':
     dependencies:

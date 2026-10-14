@@ -3,6 +3,7 @@ import type {
 	Attachment,
 	Budget,
 	Category,
+	Notification,
 	RecurringRule,
 	Setting,
 	Transaction,
@@ -17,6 +18,7 @@ export class MoneyTrackerDatabase extends Dexie {
 	recurringRules!: Table<RecurringRule, string>;
 	attachments!: Table<Attachment, string>;
 	settings!: Table<Setting, string>;
+	notifications!: Table<Notification, string>;
 
 	constructor(dbName = 'MoneyTrackerDB') {
 		super(dbName);
@@ -27,10 +29,26 @@ export class MoneyTrackerDatabase extends Dexie {
 			wallets: 'id, name, type, includeInTotal, deletedAt',
 			categories: 'id, name, kind, parentId, [kind+order], deletedAt',
 			transactions: 'id, type, walletId, toWalletId, categoryId, date, [walletId+date], deletedAt',
-			budgets: 'id, categoryId, period, [categoryId+period], deletedAt',
 			recurringRules: 'id, nextRunAt, autoPost, deletedAt',
 			attachments: 'id, deletedAt',
 			settings: 'key'
+		});
+
+		// Versi 2: Penambahan tabel budgets dengan compound index [categoryId+period]
+		this.version(2).stores({
+			budgets: 'id, categoryId, period, [categoryId+period], deletedAt'
+		});
+
+		// Versi 3: Compound index transaksi [recurringId+date] dan index frequency aturan berulang
+		this.version(3).stores({
+			transactions:
+				'id, type, walletId, toWalletId, categoryId, date, [walletId+date], recurringId, [recurringId+date], deletedAt',
+			recurringRules: 'id, nextRunAt, autoPost, frequency, deletedAt'
+		});
+
+		// Versi 4: Penambahan tabel notifications untuk inbox notifikasi lokal
+		this.version(4).stores({
+			notifications: 'id, type, refId, readAt, createdAt, deletedAt, [type+refId]'
 		});
 	}
 }

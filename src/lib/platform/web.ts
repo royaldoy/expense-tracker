@@ -15,9 +15,13 @@ import type {
 	IPlatform,
 	IShareAdapter,
 	IStatusBarAdapter,
+	IVoiceAdapter,
 	OcrResult,
 	ScheduleNotificationOptions,
-	ShareOptions
+	ShareOptions,
+	VoiceErrorCode,
+	VoiceRecognitionOptions,
+	VoiceRecognitionResult
 } from './types';
 
 export class WebFilesystemAdapter implements IFilesystemAdapter {
@@ -328,6 +332,85 @@ export class WebHapticsAdapter implements IHapticsAdapter {
 	}
 }
 
+export class WebVoiceAdapter implements IVoiceAdapter {
+	private mockMatches: string[] = ['beli kopi kenangan 25 ribu pakai gopay kemarin'];
+	private mockError: VoiceErrorCode | null = null;
+	private listening = false;
+
+	setMockMatches(matches: string[]): void {
+		this.mockMatches = matches;
+	}
+
+	setMockError(error: VoiceErrorCode | null): void {
+		this.mockError = error;
+	}
+
+	async isAvailable(): Promise<boolean> {
+		return true;
+	}
+
+	async checkPermissions(): Promise<boolean> {
+		if (typeof window !== 'undefined' && '__MOCK_VOICE_PERMISSION__' in window) {
+			return Boolean((window as unknown as Record<string, unknown>).__MOCK_VOICE_PERMISSION__);
+		}
+		return true;
+	}
+
+	async requestPermissions(): Promise<boolean> {
+		if (typeof window !== 'undefined' && '__MOCK_VOICE_PERMISSION__' in window) {
+			return Boolean((window as unknown as Record<string, unknown>).__MOCK_VOICE_PERMISSION__);
+		}
+		return true;
+	}
+
+	async start(_options?: VoiceRecognitionOptions): Promise<VoiceRecognitionResult> {
+		void _options;
+		this.listening = true;
+
+		// 1. Cek mock error global (untuk pengujian Playwright E2E)
+		if (typeof window !== 'undefined') {
+			const winObj = window as unknown as Record<string, unknown>;
+			if (winObj.__MOCK_VOICE_ERROR__) {
+				this.listening = false;
+				const code = String(winObj.__MOCK_VOICE_ERROR__) as VoiceErrorCode;
+				const err = new Error(`Voice error: ${code}`);
+				(err as unknown as Record<string, unknown>).code = code;
+				throw err;
+			}
+		}
+
+		if (this.mockError) {
+			this.listening = false;
+			const code = this.mockError;
+			const err = new Error(`Voice error: ${code}`);
+			(err as unknown as Record<string, unknown>).code = code;
+			throw err;
+		}
+
+		// Simulasi jeda mendengarkan suara (200ms)
+		await new Promise((resolve) => setTimeout(resolve, 200));
+
+		this.listening = false;
+
+		// 2. Cek mock matches global (untuk pengujian Playwright E2E)
+		if (typeof window !== 'undefined') {
+			const winObj = window as unknown as Record<string, unknown>;
+			if (
+				Array.isArray(winObj.__MOCK_VOICE_MATCHES__) &&
+				winObj.__MOCK_VOICE_MATCHES__.length > 0
+			) {
+				return { matches: winObj.__MOCK_VOICE_MATCHES__ as string[] };
+			}
+		}
+
+		return { matches: [...this.mockMatches] };
+	}
+
+	async stop(): Promise<void> {
+		this.listening = false;
+	}
+}
+
 export class WebPlatform implements IPlatform {
 	readonly type = 'web';
 	readonly isNative = false;
@@ -339,6 +422,7 @@ export class WebPlatform implements IPlatform {
 	readonly biometrics = new WebBiometricsAdapter();
 	readonly cameraOcr = new WebCameraOcrAdapter();
 	readonly haptics = new WebHapticsAdapter();
+	readonly voice = new WebVoiceAdapter();
 }
 
 export const webPlatform = new WebPlatform();

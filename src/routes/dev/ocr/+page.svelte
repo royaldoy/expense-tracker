@@ -211,14 +211,9 @@
 <div class="pt-safe flex flex-col gap-4 px-4 pb-24">
 	<!-- Top Bar -->
 	<header class="flex items-center justify-between pt-2">
-		<button
-			type="button"
-			class="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-surface-container-high/60 text-on-surface transition-transform active:scale-95"
-			onclick={() => history.back()}
-			aria-label="Kembali"
-		>
+		<GlassButton variant="icon" size="sm" onclick={() => history.back()} aria-label="Kembali">
 			<span class="material-symbols-outlined text-xl">arrow_back</span>
-		</button>
+		</GlassButton>
 		<h1 class="text-base font-bold text-on-surface">Generator Fixture OCR (/dev/ocr)</h1>
 		<div class="w-9"></div>
 	</header>
@@ -379,14 +374,15 @@
 						<span class="text-xs font-bold text-on-surface"
 							>Daftar Item ({expectedItems.length})</span
 						>
-						<button
-							type="button"
-							class="flex items-center gap-1 rounded-full bg-surface-container px-2.5 py-1 text-[11px] font-semibold text-primary transition-transform active:scale-95"
+						<GlassButton
+							variant="secondary"
+							size="sm"
+							class="min-h-[28px] rounded-full px-2.5 py-1 text-[11px] text-primary"
 							onclick={addItem}
 						>
 							<span class="material-symbols-outlined text-sm">add</span>
 							<span>Tambah Item</span>
-						</button>
+						</GlassButton>
 					</div>
 
 					{#if expectedItems.length === 0}
@@ -407,14 +403,15 @@
 										class="flex-1 rounded bg-surface-container px-2.5 py-1 text-xs text-on-surface focus:outline-none"
 										bind:value={item.name}
 									/>
-									<button
-										type="button"
-										class="hover:text-error flex h-7 w-7 items-center justify-center rounded-full text-outline"
+									<GlassButton
+										variant="icon"
+										size="sm"
+										class="hover:text-error h-7 min-h-[28px] w-7 min-w-[28px] text-outline"
 										onclick={() => removeItem(idx)}
 										aria-label="Hapus item"
 									>
 										<span class="material-symbols-outlined text-base">delete</span>
-									</button>
+									</GlassButton>
 								</div>
 								<div class="grid grid-cols-3 gap-2">
 									<input
@@ -458,14 +455,15 @@
 
 					<div class="flex items-center justify-between gap-2 pt-1">
 						<span class="text-[11px] text-outline">Atau salin teks JSON langsung:</span>
-						<button
-							type="button"
-							class="flex items-center gap-1 rounded-full bg-surface-container px-3 py-1 text-xs font-bold text-primary shadow-xs transition-transform active:scale-95"
+						<GlassButton
+							variant="secondary"
+							size="sm"
+							class="min-h-[28px] rounded-full px-3 py-1 text-xs text-primary"
 							onclick={() => copyToClipboard(fixtureJson)}
 						>
 							<span class="material-symbols-outlined text-sm">content_copy</span>
 							<span>Salin JSON</span>
-						</button>
+						</GlassButton>
 					</div>
 					{#if copyToast}
 						<p class="text-secondary text-right text-xs font-bold">{copyToast}</p>

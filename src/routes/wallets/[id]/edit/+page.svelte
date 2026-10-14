@@ -129,14 +129,15 @@
 <div class="pt-safe flex flex-col gap-5 px-4 pb-24">
 	<!-- Top Bar -->
 	<header class="mb-5 flex items-center justify-between">
-		<button
-			type="button"
-			class="flex h-9 w-9 items-center justify-center rounded-full bg-surface-container-high/60 text-on-surface transition-transform active:scale-95"
+		<GlassButton
+			variant="icon"
+			size="sm"
+			class="text-on-surface"
 			onclick={() => history.back()}
 			aria-label="Kembali"
 		>
 			<span class="material-symbols-outlined text-xl">arrow_back</span>
-		</button>
+		</GlassButton>
 		<h1 class="text-base font-bold text-on-surface">{t('wallets.edit')}</h1>
 		<div class="w-9"></div>
 	</header>
@@ -196,19 +197,20 @@
 					<div class="flex items-center justify-between gap-2">
 						{#each colorOptions as opt (opt.color)}
 							{@const isSelected = selectedColor === opt.color}
-							<button
-								type="button"
-								class="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full transition-transform active:scale-90 {isSelected
+							<GlassButton
+								variant="icon"
+								size="md"
+								class="!h-10 !min-h-[40px] !w-10 !min-w-[40px] rounded-full !p-0 transition-transform active:scale-90 {isSelected
 									? 'ring-3 ring-primary ring-offset-2 ring-offset-surface'
 									: 'hover:scale-105'}"
-								style="background: {opt.color};"
+								style="background: {opt.color} !important;"
 								onclick={() => (selectedColor = opt.color)}
 								aria-label={opt.label}
 							>
 								{#if isSelected}
 									<span class="material-symbols-outlined text-sm font-black text-white">check</span>
 								{/if}
-							</button>
+							</GlassButton>
 						{/each}
 					</div>
 				</div>
@@ -221,16 +223,17 @@
 					<div class="grid grid-cols-6 gap-2">
 						{#each iconOptions as icon (icon)}
 							{@const isSelected = selectedIcon === icon}
-							<button
-								type="button"
-								class="flex h-11 cursor-pointer items-center justify-center rounded-2xl transition-all active:scale-90 {isSelected
-									? 'bg-primary text-white shadow-md'
-									: 'bg-surface-container-high/60 text-on-surface-variant hover:text-on-surface'}"
+							<GlassButton
+								variant={isSelected ? 'primary' : 'secondary'}
+								size="md"
+								class="!h-11 !w-full !rounded-2xl transition-all active:scale-90 {isSelected
+									? 'shadow-md'
+									: 'text-on-surface-variant hover:text-on-surface'}"
 								onclick={() => (selectedIcon = icon)}
 								aria-label="Pilih ikon {icon}"
 							>
 								<span class="material-symbols-outlined text-xl">{icon}</span>
-							</button>
+							</GlassButton>
 						{/each}
 					</div>
 				</div>
@@ -276,23 +279,25 @@
 
 			<!-- Tombol Arsipkan & Hapus -->
 			<div class="space-y-3 pt-4">
-				<button
-					type="button"
-					class="w-full rounded-2xl bg-amber-500/10 py-3 text-xs font-bold text-amber-500 transition-colors hover:bg-amber-500/20 active:scale-[0.99]"
+				<GlassButton
+					variant="secondary"
+					size="md"
+					class="w-full font-bold text-amber-500"
 					onclick={() => (showArchiveDialog = true)}
 					data-testid="wallet-archive-button"
 				>
 					{wallet.archivedAt ? t('wallets.bukaArsip') : t('wallets.arsip')}
-				</button>
+				</GlassButton>
 
-				<button
-					type="button"
-					class="bg-error/10 text-error hover:bg-error/20 w-full rounded-2xl py-3 text-xs font-bold transition-colors active:scale-[0.99]"
+				<GlassButton
+					variant="destructive"
+					size="md"
+					class="w-full font-bold"
 					onclick={() => (showDeleteDialog = true)}
 					data-testid="wallet-delete-button"
 				>
 					{t('common.hapus')} Dompet
-				</button>
+				</GlassButton>
 			</div>
 		</form>
 	{/if}

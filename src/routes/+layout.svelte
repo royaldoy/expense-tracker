@@ -4,7 +4,8 @@
 	import { onNavigate } from '$app/navigation';
 	import { page } from '$app/state';
 	import { get } from 'svelte/store';
-	import GlassTabBar from '$lib/components/glass/GlassTabBar.svelte';
+	import GlassDock from '$lib/components/glass/GlassDock.svelte';
+	import GlassFab from '$lib/components/glass/GlassFab.svelte';
 	import QuickActionSheet from '$lib/components/glass/QuickActionSheet.svelte';
 	import PinLockScreen from '$lib/components/security/PinLockScreen.svelte';
 	import { refreshUnreadNotificationsCount } from '$lib/stores/notificationStore';
@@ -15,9 +16,30 @@
 	let { children }: LayoutProps = $props();
 
 	let quickActionOpen = $state(false);
+	let isKeyboardOpen = $state(false);
 
-	// Sembunyikan tab bar pada rute onboarding, saat aplikasi terkunci, atau alur fullscreen tertentu
-	let hideTabBar = $derived(page.url.pathname.startsWith('/onboarding') || $isLocked);
+	/**
+	 * Rute layar penuh: form transaksi, form dompet, scan struk, OCR dev, dan onboarding
+	 */
+	function isFullscreenRoute(pathname: string): boolean {
+		if (pathname.startsWith('/onboarding')) return true;
+		if (pathname.startsWith('/transfer')) return true;
+		if (pathname.startsWith('/scan')) return true;
+		if (pathname === '/dev/ocr') return true;
+
+		// Form transaksi baru dan edit
+		if (pathname === '/transactions/new' || pathname === '/transaksi/baru') return true;
+		if (/^\/(transactions|transaksi)\/[^/]+\/edit\/?$/.test(pathname)) return true;
+
+		// Form dompet baru dan edit
+		if (pathname === '/wallets/new' || pathname === '/dompet/baru') return true;
+		if (/^\/(wallets|dompet)\/[^/]+\/edit\/?$/.test(pathname)) return true;
+
+		return false;
+	}
+
+	let isFullscreen = $derived(isFullscreenRoute(page.url.pathname) || $isLocked);
+	let showNavigation = $derived(!isFullscreen && !isKeyboardOpen);
 
 	// View Transitions API (Hanya aktif bila pathname berubah dan mode animasi aktif)
 	onNavigate((navigation) => {
@@ -40,8 +62,64 @@
 		});
 	});
 
+	onMount(() => {
+		if (typeof window === 'undefined') return;
+
+		// Deteksi Virtual Keyboard via visualViewport & fokus input
+		const vv = window.visualViewport;
+
+		function checkKeyboard() {
+			if (vv) {
+				const heightDiff = window.innerHeight - vv.height;
+				if (heightDiff > 120) {
+					isKeyboardOpen = true;
+					return;
+				}
+			}
+			const activeEl = document.activeElement;
+			const isInputActive =
+				activeEl instanceof HTMLInputElement ||
+				activeEl instanceof HTMLTextAreaElement ||
+				activeEl?.hasAttribute('contenteditable');
+
+			if (!isInputActive) {
+				isKeyboardOpen = false;
+			}
+		}
+
+		function handleFocusIn(e: FocusEvent) {
+			const target = e.target;
+			if (
+				target instanceof HTMLInputElement ||
+				target instanceof HTMLTextAreaElement ||
+				(target instanceof HTMLElement && target.hasAttribute('contenteditable'))
+			) {
+				isKeyboardOpen = true;
+			}
+		}
+
+		function handleFocusOut() {
+			setTimeout(() => {
+				checkKeyboard();
+			}, 120);
+		}
+
+		if (vv) {
+			vv.addEventListener('resize', checkKeyboard);
+		}
+		window.addEventListener('focusin', handleFocusIn);
+		window.addEventListener('focusout', handleFocusOut);
+
+		return () => {
+			if (vv) vv.removeEventListener('resize', checkKeyboard);
+			window.removeEventListener('focusin', handleFocusIn);
+			window.removeEventListener('focusout', handleFocusOut);
+		};
+	});
+
 	onMount(async () => {
 		await Promise.all([initUiStore(), initSecurityStore(), refreshUnreadNotificationsCount()]);
+
 		if (typeof window !== 'undefined') {
 			const { transactionService } = await import('$lib/db/transactionService');
 			(window as unknown as { rebuildBalances: () => Promise<unknown> }).rebuildBalances = () =>
@@ -94,16 +172,19 @@
 
 	<!-- Konten Utama Halaman (inert saat terkunci) -->
 	<main
-		class="relative mx-auto min-h-screen w-full max-w-[420px] {hideTabBar ? 'pb-safe' : 'pb-28'}"
+		class="relative mx-auto min-h-screen w-full max-w-[420px] {showNavigation
+			? 'pb-32'
+			: 'pb-safe'}"
 		inert={$isLocked}
 		aria-hidden={$isLocked}
 	>
 		{@render children()}
 	</main>
 
-	<!-- Floating Glass Tab Bar -->
-	{#if !hideTabBar}
-		<GlassTabBar onquickaction={() => (quickActionOpen = true)} />
+	<!-- Floating Glass FAB & Glass Dock -->
+	{#if showNavigation}
+		<GlassFab onaction={() => (quickActionOpen = true)} />
+		<GlassDock />
 	{/if}
 
 	<!-- Quick Action Sheet -->

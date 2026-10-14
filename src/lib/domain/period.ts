@@ -22,7 +22,7 @@ export interface Period {
 	startDay: number;
 }
 
-function clampDayToMonth(year: number, month: number, targetDay: number): number {
+export function clampDayToMonth(year: number, month: number, targetDay: number): number {
 	const refDate = new Date(year, month, 1);
 	const maxDays = getDaysInMonth(refDate);
 	return Math.min(Math.max(1, targetDay), maxDays);

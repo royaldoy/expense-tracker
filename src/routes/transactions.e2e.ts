@@ -209,7 +209,7 @@ test.describe('Alur Transaksi, Transfer, dan Laporan Keuangan (Transactions E2E)
 		await page.locator('[data-testid="transaction-form-submit"]').click();
 		await expect(page).toHaveURL(/\/transactions$/);
 
-		// Buat Transaksi 2: Bensin Motor (Rp50.000)
+		// Buat Transaksi 2: Bensin Motor (Rp50.000) dengan kategori Transportasi
 		await page.goto('/transactions/new');
 		await expect(page.getByText('Catat Transaksi')).toBeVisible();
 		await page.locator('[data-testid="keypad-5"]').click();
@@ -219,6 +219,11 @@ test.describe('Alur Transaksi, Transfer, dan Laporan Keuangan (Transactions E2E)
 		await page.locator('[data-testid="keypad-0"]').click();
 		await expect(page.locator('[data-testid="transaction-form-amount"]')).toContainText('Rp50.000');
 		await page.locator('[data-testid="transaction-note-input"]').fill('Bensin Pertamax');
+
+		// Pilih kategori Transportasi agar berbeda dari kategori Makanan/Kopi
+		await page.locator('[data-testid="transaction-category-trigger"]').click();
+		await page.getByText('Transportasi').first().click();
+
 		await page.locator('[data-testid="transaction-form-submit"]').click();
 		await expect(page).toHaveURL(/\/transactions$/);
 
@@ -258,7 +263,7 @@ test.describe('Alur Transaksi, Transfer, dan Laporan Keuangan (Transactions E2E)
 		await expect(page.locator('[data-testid="transaction-row"]')).toHaveCount(2);
 	});
 
-	test('ganti jenis transaksi dari sheet + saat /transactions/new sedang terbuka', async ({
+	test('QuickActionSheet memiliki tiga opsi (Catat, Suara, Scan Struk) dan pemilih tipe form dapat berganti reaktif', async ({
 		page
 	}) => {
 		// 1. Setup dompet awal
@@ -268,22 +273,120 @@ test.describe('Alur Transaksi, Transfer, dan Laporan Keuangan (Transactions E2E)
 		await page.locator('[data-testid="wallet-form-submit"]').click();
 		await expect(page).toHaveURL(/\/wallets/);
 
-		// 2. Buka Pengeluaran lewat tombol + (Aksi Cepat)
+		// 2. Buka QuickActionSheet lewat tombol + (Aksi Cepat)
 		await page.getByLabel('Aksi Cepat').click();
-		await page.getByText('Catat Pengeluaran').click();
-		await expect(page).toHaveURL(/\/transactions\/new\?type=expense/);
+		await expect(page.locator('[data-testid="quick-action-catat"]')).toBeVisible();
+		await expect(page.locator('[data-testid="quick-action-suara"]')).toBeVisible();
+		await expect(page.locator('[data-testid="quick-action-scan"]')).toBeVisible();
+
+		// 3. Klik Catat -> Navigasi ke /transactions/new
+		await page.locator('[data-testid="quick-action-catat"]').click();
+		await expect(page).toHaveURL(/\/transactions\/new/);
 		await expect(page.getByText('Nominal Pengeluaran')).toBeVisible();
 
-		// 3. Saat /transactions/new sedang terbuka, pilih Pemasukan dari sheet +
-		await page.getByLabel('Aksi Cepat').click();
-		await page.getByText('Catat Pemasukan').click();
+		// 4. Ubah tipe menjadi Pemasukan via Segmented Control di form
+		await page.getByRole('tab', { name: 'Pemasukan' }).click();
 		await expect(page).toHaveURL(/\/transactions\/new\?type=income/);
 		await expect(page.getByText('Nominal Pemasukan')).toBeVisible();
 
-		// 4. Dari /transactions/new, pilih Transfer dari sheet +
-		await page.getByLabel('Aksi Cepat').click();
-		await page.getByText('Transfer Saldo').click();
-		await expect(page).toHaveURL(/\/transfer/);
+		// 5. Ubah tipe menjadi Transfer via Segmented Control di form
+		await page.getByRole('tab', { name: 'Transfer' }).click();
+		await expect(page).toHaveURL(/\/transactions\/new\?type=transfer/);
 		await expect(page.getByText('Nominal Transfer')).toBeVisible();
+
+		// 6. Uji tombol Scan Struk dari QuickActionSheet -> Navigasi ke /scan (dari halaman utama dengan FAB)
+		await page.goto('/wallets');
+		await page.getByLabel('Aksi Cepat').click();
+		await page.locator('[data-testid="quick-action-scan"]').click();
+		await expect(page).toHaveURL(/\/scan/);
+		await expect(page.getByText('Scan Struk Belanja')).toBeVisible();
+	});
+
+	test('Alur transaksi suara: buka rekognisi, isi form otomatis tanpa auto-save, tanda tidak yakin, dan simpan', async ({
+		page
+	}) => {
+		// 1. Setup Dompet GoPay
+		await page.goto('/wallets/new');
+		await page.locator('[data-testid="wallet-form-name"]').fill('GoPay');
+		await page.locator('[data-testid="wallet-form-balance"]').fill('100000');
+		await page.locator('[data-testid="wallet-form-submit"]').click();
+		await expect(page).toHaveURL(/\/wallets/);
+
+		// 2. Set mock ucapan suara di window sebelum memicu rekognisi
+		await page.evaluate(() => {
+			(window as unknown as Record<string, unknown>).__MOCK_VOICE_MATCHES__ = [
+				'beli kopi kenangan 25 ribu pakai gopay kemarin'
+			];
+			(window as unknown as Record<string, unknown>).__MOCK_VOICE_ERROR__ = null;
+		});
+
+		// 3. Buka Aksi Cepat dan pilih Suara
+		await page.getByLabel('Aksi Cepat').click();
+		await page.locator('[data-testid="quick-action-suara"]').click();
+
+		// 4. Tunggu modal rekognisi memproses dan membuka /transactions/new?from=voice
+		await expect(page).toHaveURL(/\/transactions\/new\?from=voice/);
+
+		// 5. Verifikasi banner ujaran suara dan data terisi di form
+		const banner = page.locator('[data-testid="voice-banner"]');
+		await expect(banner).toBeVisible();
+		await expect(banner).toContainText('beli kopi kenangan 25 ribu pakai gopay kemarin');
+
+		// Nominal terisi Rp25.000
+		await expect(page.locator('[data-testid="transaction-form-amount"]')).toContainText('Rp25.000');
+
+		// Dompet GoPay terpilih
+		await expect(page.locator('[data-testid="transaction-wallet-trigger"]')).toContainText('GoPay');
+
+		// Catatan terisi Kopi kenangan
+		await expect(page.locator('[data-testid="transaction-note-input"]')).toHaveValue(
+			'Kopi kenangan'
+		);
+
+		// Verifikasi TIDAK auto-save langsung: pengguna masih berada di /transactions/new
+		await expect(page).toHaveURL(/\/transactions\/new\?from=voice/);
+
+		// 6. Simpan transaksi secara manual
+		await page.locator('[data-testid="transaction-form-submit"]').click();
+		await expect(page).toHaveURL(/\/transactions$/);
+
+		// 7. Verifikasi transaksi tersimpan dengan benar di daftar riwayat
+		const txItem = page
+			.locator('[data-testid="transaction-row"]')
+			.filter({ hasText: 'Kopi kenangan' });
+		await expect(txItem).toBeVisible();
+		await expect(txItem).toContainText('-Rp25.000');
+
+		// Saldo GoPay berkurang dari 100.000 menjadi 75.000
+		await page.goto('/wallets');
+		const gopayCard = page.locator('[data-testid="wallet-card"]').filter({ hasText: 'GoPay' });
+		await expect(gopayCard).toContainText('Rp75.000');
+	});
+
+	test('Penanganan gagal suara: tampilkan pesan error yang jelas dan sediakan fallback catat manual', async ({
+		page
+	}) => {
+		// Buka halaman /transactions/new
+		await page.goto('/transactions/new');
+
+		// Set simulasi error suara no_speech pada konteks halaman saat ini
+		await page.evaluate(() => {
+			(window as unknown as Record<string, unknown>).__MOCK_VOICE_ERROR__ = 'no_speech';
+		});
+
+		// Buka aksi suara via header tombol mic di /transactions/new
+		await page.locator('[data-testid="header-voice-button"]').click();
+
+		// Verifikasi kontainer error dan pesan
+		const errorContainer = page.locator('[data-testid="voice-error-container"]');
+		await expect(errorContainer).toBeVisible();
+		await expect(page.locator('[data-testid="voice-error-message"]')).toContainText(
+			'Tidak ada suara yang terdeteksi'
+		);
+
+		// Klik "Catat Manual" -> Modal tertutup dan kembali ke form input
+		await page.locator('[data-testid="voice-fallback-manual-button"]').click();
+		await expect(page).toHaveURL(/\/transactions\/new/);
+		await expect(page.getByText('Nominal Pengeluaran')).toBeVisible();
 	});
 });

@@ -166,17 +166,17 @@
 	<!-- Periode Laporan Menjadi Pill di Bawah Judul -->
 	{#if currentPeriod}
 		<div class="flex items-center gap-1.5 pt-0.5">
-			<button
-				type="button"
-				class="flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold text-primary shadow-xs transition-all active:scale-95"
-				style="background: var(--glass-pill-bg); border: 1px solid var(--glass-pill-border);"
+			<GlassButton
+				variant="secondary"
+				size="sm"
+				class="min-h-[30px] rounded-full px-3.5 py-1 text-xs text-primary"
 				onclick={() => {}}
 				data-testid="report-period-pill"
 			>
 				<span class="material-symbols-outlined text-sm">calendar_month</span>
 				<span>{formatPeriod(currentPeriod)}</span>
 				<span class="material-symbols-outlined text-xs">keyboard_arrow_down</span>
-			</button>
+			</GlassButton>
 		</div>
 	{/if}
 
@@ -242,30 +242,26 @@
 					{t('reports.filterWalletLabel')}
 				</span>
 				<div class="flex flex-wrap gap-1.5">
-					<button
-						type="button"
-						class="rounded-full px-3 py-1.5 text-xs font-semibold transition-all {selectedExportWalletId ===
-						null
-							? 'bg-primary text-white shadow-xs'
-							: 'bg-surface-container text-on-surface-variant hover:bg-surface-container-high'}"
+					<GlassButton
+						variant={selectedExportWalletId === null ? 'primary' : 'secondary'}
+						size="sm"
+						class="min-h-[30px] rounded-full px-3 py-1 text-xs"
 						onclick={() => (selectedExportWalletId = null)}
 						data-testid="export-wallet-all"
 					>
 						{t('reports.allWallets')}
-					</button>
+					</GlassButton>
 					{#each wallets as w (w.id)}
-						<button
-							type="button"
-							class="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition-all {selectedExportWalletId ===
-							w.id
-								? 'bg-primary text-white shadow-xs'
-								: 'bg-surface-container text-on-surface-variant hover:bg-surface-container-high'}"
+						<GlassButton
+							variant={selectedExportWalletId === w.id ? 'primary' : 'secondary'}
+							size="sm"
+							class="min-h-[30px] rounded-full px-3 py-1 text-xs"
 							onclick={() => (selectedExportWalletId = w.id)}
 							data-testid="export-wallet-{w.id}"
 						>
 							<span class="h-2 w-2 rounded-full" style="background: {w.color};"></span>
 							{w.name}
-						</button>
+						</GlassButton>
 					{/each}
 				</div>
 			</div>
@@ -277,49 +273,46 @@
 				</span>
 				<div class="grid grid-cols-3 gap-2">
 					<!-- Format CSV -->
-					<button
-						type="button"
-						class="flex flex-col items-center justify-center gap-1 rounded-2xl p-3 text-center transition-all {exportFormat ===
-						'csv'
-							? 'border-2 border-primary bg-primary/10 text-primary'
-							: 'border border-surface-container-highest bg-surface-container-low/60 text-on-surface hover:bg-surface-container'}"
+					<GlassCard
 						onclick={() => (exportFormat = 'csv')}
+						class="flex flex-col items-center justify-center gap-1 p-3 text-center {exportFormat ===
+						'csv'
+							? 'bg-primary/10 text-primary ring-2 ring-primary'
+							: ''}"
 						data-testid="export-format-csv"
 					>
 						<span class="material-symbols-outlined text-2xl">table_chart</span>
 						<span class="text-xs font-bold">{t('reports.formatCsv')}</span>
 						<span class="text-[9px] leading-tight text-on-surface-variant">Tabel Data</span>
-					</button>
+					</GlassCard>
 
 					<!-- Format Excel -->
-					<button
-						type="button"
-						class="flex flex-col items-center justify-center gap-1 rounded-2xl p-3 text-center transition-all {exportFormat ===
-						'xlsx'
-							? 'border-2 border-primary bg-primary/10 text-primary'
-							: 'border border-surface-container-highest bg-surface-container-low/60 text-on-surface hover:bg-surface-container'}"
+					<GlassCard
 						onclick={() => (exportFormat = 'xlsx')}
+						class="flex flex-col items-center justify-center gap-1 p-3 text-center {exportFormat ===
+						'xlsx'
+							? 'bg-primary/10 text-primary ring-2 ring-primary'
+							: ''}"
 						data-testid="export-format-xlsx"
 					>
 						<span class="material-symbols-outlined text-2xl">grid_on</span>
 						<span class="text-xs font-bold">{t('reports.formatXlsx')}</span>
 						<span class="text-[9px] leading-tight text-on-surface-variant">Multi-Sheet</span>
-					</button>
+					</GlassCard>
 
 					<!-- Format PDF -->
-					<button
-						type="button"
-						class="flex flex-col items-center justify-center gap-1 rounded-2xl p-3 text-center transition-all {exportFormat ===
-						'pdf'
-							? 'border-2 border-primary bg-primary/10 text-primary'
-							: 'border border-surface-container-highest bg-surface-container-low/60 text-on-surface hover:bg-surface-container'}"
+					<GlassCard
 						onclick={() => (exportFormat = 'pdf')}
+						class="flex flex-col items-center justify-center gap-1 p-3 text-center {exportFormat ===
+						'pdf'
+							? 'bg-primary/10 text-primary ring-2 ring-primary'
+							: ''}"
 						data-testid="export-format-pdf"
 					>
 						<span class="material-symbols-outlined text-2xl">picture_as_pdf</span>
 						<span class="text-xs font-bold">{t('reports.formatPdf')}</span>
 						<span class="text-[9px] leading-tight text-on-surface-variant">Dokumen</span>
-					</button>
+					</GlassCard>
 				</div>
 			</div>
 

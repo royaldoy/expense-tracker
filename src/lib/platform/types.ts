@@ -185,6 +185,48 @@ export interface IHapticsAdapter {
 	vibrate(durationMs?: number): Promise<void>;
 }
 
+export type VoiceErrorCode =
+	'permission_denied' | 'no_speech' | 'not_understood' | 'service_unavailable' | 'unknown';
+
+export interface VoiceRecognitionOptions {
+	language?: string;
+	maxResults?: number;
+	prompt?: string;
+	popup?: boolean;
+	partialResults?: boolean;
+}
+
+export interface VoiceRecognitionResult {
+	matches: string[];
+}
+
+export interface IVoiceAdapter {
+	/**
+	 * Memeriksa apakah fitur pengenalan suara didukung dan tersedia di perangkat.
+	 */
+	isAvailable(): Promise<boolean>;
+
+	/**
+	 * Memeriksa status izin perekaman audio mikrofon.
+	 */
+	checkPermissions(): Promise<boolean>;
+
+	/**
+	 * Meminta izin perekaman audio mikrofon dari pengguna.
+	 */
+	requestPermissions(): Promise<boolean>;
+
+	/**
+	 * Memulai pendengaran rekognisi suara. Mengembalikan array string hasil ujaran.
+	 */
+	start(options?: VoiceRecognitionOptions): Promise<VoiceRecognitionResult>;
+
+	/**
+	 * Menghentikan proses pendengaran secara manual.
+	 */
+	stop(): Promise<void>;
+}
+
 export interface IPlatform {
 	readonly type: PlatformType;
 	readonly isNative: boolean;
@@ -196,4 +238,5 @@ export interface IPlatform {
 	readonly biometrics: IBiometricsAdapter;
 	readonly cameraOcr: ICameraOcrAdapter;
 	readonly haptics: IHapticsAdapter;
+	readonly voice: IVoiceAdapter;
 }

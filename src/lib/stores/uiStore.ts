@@ -17,6 +17,7 @@ export type AnimationMode = 'full' | 'minimal' | 'off';
 export const hideBalance = writable<boolean>(false);
 export const animationMode = writable<AnimationMode>('full');
 export const hapticsEnabled = writable<boolean>(true);
+export const quickGesturesEnabled = writable<boolean>(true);
 
 let isInitialized = false;
 
@@ -29,15 +30,17 @@ export function applyMotionModeToDocument(mode: AnimationMode): void {
 export async function initUiStore(): Promise<void> {
 	if (isInitialized) return;
 	try {
-		const [savedHide, savedAnim, savedHaptics] = await Promise.all([
+		const [savedHide, savedAnim, savedHaptics, savedGestures] = await Promise.all([
 			settingService.getHideBalance(),
 			settingService.getAnimationMode(),
-			settingService.getHapticsEnabled()
+			settingService.getHapticsEnabled(),
+			settingService.getQuickGesturesEnabled()
 		]);
 
 		hideBalance.set(savedHide);
 		animationMode.set(savedAnim);
 		hapticsEnabled.set(savedHaptics);
+		quickGesturesEnabled.set(savedGestures);
 		applyMotionModeToDocument(savedAnim);
 
 		isInitialized = true;
@@ -46,6 +49,7 @@ export async function initUiStore(): Promise<void> {
 		hideBalance.set(false);
 		animationMode.set('full');
 		hapticsEnabled.set(true);
+		quickGesturesEnabled.set(true);
 		applyMotionModeToDocument('full');
 	}
 }
@@ -89,6 +93,15 @@ export async function setHapticsPreference(enabled: boolean): Promise<void> {
 		await settingService.setHapticsEnabled(enabled);
 	} catch (error) {
 		console.error('Gagal menyimpan preferensi hapticsEnabled:', error);
+	}
+}
+
+export async function setQuickGesturesPreference(enabled: boolean): Promise<void> {
+	quickGesturesEnabled.set(enabled);
+	try {
+		await settingService.setQuickGesturesEnabled(enabled);
+	} catch (error) {
+		console.error('Gagal menyimpan preferensi quickGesturesEnabled:', error);
 	}
 }
 

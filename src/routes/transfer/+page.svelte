@@ -106,14 +106,15 @@
 <div class="pt-safe flex flex-col gap-4 px-4 pb-28">
 	<!-- Top Bar -->
 	<header class="flex items-center justify-between pt-2">
-		<button
-			type="button"
-			class="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-surface-container-high/60 text-on-surface transition-transform active:scale-95"
+		<GlassButton
+			variant="icon"
+			size="sm"
+			class="text-on-surface"
 			onclick={() => history.back()}
 			aria-label="Kembali"
 		>
 			<span class="material-symbols-outlined text-xl">arrow_back</span>
-		</button>
+		</GlassButton>
 		<h1 class="text-base font-bold text-on-surface">{t('transfer.title')}</h1>
 		<div class="w-9"></div>
 	</header>
@@ -122,9 +123,10 @@
 	<GlassCard class="p-3.5">
 		<div class="flex items-center justify-between gap-2">
 			<!-- Dompet Asal Button -->
-			<button
-				type="button"
-				class="flex-1 cursor-pointer rounded-xl p-2 text-left transition-colors hover:bg-surface-container/50 active:scale-[0.98]"
+			<GlassButton
+				variant="text"
+				size="md"
+				class="!h-auto !flex-1 !flex-col !items-start !p-2 !text-left"
 				onclick={() => (isSourceSheetOpen = true)}
 				data-testid="transfer-src-wallet-trigger"
 			>
@@ -137,23 +139,25 @@
 				<p class="text-[11px] text-on-surface-variant tabular-nums">
 					{sourceWallet ? formatRupiah(sourceWallet.balance) : '-'}
 				</p>
-			</button>
+			</GlassButton>
 
 			<!-- Swap Button -->
-			<button
-				type="button"
-				class="flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-full bg-primary/10 text-primary transition-transform active:scale-90"
+			<GlassButton
+				variant="icon"
+				size="md"
+				class="text-primary"
 				onclick={handleSwap}
 				data-testid="transfer-swap-button"
 				aria-label={t('transfer.tukar')}
 			>
 				<span class="material-symbols-outlined text-xl">sync_alt</span>
-			</button>
+			</GlassButton>
 
 			<!-- Dompet Tujuan Button -->
-			<button
-				type="button"
-				class="flex-1 cursor-pointer rounded-xl p-2 text-right transition-colors hover:bg-surface-container/50 active:scale-[0.98]"
+			<GlassButton
+				variant="text"
+				size="md"
+				class="!h-auto !flex-1 !flex-col !items-end !p-2 !text-right"
 				onclick={() => (isDestSheetOpen = true)}
 				data-testid="transfer-dest-wallet-trigger"
 			>
@@ -166,7 +170,7 @@
 				<p class="text-[11px] text-on-surface-variant tabular-nums">
 					{destWallet ? formatRupiah(destWallet.balance) : '-'}
 				</p>
-			</button>
+			</GlassButton>
 		</div>
 	</GlassCard>
 
@@ -183,50 +187,47 @@
 		</div>
 
 		<!-- Biaya Admin Selector Trigger -->
-		<button
-			type="button"
-			class="mt-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-surface-container-high/60 px-3 py-1 text-xs text-on-surface-variant hover:text-on-surface active:scale-95"
+		<GlassButton
+			variant="secondary"
+			size="sm"
+			class="!mt-2 !inline-flex !min-h-0 !items-center !gap-1.5 !rounded-full !px-3 !py-1 text-xs text-on-surface-variant hover:text-on-surface"
 			onclick={() => (isFeeSheetOpen = true)}
 			data-testid="transfer-fee-trigger"
 		>
 			<span>Biaya Admin:</span>
 			<span class="font-bold text-expense tabular-nums">{formattedFee}</span>
 			<span class="material-symbols-outlined text-sm">edit</span>
-		</button>
+		</GlassButton>
 	</GlassCard>
 
 	<!-- Quick Amount Chips -->
 	<div class="no-scrollbar flex gap-2 overflow-x-auto py-0.5">
 		{#each quickAmounts as amt (amt)}
-			<button
-				type="button"
-				class="rounded-full border border-outline-variant/30 bg-surface-container-lowest/70 px-3 py-1.5 text-xs font-semibold text-on-surface transition-transform active:scale-95"
+			<GlassButton
+				variant="secondary"
+				size="sm"
+				class="!min-h-0 !rounded-full !px-3 !py-1.5 text-xs font-semibold text-on-surface"
 				onclick={() => addQuickAmount(amt)}
 				data-testid="transfer-quick-{amt}"
 			>
 				+{formatRupiah(amt)}
-			</button>
+			</GlassButton>
 		{/each}
 	</div>
 
 	<!-- Selector Tanggal & Catatan -->
 	<div class="space-y-2">
 		<!-- Tanggal Trigger -->
-		<button
-			type="button"
-			class="w-full cursor-pointer text-left active:scale-[0.99]"
+		<GlassCard
 			onclick={() => (isDateSheetOpen = true)}
+			class="flex items-center justify-between px-3.5 py-2"
 		>
-			<GlassCard class="flex items-center justify-between px-3.5 py-2">
-				<div class="flex items-center gap-2">
-					<span class="material-symbols-outlined text-base text-primary">calendar_today</span>
-					<span class="text-xs font-semibold text-on-surface">Tanggal: {date}</span>
-				</div>
-				<span class="material-symbols-outlined text-base text-on-surface-variant"
-					>chevron_right</span
-				>
-			</GlassCard>
-		</button>
+			<div class="flex items-center gap-2">
+				<span class="material-symbols-outlined text-base text-primary">calendar_today</span>
+				<span class="text-xs font-semibold text-on-surface">Tanggal: {date}</span>
+			</div>
+			<span class="material-symbols-outlined text-base text-on-surface-variant">chevron_right</span>
+		</GlassCard>
 
 		<!-- Catatan Input -->
 		<div
@@ -273,9 +274,10 @@
 <GlassSheet bind:isOpen={isSourceSheetOpen} variant="sheet" title="Pilih Dompet Asal">
 	<div class="max-h-72 space-y-2 overflow-y-auto py-2">
 		{#each wallets as w (w.id)}
-			<button
-				type="button"
-				class="flex w-full cursor-pointer items-center justify-between rounded-xl p-3 text-left transition-colors hover:bg-surface-container-high/40 active:scale-[0.99] {sourceWalletId ===
+			<GlassButton
+				variant="secondary"
+				size="md"
+				class="!flex !min-h-0 !w-full !items-center !justify-between !p-3 !text-left {sourceWalletId ===
 				w.id
 					? 'ring-2 ring-primary'
 					: 'border border-outline-variant/20'}"
@@ -302,7 +304,7 @@
 				{#if sourceWalletId === w.id}
 					<span class="material-symbols-outlined text-lg text-primary">check_circle</span>
 				{/if}
-			</button>
+			</GlassButton>
 		{/each}
 	</div>
 </GlassSheet>
@@ -311,9 +313,10 @@
 <GlassSheet bind:isOpen={isDestSheetOpen} variant="sheet" title="Pilih Dompet Tujuan">
 	<div class="max-h-72 space-y-2 overflow-y-auto py-2">
 		{#each wallets.filter((w) => w.id !== sourceWalletId) as w (w.id)}
-			<button
-				type="button"
-				class="flex w-full cursor-pointer items-center justify-between rounded-xl p-3 text-left transition-colors hover:bg-surface-container-high/40 active:scale-[0.99] {destWalletId ===
+			<GlassButton
+				variant="secondary"
+				size="md"
+				class="!flex !min-h-0 !w-full !items-center !justify-between !p-3 !text-left {destWalletId ===
 				w.id
 					? 'ring-2 ring-primary'
 					: 'border border-outline-variant/20'}"
@@ -340,7 +343,7 @@
 				{#if destWalletId === w.id}
 					<span class="material-symbols-outlined text-lg text-primary">check_circle</span>
 				{/if}
-			</button>
+			</GlassButton>
 		{/each}
 	</div>
 </GlassSheet>
@@ -350,18 +353,17 @@
 	<div class="space-y-3 py-2">
 		<div class="grid grid-cols-2 gap-2">
 			{#each feePresets as fee (fee)}
-				<button
-					type="button"
-					class="rounded-xl p-3 text-center text-xs font-bold transition-all {numericFee === fee
-						? 'bg-primary text-white shadow-sm'
-						: 'bg-surface-container-high/60 text-on-surface hover:bg-surface-container'}"
+				<GlassButton
+					variant={numericFee === fee ? 'primary' : 'secondary'}
+					size="md"
+					class="w-full text-center text-xs font-bold"
 					onclick={() => {
 						rawFee = fee.toString();
 						isFeeSheetOpen = false;
 					}}
 				>
 					{fee === 0 ? 'Gratis (Rp0)' : formatRupiah(fee)}
-				</button>
+				</GlassButton>
 			{/each}
 		</div>
 

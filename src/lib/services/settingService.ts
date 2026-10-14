@@ -12,7 +12,9 @@ export const SETTING_KEYS = {
 	THEME: 'theme',
 	NOTIFICATION_SETTINGS: 'notification_settings',
 	ANIMATION_MODE: 'animation_mode',
-	HAPTICS_ENABLED: 'haptics_enabled'
+	HAPTICS_ENABLED: 'haptics_enabled',
+	QUICK_GESTURES_ENABLED: 'quick_gestures_enabled',
+	GESTURE_HINT_SEEN: 'gesture_hint_seen'
 } as const;
 
 export interface StorageMetrics {
@@ -82,6 +84,27 @@ export class SettingService {
 
 	async setHapticsEnabled(enabled: boolean): Promise<void> {
 		await this.repository.set<boolean>(SETTING_KEYS.HAPTICS_ENABLED, enabled);
+	}
+
+	async getQuickGesturesEnabled(): Promise<boolean> {
+		const val = await this.repository.get<boolean>(SETTING_KEYS.QUICK_GESTURES_ENABLED);
+		if (typeof val === 'boolean') {
+			return val;
+		}
+		return true; // Default aktif
+	}
+
+	async setQuickGesturesEnabled(enabled: boolean): Promise<void> {
+		await this.repository.set<boolean>(SETTING_KEYS.QUICK_GESTURES_ENABLED, enabled);
+	}
+
+	async getGestureHintSeen(): Promise<boolean> {
+		const val = await this.repository.get<boolean>(SETTING_KEYS.GESTURE_HINT_SEEN);
+		return val === true;
+	}
+
+	async setGestureHintSeen(seen: boolean): Promise<void> {
+		await this.repository.set<boolean>(SETTING_KEYS.GESTURE_HINT_SEEN, seen);
 	}
 
 	async getCurrentReportPeriod(): Promise<Period> {

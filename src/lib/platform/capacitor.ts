@@ -8,6 +8,7 @@ import { Share } from '@capacitor/share';
 import { StatusBar, Style } from '@capacitor/status-bar';
 import { NativeBiometric } from '@capgo/capacitor-native-biometric';
 import { CapacitorPluginMlKitTextRecognition } from '@pantrist/capacitor-plugin-ml-kit-text-recognition';
+import { SpeechRecognition } from '@capacitor-community/speech-recognition';
 import { compressImageToJpeg } from './imageUtils';
 import type {
 	BackButtonListener,
@@ -26,11 +27,16 @@ import type {
 	IPlatform,
 	IShareAdapter,
 	IStatusBarAdapter,
+	IVoiceAdapter,
 	OcrResult,
 	PlatformType,
 	ScheduleNotificationOptions,
-	ShareOptions
+	ShareOptions,
+	VoiceErrorCode,
+	VoiceRecognitionOptions,
+	VoiceRecognitionResult
 } from './types';
+import { VOICE_RECOGNITION_CONFIG } from './voiceConfig';
 
 function resolveDirectory(dir?: 'documents' | 'cache' | 'data'): Directory {
 	switch (dir) {
@@ -396,6 +402,106 @@ export class CapacitorHapticsAdapter implements IHapticsAdapter {
 	}
 }
 
+export class CapacitorVoiceAdapter implements IVoiceAdapter {
+	async isAvailable(): Promise<boolean> {
+		try {
+			const res = await SpeechRecognition.available();
+			return res.available;
+		} catch {
+			return false;
+		}
+	}
+
+	async checkPermissions(): Promise<boolean> {
+		try {
+			const status = await SpeechRecognition.checkPermissions();
+			return status.speechRecognition === 'granted';
+		} catch {
+			return false;
+		}
+	}
+
+	async requestPermissions(): Promise<boolean> {
+		try {
+			const status = await SpeechRecognition.requestPermissions();
+			return status.speechRecognition === 'granted';
+		} catch {
+			return false;
+		}
+	}
+
+	async start(options?: VoiceRecognitionOptions): Promise<VoiceRecognitionResult> {
+		const opts = {
+			popup: options?.popup ?? VOICE_RECOGNITION_CONFIG.popup,
+			language: options?.language ?? VOICE_RECOGNITION_CONFIG.language,
+			prompt: options?.prompt ?? VOICE_RECOGNITION_CONFIG.prompt,
+			maxResults: options?.maxResults ?? VOICE_RECOGNITION_CONFIG.maxResults,
+			partialResults: options?.partialResults ?? false
+		};
+
+		try {
+			const res = await SpeechRecognition.start(opts);
+			const matches = res.matches ?? [];
+			if (matches.length === 0) {
+				const err = new Error('Tidak ada suara yang terdeteksi');
+				(err as unknown as Record<string, unknown>).code = 'no_speech' satisfies VoiceErrorCode;
+				throw err;
+			}
+			return { matches };
+		} catch (error: unknown) {
+			if (error && typeof error === 'object' && 'code' in error) {
+				throw error;
+			}
+			const msg = error instanceof Error ? error.message : String(error);
+			const lower = msg.toLowerCase();
+
+			let code: VoiceErrorCode = 'unknown';
+			if (
+				lower.includes('permission') ||
+				lower.includes('denied') ||
+				lower.includes('not granted')
+			) {
+				code = 'permission_denied';
+			} else if (
+				lower.includes('no speech') ||
+				lower.includes('no match') ||
+				lower.includes('error 7') ||
+				lower.includes("didn't catch")
+			) {
+				code = 'no_speech';
+			} else if (
+				lower.includes('not recognized') ||
+				lower.includes('unclear') ||
+				lower.includes('error 3') ||
+				lower.includes('error 5')
+			) {
+				code = 'not_understood';
+			} else if (
+				lower.includes('unavailable') ||
+				lower.includes('network') ||
+				lower.includes('offline') ||
+				lower.includes('error 1') ||
+				lower.includes('error 2') ||
+				lower.includes('error 4')
+			) {
+				code = 'service_unavailable';
+			}
+
+			const err = new Error(msg);
+			(err as unknown as Record<string, unknown>).code = code;
+			throw err;
+		}
+	}
+
+	async stop(): Promise<void> {
+		try {
+			await SpeechRecognition.stop();
+		} catch {
+			// Abaikan
+		}
+	}
+}
+
 export class CapacitorPlatform implements IPlatform {
 	readonly type: PlatformType;
 	readonly isNative: boolean;
@@ -407,6 +513,7 @@ export class CapacitorPlatform implements IPlatform {
 	readonly biometrics = new CapacitorBiometricsAdapter();
 	readonly cameraOcr = new CapacitorCameraOcrAdapter();
 	readonly haptics = new CapacitorHapticsAdapter();
+	readonly voice = new CapacitorVoiceAdapter();
 
 	constructor() {
 		const p = Capacitor.getPlatform();

@@ -79,14 +79,15 @@
 <div class="pt-safe flex flex-col gap-5 px-4 pb-28">
 	<!-- Top Bar -->
 	<header class="mb-5 flex items-center justify-between">
-		<button
-			type="button"
-			class="flex h-9 w-9 items-center justify-center rounded-full bg-surface-container-high/60 text-on-surface transition-transform active:scale-95"
+		<GlassButton
+			variant="icon"
+			size="sm"
+			class="text-on-surface"
 			onclick={() => history.back()}
 			aria-label="Kembali"
 		>
 			<span class="material-symbols-outlined text-xl">arrow_back</span>
-		</button>
+		</GlassButton>
 		<h1 class="text-base font-bold text-on-surface">{t('wallets.detail')}</h1>
 		{#if wallet}
 			<a href="/wallets/{wallet.id}/edit" data-testid="wallet-detail-edit-button">
@@ -128,17 +129,16 @@
 					<span class="text-xs">Transfer</span>
 				</GlassButton>
 			</a>
-			<button
-				type="button"
-				class="w-full"
+			<GlassButton
+				variant="secondary"
+				size="md"
+				class="w-full flex-col py-2.5"
 				onclick={openAdjustSheet}
 				data-testid="wallet-adjust-balance-button"
 			>
-				<GlassButton variant="secondary" size="md" class="w-full flex-col py-2.5">
-					<span class="material-symbols-outlined text-base">tune</span>
-					<span class="text-xs">Sesuaikan</span>
-				</GlassButton>
-			</button>
+				<span class="material-symbols-outlined text-base">tune</span>
+				<span class="text-xs">Sesuaikan</span>
+			</GlassButton>
 			<a href="/transaksi/baru?walletId={wallet.id}" class="w-full">
 				<GlassButton variant="primary" size="md" class="w-full flex-col py-2.5">
 					<span class="material-symbols-outlined text-base">add</span>
