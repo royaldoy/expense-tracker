@@ -1,10 +1,10 @@
 /**
  * Klasifikasi Gestur Cepat (Pure Functions)
- * Logika murni bebas efek samping untuk mendeteksi swipe kanan dan tarik turun
- * dengan hambatan (rubber-banding), dominasi sumbu, dan zona tepi.
+ * Logika murni bebas efek samping untuk mendeteksi swipe kanan eksklusif di Beranda
+ * dengan hambatan (rubber-banding), dominasi sumbu horizontal, dan zona tepi Android back.
  */
 
-export type GestureType = 'swipe_right' | 'pull_down' | 'none';
+export type GestureType = 'swipe_right' | 'none';
 
 export interface GestureStartContext {
 	startX: number;
@@ -93,10 +93,9 @@ export function classifyGesture(
 	const absY = Math.abs(deltaY);
 
 	const dt = Math.max(1, ctx.currentTime - ctx.startTime);
-	const statusBarHeight = ctx.statusBarHeight ?? 36;
 	const edgeZoneMargin = ctx.edgeZoneMargin ?? 32;
 
-	// 2. Evaluasi Swipe Kanan (menuju alur scan)
+	// 2. Evaluasi Swipe Kanan (menuju alur kamera scan)
 	// Syarat:
 	// - deltaX > 0 (arah kanan)
 	// - startX >= edgeZoneMargin (tidak mulai di tepi paling kiri layar untuk hindari back Android)
@@ -118,39 +117,6 @@ export function classifyGesture(
 
 		return {
 			type: 'swipe_right',
-			deltaX,
-			deltaY,
-			velocity,
-			displacement,
-			progress,
-			isExceeded
-		};
-	}
-
-	// 3. Evaluasi Tarik Turun (menuju alur suara)
-	// Syarat:
-	// - deltaY > 0 (arah bawah)
-	// - scrollTop <= 0 (harus berada di posisi paling atas halaman)
-	// - startY >= statusBarHeight (sentuhan dimulai di bawah status bar)
-	// - Dominan vertikal: absY > absX * axisDominanceRatio
-	const isVerticalPull = deltaY > 0 && absY > absX * config.axisDominanceRatio;
-	const isAtTop = ctx.scrollTop <= 0;
-	const isBelowStatusBar = ctx.startY >= statusBarHeight;
-
-	if (isVerticalPull && isAtTop && isBelowStatusBar) {
-		const velocity = deltaY / dt;
-		const progress = Math.min(1.5, Math.max(0, deltaY / config.distanceThreshold));
-		const isExceeded =
-			progress >= 1.0 ||
-			(velocity >= config.velocityThreshold && deltaY >= config.distanceThreshold * 0.4);
-		const displacement = calculateDampenedDisplacement(
-			deltaY,
-			config.maxResistanceDistance,
-			config.resistanceFactor
-		);
-
-		return {
-			type: 'pull_down',
 			deltaX,
 			deltaY,
 			velocity,

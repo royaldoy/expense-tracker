@@ -381,9 +381,7 @@
 					</div>
 					<div>
 						<p class="text-sm font-semibold text-on-surface">Gestur Cepat</p>
-						<p class="text-xs text-on-surface-variant">
-							Geser kanan untuk scan, tarik turun untuk suara
-						</p>
+						<p class="text-xs text-on-surface-variant">Geser kanan untuk scan struk</p>
 					</div>
 				</div>
 				<GlassSwitch

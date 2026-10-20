@@ -8,7 +8,6 @@
 	import GlassEmptyState from '$lib/components/glass/GlassEmptyState.svelte';
 	import GlassListRow from '$lib/components/glass/GlassListRow.svelte';
 	import GlassSkeleton from '$lib/components/glass/GlassSkeleton.svelte';
-	import VoiceInputModal from '$lib/components/voice/VoiceInputModal.svelte';
 	import { aggregateSummary } from '$lib/domain/aggregation';
 	import { calculateOverallBudget, type OverallBudgetSummary } from '$lib/domain/budget';
 	import { formatRupiah } from '$lib/domain/money';
@@ -48,8 +47,7 @@
 	let recentTransactions = $state<Transaction[]>([]);
 	let categories = $state<Category[]>([]);
 
-	// Gestur Cepat State
-	let isVoiceModalOpen = $state(false);
+	// Gestur Cepat State (Swipe Kanan menuju /scan)
 	let showHintBanner = $state(false);
 	let isDragging = $state(false);
 	let gestureType = $state<GestureType>('none');
@@ -304,8 +302,6 @@
 
 			if (action === 'swipe_right') {
 				goto('/scan');
-			} else if (action === 'pull_down') {
-				isVoiceModalOpen = true;
 			}
 			return;
 		}
@@ -355,11 +351,9 @@
 	style="
 		overscroll-behavior-y: contain;
 		touch-action: pan-y;
-		transform: {gestureType === 'pull_down'
-		? `translate3d(0, ${displacement}px, 0)`
-		: gestureType === 'swipe_right'
-			? `translate3d(${displacement}px, 0, 0)`
-			: 'translate3d(0, 0, 0)'};
+		transform: {gestureType === 'swipe_right'
+		? `translate3d(${displacement}px, 0, 0)`
+		: 'translate3d(0, 0, 0)'};
 		transition: {isDragging ? 'none' : 'transform 300ms cubic-bezier(0.175, 0.885, 0.32, 1.275)'};
 	"
 	ontouchstart={handleTouchStart}
@@ -368,34 +362,6 @@
 	ontouchcancel={handleTouchCancel}
 	data-testid="home-gesture-container"
 >
-	<!-- Indikator Visual Gestur: Tarik Turun (Suara) -->
-	{#if gestureType === 'pull_down' && displacement > 0}
-		<div
-			class="pointer-events-none fixed top-6 left-1/2 z-50 flex -translate-x-1/2 items-center gap-2.5 rounded-full px-4 py-2 shadow-lg"
-			style="
-				background: var(--glass-card-bg);
-				backdrop-filter: blur(var(--glass-card-blur));
-				-webkit-backdrop-filter: blur(var(--glass-card-blur));
-				border: 1px solid {isExceeded ? 'var(--color-primary)' : 'var(--glass-card-border)'};
-				opacity: {Math.min(1, Math.max(0.3, progress))};
-				transform: translate(-50%, {displacement * 0.35}px) scale({isExceeded
-				? 1.06
-				: 0.95 + progress * 0.05});
-			"
-			data-testid="gesture-pull-down-indicator"
-		>
-			<div
-				class="flex h-7 w-7 items-center justify-center rounded-full text-white transition-colors duration-150"
-				style="background: {isExceeded ? 'var(--color-primary)' : 'var(--color-secondary)'};"
-			>
-				<span class="material-symbols-outlined text-base">mic</span>
-			</div>
-			<span class="text-xs font-bold {isExceeded ? 'text-primary' : 'text-on-surface'}">
-				{isExceeded ? t('gestures.pullDownAction') : t('gestures.pullDownPrompt')}
-			</span>
-		</div>
-	{/if}
-
 	<!-- Indikator Visual Gestur: Swipe Kanan (Scan Struk) -->
 	{#if gestureType === 'swipe_right' && displacement > 0}
 		<div
@@ -752,6 +718,3 @@
 		{/if}
 	</section>
 </div>
-
-<!-- Modal Input Suara untuk Pintasan Gestur Tarik Turun -->
-<VoiceInputModal bind:isOpen={isVoiceModalOpen} />

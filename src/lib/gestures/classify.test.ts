@@ -86,64 +86,6 @@ describe('Klasifikasi Gestur Cepat (Pure Function)', () => {
 		};
 
 		const result = classifyGesture(move);
-		expect(result.type).not.toBe('swipe_right');
-	});
-
-	it('mengklasifikasikan "pull_down" bila ditarik turun dari scrollTop = 0 di bawah status bar', () => {
-		const move: GestureMoveContext = {
-			...defaultStart,
-			startX: 100,
-			startY: 80, // > statusBarHeight (36px)
-			currentX: 105, // deltaX = +5px
-			currentY: 180, // deltaY = +100px
-			currentTime: 1150
-		};
-
-		const result = classifyGesture(move);
-		expect(result.type).toBe('pull_down');
-		expect(result.deltaY).toBe(100);
-		expect(result.progress).toBeGreaterThanOrEqual(1.0);
-		expect(result.isExceeded).toBe(true);
-	});
-
-	it('mengabaikan tarik turun bila halaman tidak berada di posisi paling atas (scrollTop > 0)', () => {
-		const move: GestureMoveContext = {
-			...defaultStart,
-			scrollTop: 15, // sedang di-scroll
-			startY: 80,
-			currentX: 100,
-			currentY: 180,
-			currentTime: 1150
-		};
-
-		const result = classifyGesture(move);
-		expect(result.type).toBe('none');
-		expect(result.isExceeded).toBe(false);
-	});
-
-	it('mengabaikan tarik turun bila sentuhan dimulai di dalam zona status bar (startY < statusBarHeight)', () => {
-		const move: GestureMoveContext = {
-			...defaultStart,
-			startY: 20, // < 36px
-			currentX: 100,
-			currentY: 120,
-			currentTime: 1150
-		};
-
-		const result = classifyGesture(move);
-		expect(result.type).toBe('none');
-	});
-
-	it('mengabaikan tarik turun bila gerakan ke atas (deltaY < 0)', () => {
-		const move: GestureMoveContext = {
-			...defaultStart,
-			startY: 150,
-			currentX: 100,
-			currentY: 80, // deltaY = -70px
-			currentTime: 1150
-		};
-
-		const result = classifyGesture(move);
 		expect(result.type).toBe('none');
 	});
 

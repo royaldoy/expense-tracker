@@ -31,7 +31,8 @@
 		"dompet": "Dompet",
 		"laporan": "Laporan",
 		"pengaturan": "Pengaturan",
-		"aksiCepat": "Aksi Cepat"
+		"aksiCepat": "Aksi Cepat",
+		"catat": "Catat"
 	},
 	"routes": {
 		"beranda": "Beranda",
@@ -331,10 +332,8 @@
 	},
 	"gestures": {
 		"hintTitle": "Pintasan Gestur Cepat",
-		"hintDesc": "Geser ke kanan untuk scan struk, atau tarik ke bawah untuk mencatat dengan suara.",
+		"hintDesc": "Geser kanan untuk scan struk",
 		"hintDismiss": "Oke, Paham",
-		"pullDownAction": "Lepas untuk Catat Suara",
-		"pullDownPrompt": "Tarik untuk Catat Suara",
 		"swipeRightAction": "Lepas untuk Scan Struk",
 		"swipeRightPrompt": "Geser untuk Scan Struk"
 	}

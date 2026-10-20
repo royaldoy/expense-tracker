@@ -172,12 +172,13 @@ test.describe('Gestur Cepat Beranda (Quick Gestures E2E)', () => {
 			6
 		);
 
-		// Halaman harus berpindah ke /scan
+		// Halaman harus berpindah ke /scan (live camera viewfinder)
 		await expect(page).toHaveURL(/\/scan/);
-		await expect(page.locator('text=Scan Struk Belanja')).toBeVisible();
+		const closeBtn = page.locator('[data-testid="scan-close-btn"]');
+		await expect(closeBtn).toBeVisible();
 
 		// Klik tombol kembali di layar scan
-		await page.click('button:has-text("Kembali")');
+		await closeBtn.click();
 
 		// Kembali ke Beranda dengan saldo dan state utuh
 		await expect(page).toHaveURL('/');
@@ -229,33 +230,7 @@ test.describe('Gestur Cepat Beranda (Quick Gestures E2E)', () => {
 		}
 	});
 
-	test('5. Tarik turun dari scrollTop = 0 membuka alur suara (VoiceInputModal) dan batal mengembalikan ke Beranda', async ({
-		page
-	}) => {
-		await page.goto('/');
-
-		// Lakukan tarik turun vertikal (mulai Y=80 > 36 status bar, geser turun +140px)
-		await simulateTouchGesture(
-			page,
-			'[data-testid="home-gesture-container"]',
-			{ x: 150, y: 80 },
-			{ x: 155, y: 240 },
-			6
-		);
-
-		// Alur suara berjalan: modal suara memproses input dan membuka form transaksi suara
-		await expect(page).toHaveURL(/\/transactions\/new\?from=voice/);
-
-		// Tekan tombol Kembali pada form transaksi untuk membatalkan
-		const backBtn = page.locator('button[aria-label="Kembali"]');
-		await expect(backBtn).toBeVisible();
-		await backBtn.click();
-
-		// Kembali ke Beranda dengan state utuh
-		await expect(page).toHaveURL('/');
-	});
-
-	test('6. Gerakan di bawah ambang batas (under threshold) memicu gerak pegas balik tanpa menjalankan aksi', async ({
+	test('5. Gerakan di bawah ambang batas (under threshold) memicu gerak pegas balik tanpa menjalankan aksi', async ({
 		page
 	}) => {
 		await page.goto('/');
@@ -274,7 +249,7 @@ test.describe('Gestur Cepat Beranda (Quick Gestures E2E)', () => {
 		await expect(page).toHaveURL('/');
 	});
 
-	test('7. Toggle "Gestur Cepat" di Pengaturan menonaktifkan gestur di Beranda', async ({
+	test('6. Toggle "Gestur Cepat" di Pengaturan menonaktifkan gestur di Beranda', async ({
 		page
 	}) => {
 		// 1. Masuk ke Pengaturan
