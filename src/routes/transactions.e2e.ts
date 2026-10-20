@@ -273,8 +273,8 @@ test.describe('Alur Transaksi, Transfer, dan Laporan Keuangan (Transactions E2E)
 		await page.locator('[data-testid="wallet-form-submit"]').click();
 		await expect(page).toHaveURL(/\/wallets/);
 
-		// 2. Buka QuickActionSheet lewat tombol + (Aksi Cepat)
-		await page.getByLabel('Aksi Cepat').click();
+		// 2. Buka QuickActionSheet lewat tombol + (GlassPill Catat)
+		await page.locator('[data-testid="glass-pill"]').click();
 		await expect(page.locator('[data-testid="quick-action-catat"]')).toBeVisible();
 		await expect(page.locator('[data-testid="quick-action-suara"]')).toBeVisible();
 		await expect(page.locator('[data-testid="quick-action-scan"]')).toBeVisible();
@@ -294,12 +294,12 @@ test.describe('Alur Transaksi, Transfer, dan Laporan Keuangan (Transactions E2E)
 		await expect(page).toHaveURL(/\/transactions\/new\?type=transfer/);
 		await expect(page.getByText('Nominal Transfer')).toBeVisible();
 
-		// 6. Uji tombol Scan Struk dari QuickActionSheet -> Navigasi ke /scan (dari halaman utama dengan FAB)
+		// 6. Uji tombol Scan Struk dari QuickActionSheet -> Navigasi ke /scan (dari halaman utama dengan GlassPill)
 		await page.goto('/wallets');
-		await page.getByLabel('Aksi Cepat').click();
+		await page.locator('[data-testid="glass-pill"]').click();
 		await page.locator('[data-testid="quick-action-scan"]').click();
 		await expect(page).toHaveURL(/\/scan/);
-		await expect(page.getByText('Scan Struk Belanja')).toBeVisible();
+		await expect(page.locator('[data-testid="scan-reticle"]')).toBeVisible();
 	});
 
 	test('Alur transaksi suara: buka rekognisi, isi form otomatis tanpa auto-save, tanda tidak yakin, dan simpan', async ({
@@ -321,7 +321,7 @@ test.describe('Alur Transaksi, Transfer, dan Laporan Keuangan (Transactions E2E)
 		});
 
 		// 3. Buka Aksi Cepat dan pilih Suara
-		await page.getByLabel('Aksi Cepat').click();
+		await page.locator('[data-testid="glass-pill"]').click();
 		await page.locator('[data-testid="quick-action-suara"]').click();
 
 		// 4. Tunggu modal rekognisi memproses dan membuka /transactions/new?from=voice

@@ -4,6 +4,7 @@ import type {
 	CompressedImage,
 	FileReadOptions,
 	FileWriteOptions,
+	FlashMode,
 	HapticImpactStyle,
 	HapticNotificationType,
 	IBackButtonAdapter,
@@ -11,11 +12,13 @@ import type {
 	ICameraOcrAdapter,
 	IFilesystemAdapter,
 	IHapticsAdapter,
+	ILiveCameraAdapter,
 	INotificationsAdapter,
 	IPlatform,
 	IShareAdapter,
 	IStatusBarAdapter,
 	IVoiceAdapter,
+	LiveCameraStartOptions,
 	OcrResult,
 	ScheduleNotificationOptions,
 	ShareOptions,
@@ -411,6 +414,73 @@ export class WebVoiceAdapter implements IVoiceAdapter {
 	}
 }
 
+export class WebLiveCameraAdapter implements ILiveCameraAdapter {
+	private currentFlashMode: FlashMode = 'off';
+	private running = false;
+	private mockSupported = true;
+
+	setMockSupported(supported: boolean): void {
+		this.mockSupported = supported;
+	}
+
+	async isSupported(): Promise<boolean> {
+		return this.mockSupported;
+	}
+
+	async checkPermissions(): Promise<boolean> {
+		if (typeof window !== 'undefined' && '__MOCK_CAMERA_PERMISSION__' in window) {
+			return Boolean((window as unknown as Record<string, unknown>).__MOCK_CAMERA_PERMISSION__);
+		}
+		return true;
+	}
+
+	async requestPermissions(): Promise<boolean> {
+		if (typeof window !== 'undefined' && '__MOCK_CAMERA_PERMISSION__' in window) {
+			return Boolean((window as unknown as Record<string, unknown>).__MOCK_CAMERA_PERMISSION__);
+		}
+		return true;
+	}
+
+	async start(_options?: LiveCameraStartOptions): Promise<void> {
+		void _options;
+		this.running = true;
+	}
+
+	async stop(): Promise<void> {
+		this.running = false;
+	}
+
+	async capture(_quality = 90): Promise<CompressedImage> {
+		void _quality;
+		const dummyJpegBase64 =
+			'/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAP//////////////////////////////////////////////////////////////////////////////////////wgALCAABAAEBAREA/8QAFBABAAAAAAAAAAAAAAAAAAAAAP/aAAgBAQABPxA=';
+		return compressImageToJpeg(dummyJpegBase64, 1600, 0.85);
+	}
+
+	async setFlashMode(mode: FlashMode): Promise<void> {
+		this.currentFlashMode = mode;
+	}
+
+	getFlashMode(): FlashMode {
+		return this.currentFlashMode;
+	}
+
+	async toggleFlashMode(): Promise<FlashMode> {
+		const nextMode: Record<FlashMode, FlashMode> = {
+			off: 'on',
+			on: 'torch',
+			torch: 'auto',
+			auto: 'off'
+		};
+		this.currentFlashMode = nextMode[this.currentFlashMode] || 'off';
+		return this.currentFlashMode;
+	}
+
+	async setFocus(_point: { x: number; y: number }): Promise<void> {
+		void _point;
+	}
+}
+
 export class WebPlatform implements IPlatform {
 	readonly type = 'web';
 	readonly isNative = false;
@@ -421,6 +491,7 @@ export class WebPlatform implements IPlatform {
 	readonly notifications = new WebNotificationsAdapter();
 	readonly biometrics = new WebBiometricsAdapter();
 	readonly cameraOcr = new WebCameraOcrAdapter();
+	readonly liveCamera = new WebLiveCameraAdapter();
 	readonly haptics = new WebHapticsAdapter();
 	readonly voice = new WebVoiceAdapter();
 }

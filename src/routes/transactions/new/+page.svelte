@@ -128,6 +128,15 @@
 			if (wList.length > 1 && !toWalletId) {
 				toWalletId = wList.find((w) => w.id !== selectedWalletId)?.id ?? wList[1].id;
 			}
+
+			const paramNote = page.url.searchParams.get('note');
+			if (paramNote) {
+				note = paramNote;
+			}
+			const paramAmount = page.url.searchParams.get('amount');
+			if (paramAmount && parseInt(paramAmount, 10) > 0) {
+				rawAmount = paramAmount;
+			}
 		}
 
 		if (txType !== 'transfer') {

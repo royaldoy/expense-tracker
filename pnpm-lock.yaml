@@ -41,6 +41,9 @@ importers:
       '@capacitor/status-bar':
         specifier: ^7.0.0
         version: 7.0.6(@capacitor/core@7.6.9)
+      '@capgo/camera-preview':
+        specifier: 7.26.4
+        version: 7.26.4(@capacitor/core@7.6.9)
       '@capgo/capacitor-native-biometric':
         specifier: ^7.6.0
         version: 7.6.0(@capacitor/core@7.6.9)
@@ -212,6 +215,11 @@ packages:
 
   '@capacitor/synapse@1.0.4':
     resolution: {integrity: sha512-/C1FUo8/OkKuAT4nCIu/34ny9siNHr9qtFezu4kxm6GY1wNFxrCFWjfYx5C1tUhVGz3fxBABegupkpjXvjCHrw==}
+
+  '@capgo/camera-preview@7.26.4':
+    resolution: {integrity: sha512-fbBZ0NnrJWq3Oo4fZJpRhvC/Ct7aapTXyw1423u5jaQKkqi9JsxZEm4YQ6LHEihJwpQKjcINFl+/HgMh74cpvA==}
+    peerDependencies:
+      '@capacitor/core': '>=7.0.0'
 
   '@capgo/capacitor-native-biometric@7.6.0':
     resolution: {integrity: sha512-ZQ+Nc+uS2sT8TED/REYlmGV34ASFsBe30YdABBQIRL+A2iVbWtdiL0FbX+1sKKXzrS2DGf+mD657Qwl1jGSDLg==}
@@ -2068,6 +2076,10 @@ snapshots:
       '@capacitor/core': 7.6.9
 
   '@capacitor/synapse@1.0.4': {}
+
+  '@capgo/camera-preview@7.26.4(@capacitor/core@7.6.9)':
+    dependencies:
+      '@capacitor/core': 7.6.9
 
   '@capgo/capacitor-native-biometric@7.6.0(@capacitor/core@7.6.9)':
     dependencies:

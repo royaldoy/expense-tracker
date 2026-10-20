@@ -12,9 +12,9 @@ import { describe, expect, it } from 'vitest';
 const ALLOWED_RAW_BUTTON_COMPONENTS = new Set([
 	'src/lib/components/glass/GlassButton.svelte',
 	'src/lib/components/glass/GlassCard.svelte',
-	'src/lib/components/glass/GlassFab.svelte',
 	'src/lib/components/glass/GlassKeypad.svelte',
 	'src/lib/components/glass/GlassListRow.svelte',
+	'src/lib/components/glass/GlassPill.svelte',
 	'src/lib/components/glass/GlassSegmented.svelte',
 	'src/lib/components/glass/GlassSwitch.svelte',
 	'src/lib/components/glass/GlassTabBar.svelte',

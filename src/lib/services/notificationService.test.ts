@@ -52,6 +52,7 @@ describe('NotificationService - Inbox & Deduplikasi Idempoten', () => {
 			},
 			biometrics: {} as unknown as IPlatform['biometrics'],
 			cameraOcr: {} as unknown as IPlatform['cameraOcr'],
+			liveCamera: {} as unknown as IPlatform['liveCamera'],
 			haptics: {} as unknown as IPlatform['haptics'],
 			voice: {} as unknown as IPlatform['voice']
 		};

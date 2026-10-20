@@ -7,6 +7,7 @@ import { LocalNotifications } from '@capacitor/local-notifications';
 import { Share } from '@capacitor/share';
 import { StatusBar, Style } from '@capacitor/status-bar';
 import { NativeBiometric } from '@capgo/capacitor-native-biometric';
+import { CameraPreview } from '@capgo/camera-preview';
 import { CapacitorPluginMlKitTextRecognition } from '@pantrist/capacitor-plugin-ml-kit-text-recognition';
 import { SpeechRecognition } from '@capacitor-community/speech-recognition';
 import { compressImageToJpeg } from './imageUtils';
@@ -16,6 +17,7 @@ import type {
 	CompressedImage,
 	FileReadOptions,
 	FileWriteOptions,
+	FlashMode,
 	HapticImpactStyle,
 	HapticNotificationType,
 	IBackButtonAdapter,
@@ -23,11 +25,13 @@ import type {
 	ICameraOcrAdapter,
 	IFilesystemAdapter,
 	IHapticsAdapter,
+	ILiveCameraAdapter,
 	INotificationsAdapter,
 	IPlatform,
 	IShareAdapter,
 	IStatusBarAdapter,
 	IVoiceAdapter,
+	LiveCameraStartOptions,
 	OcrResult,
 	PlatformType,
 	ScheduleNotificationOptions,
@@ -502,6 +506,108 @@ export class CapacitorVoiceAdapter implements IVoiceAdapter {
 	}
 }
 
+export class CapacitorLiveCameraAdapter implements ILiveCameraAdapter {
+	private currentFlashMode: FlashMode = 'off';
+
+	async isSupported(): Promise<boolean> {
+		return Capacitor.isNativePlatform();
+	}
+
+	async checkPermissions(): Promise<boolean> {
+		try {
+			const status = await CameraPreview.checkPermissions({ disableAudio: true });
+			return status.camera === 'granted';
+		} catch {
+			return false;
+		}
+	}
+
+	async requestPermissions(): Promise<boolean> {
+		try {
+			const status = await CameraPreview.requestPermissions({ disableAudio: true });
+			return status.camera === 'granted';
+		} catch {
+			return false;
+		}
+	}
+
+	async start(options?: LiveCameraStartOptions): Promise<void> {
+		const toBack = options?.toBack ?? true;
+		const position = options?.position ?? 'rear';
+		const disableAudio = options?.disableAudio ?? true;
+
+		await CameraPreview.start({
+			parent: options?.parent,
+			position,
+			toBack,
+			disableAudio,
+			enableOpacity: false,
+			disableFocusIndicator: false,
+			storeToFile: false
+		});
+	}
+
+	async stop(): Promise<void> {
+		try {
+			await CameraPreview.stop({ force: true });
+		} catch {
+			// Abaikan jika kamera memang belum berjalan
+		}
+	}
+
+	async capture(quality = 90): Promise<CompressedImage> {
+		const res = await CameraPreview.capture({
+			quality
+		});
+		if (!res.value) {
+			throw new Error('Tidak ada data foto yang dihasilkan oleh kamera');
+		}
+		return compressImageToJpeg(res.value, 1600, 0.85);
+	}
+
+	async setFlashMode(mode: FlashMode): Promise<void> {
+		await CameraPreview.setFlashMode({ flashMode: mode });
+		this.currentFlashMode = mode;
+	}
+
+	getFlashMode(): FlashMode {
+		return this.currentFlashMode;
+	}
+
+	async toggleFlashMode(): Promise<FlashMode> {
+		const nextMode: Record<FlashMode, FlashMode> = {
+			off: 'on',
+			on: 'torch',
+			torch: 'auto',
+			auto: 'off'
+		};
+		const target = nextMode[this.currentFlashMode] || 'off';
+		try {
+			await this.setFlashMode(target);
+		} catch {
+			await this.setFlashMode('off');
+		}
+		return this.currentFlashMode;
+	}
+
+	async setFocus(point: { x: number; y: number }): Promise<void> {
+		const normX =
+			typeof window !== 'undefined' && point.x > 1
+				? Math.min(Math.max(point.x / window.innerWidth, 0), 1)
+				: Math.min(Math.max(point.x, 0), 1);
+		const normY =
+			typeof window !== 'undefined' && point.y > 1
+				? Math.min(Math.max(point.y / window.innerHeight, 0), 1)
+				: Math.min(Math.max(point.y, 0), 1);
+
+		try {
+			await CameraPreview.setFocus({ x: normX, y: normY });
+		} catch {
+			// Abaikan jika fokus otomatis tidak didukung kamera depan atau error native
+		}
+	}
+}
+
 export class CapacitorPlatform implements IPlatform {
 	readonly type: PlatformType;
 	readonly isNative: boolean;
@@ -512,6 +618,7 @@ export class CapacitorPlatform implements IPlatform {
 	readonly notifications = new CapacitorNotificationsAdapter();
 	readonly biometrics = new CapacitorBiometricsAdapter();
 	readonly cameraOcr = new CapacitorCameraOcrAdapter();
+	readonly liveCamera = new CapacitorLiveCameraAdapter();
 	readonly haptics = new CapacitorHapticsAdapter();
 	readonly voice = new CapacitorVoiceAdapter();
 

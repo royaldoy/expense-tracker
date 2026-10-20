@@ -5,7 +5,7 @@
 	import { page } from '$app/state';
 	import { get } from 'svelte/store';
 	import GlassDock from '$lib/components/glass/GlassDock.svelte';
-	import GlassFab from '$lib/components/glass/GlassFab.svelte';
+	import GlassPill from '$lib/components/glass/GlassPill.svelte';
 	import QuickActionSheet from '$lib/components/glass/QuickActionSheet.svelte';
 	import PinLockScreen from '$lib/components/security/PinLockScreen.svelte';
 	import { refreshUnreadNotificationsCount } from '$lib/stores/notificationStore';
@@ -39,6 +39,7 @@
 	}
 
 	let isFullscreen = $derived(isFullscreenRoute(page.url.pathname) || $isLocked);
+	let isScanActive = $derived(page.url.pathname === '/scan');
 	let showNavigation = $derived(!isFullscreen && !isKeyboardOpen);
 
 	// View Transitions API (Hanya aktif bila pathname berubah dan mode animasi aktif)
@@ -150,40 +151,52 @@
 	<title>Money Tracker</title>
 </svelte:head>
 
-<div class="relative min-h-screen bg-surface font-sans text-on-surface antialiased">
-	<!-- Ambient Background Orbs -->
-	<div class="pointer-events-none fixed inset-0 overflow-hidden" aria-hidden="true">
-		<!-- Orb 1: Sky Blue (Top Right) -->
-		<div
-			class="absolute -top-24 -right-24 h-96 w-96 rounded-full blur-[96px]"
-			style="background: var(--color-ambient-orb-1);"
-		></div>
-		<!-- Orb 2: Emerald Green (Middle Left) -->
-		<div
-			class="absolute top-1/3 -left-28 h-80 w-80 rounded-full blur-[80px]"
-			style="background: var(--color-ambient-orb-2);"
-		></div>
-		<!-- Orb 3: Royal Lavender (Bottom Right) -->
-		<div
-			class="absolute -right-20 bottom-12 h-72 w-72 rounded-full blur-[72px]"
-			style="background: var(--color-ambient-orb-3);"
-		></div>
-	</div>
+<div
+	class="relative min-h-screen {isScanActive
+		? 'bg-transparent'
+		: 'bg-surface'} font-sans text-on-surface antialiased"
+>
+	<!-- Ambient Background Orbs & Static Radial Accent Bottom (disembunyikan saat layar kamera live aktif) -->
+	{#if !isScanActive}
+		<div class="pointer-events-none fixed inset-0 overflow-hidden" aria-hidden="true">
+			<!-- Orb 1: Sky Blue (Top Right) -->
+			<div
+				class="absolute -top-24 -right-24 h-96 w-96 rounded-full blur-[96px]"
+				style="background: var(--color-ambient-orb-1);"
+			></div>
+			<!-- Orb 2: Emerald Green (Middle Left) -->
+			<div
+				class="absolute top-1/3 -left-28 h-80 w-80 rounded-full blur-[80px]"
+				style="background: var(--color-ambient-orb-2);"
+			></div>
+			<!-- Orb 3: Royal Lavender (Bottom Right) -->
+			<div
+				class="absolute -right-20 bottom-12 h-72 w-72 rounded-full blur-[72px]"
+				style="background: var(--color-ambient-orb-3);"
+			></div>
+			<!-- Static Radial Accent Glow di dasar aplikasi (tanpa animasi dan tanpa filter blur besar) -->
+			<div
+				class="pointer-events-none absolute inset-x-0 bottom-0 h-48 select-none"
+				style="background: radial-gradient(ellipse 420px 200px at 50% 100%, var(--color-ambient-accent-bottom, rgba(0, 112, 235, 0.12)) 0%, transparent 75%);"
+			></div>
+		</div>
+	{/if}
 
-	<!-- Konten Utama Halaman (inert saat terkunci) -->
+	<!-- Konten Utama Halaman (bergulir di bawah dock & pill, inert saat terkunci) -->
 	<main
-		class="relative mx-auto min-h-screen w-full max-w-[420px] {showNavigation
-			? 'pb-32'
-			: 'pb-safe'}"
+		class="relative mx-auto min-h-screen w-full max-w-[420px] {showNavigation ? '' : 'pb-safe'}"
+		style={showNavigation
+			? 'padding-bottom: calc(152px + env(safe-area-inset-bottom, 0px));'
+			: undefined}
 		inert={$isLocked}
 		aria-hidden={$isLocked}
 	>
 		{@render children()}
 	</main>
 
-	<!-- Floating Glass FAB & Glass Dock -->
+	<!-- Floating Glass Pill & Glass Dock -->
 	{#if showNavigation}
-		<GlassFab onaction={() => (quickActionOpen = true)} />
+		<GlassPill onaction={() => (quickActionOpen = true)} />
 		<GlassDock />
 	{/if}
 

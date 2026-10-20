@@ -84,14 +84,31 @@
 	--color-ambient-orb-1: rgba(0, 122, 255, 0.12);
 	--color-ambient-orb-2: rgba(52, 199, 89, 0.1);
 	--color-ambient-orb-3: rgba(88, 86, 214, 0.08);
+	--color-ambient-accent-bottom: rgba(0, 112, 235, 0.12);
+
+	/* Glass Float Material (Light Mode - Low-Alpha White Tint 30-45%) */
+	--glass-float-bg: linear-gradient(
+		180deg,
+		rgba(255, 255, 255, 0.42) 0%,
+		rgba(255, 255, 255, 0.32) 100%
+	);
+	--glass-float-filter: blur(20px) saturate(1.7);
+	--glass-float-blur: 20px;
+	--glass-float-saturate: 170%;
+	--glass-float-border: rgba(255, 255, 255, 0.65);
+	--glass-float-shadow:
+		inset 0 1px 1px 0 rgba(255, 255, 255, 0.9), inset 0 -1px 1px 0 rgba(0, 0, 0, 0.04),
+		0 16px 36px -8px rgba(0, 0, 0, 0.12);
 
 	/* Glass Material Variables (Light Mode) */
-	--glass-dock-bg: rgba(255, 255, 255, 0.85);
-	--glass-dock-blur: 24px;
-	--glass-dock-border: rgba(255, 255, 255, 0.8);
-	--glass-dock-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.15);
-	--glass-dock-indicator-bg: rgba(255, 255, 255, 0.9);
-	--glass-dock-indicator-border: rgba(0, 88, 188, 0.15);
+	--glass-dock-bg: var(--glass-float-bg);
+	--glass-dock-blur: 20px;
+	--glass-dock-border: var(--glass-float-border);
+	--glass-dock-shadow: var(--glass-float-shadow);
+	--glass-dock-indicator-bg: rgba(255, 255, 255, 0.85);
+	--glass-dock-indicator-border: rgba(255, 255, 255, 0.95);
+	--glass-dock-indicator-shadow:
+		0 2px 8px rgba(0, 0, 0, 0.06), inset 0 1px 1px rgba(255, 255, 255, 0.8);
 
 	--glass-fab-bg: #0070eb;
 	--glass-fab-border: rgba(255, 255, 255, 0.4);
@@ -199,14 +216,30 @@
 	--color-ambient-orb-1: rgba(10, 132, 255, 0.15);
 	--color-ambient-orb-2: rgba(48, 209, 88, 0.12);
 	--color-ambient-orb-3: rgba(94, 92, 230, 0.1);
+	--color-ambient-accent-bottom: rgba(10, 132, 255, 0.15);
+
+	/* Glass Float Material (Dark Mode - Low-Alpha White Tint 4-10%) */
+	--glass-float-bg: linear-gradient(
+		180deg,
+		rgba(255, 255, 255, 0.09) 0%,
+		rgba(255, 255, 255, 0.05) 100%
+	);
+	--glass-float-blur: 20px;
+	--glass-float-saturate: 170%;
+	--glass-float-border: rgba(255, 255, 255, 0.15);
+	--glass-float-shadow:
+		inset 0 1px 1px 0 rgba(255, 255, 255, 0.25), inset 0 -1px 1px 0 rgba(0, 0, 0, 0.35),
+		0 20px 44px -10px rgba(0, 0, 0, 0.55);
 
 	/* Glass Material Variables (Dark Mode) */
-	--glass-dock-bg: rgba(28, 28, 30, 0.85);
-	--glass-dock-blur: 24px;
-	--glass-dock-border: rgba(255, 255, 255, 0.14);
-	--glass-dock-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.6);
+	--glass-dock-bg: var(--glass-float-bg);
+	--glass-dock-blur: 20px;
+	--glass-dock-border: var(--glass-float-border);
+	--glass-dock-shadow: var(--glass-float-shadow);
 	--glass-dock-indicator-bg: rgba(255, 255, 255, 0.12);
 	--glass-dock-indicator-border: rgba(255, 255, 255, 0.2);
+	--glass-dock-indicator-shadow:
+		0 2px 8px rgba(0, 0, 0, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.2);
 
 	--glass-fab-bg: #0070eb;
 	--glass-fab-border: rgba(255, 255, 255, 0.25);
@@ -258,11 +291,18 @@
 :root[data-reduce-transparency='true'],
 @media (prefers-reduced-transparency: reduce) {
 	:root {
+		--glass-float-bg: #ffffff;
+		--glass-float-blur: 0px;
+		--glass-float-saturate: 100%;
+		--glass-float-border: #c1c6d7;
+		--glass-float-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+
 		--glass-dock-bg: #ffffff;
 		--glass-dock-blur: 0px;
 		--glass-dock-border: #c1c6d7;
 		--glass-dock-indicator-bg: #e4e7ee;
 		--glass-dock-indicator-border: #c1c6d7;
+		--glass-dock-indicator-shadow: none;
 		--glass-fab-bg: #0058bc;
 		--glass-fab-border: #0058bc;
 
@@ -297,11 +337,18 @@
 
 	:root[data-theme='dark'],
 	.dark {
+		--glass-float-bg: #202024;
+		--glass-float-blur: 0px;
+		--glass-float-saturate: 100%;
+		--glass-float-border: #3f4450;
+		--glass-float-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+
 		--glass-dock-bg: #202024;
 		--glass-dock-blur: 0px;
 		--glass-dock-border: #3f4450;
 		--glass-dock-indicator-bg: #2d2d34;
 		--glass-dock-indicator-border: #52525b;
+		--glass-dock-indicator-shadow: none;
 		--glass-fab-bg: #0070eb;
 		--glass-fab-border: #0070eb;
 
@@ -337,11 +384,18 @@
 
 @supports not (backdrop-filter: blur(1px)) {
 	:root {
+		--glass-float-bg: #ffffff;
+		--glass-float-blur: 0px;
+		--glass-float-saturate: 100%;
+		--glass-float-border: #c1c6d7;
+		--glass-float-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+
 		--glass-dock-bg: #ffffff;
 		--glass-dock-blur: 0px;
 		--glass-dock-border: #c1c6d7;
 		--glass-dock-indicator-bg: #e4e7ee;
 		--glass-dock-indicator-border: #c1c6d7;
+		--glass-dock-indicator-shadow: none;
 		--glass-fab-bg: #0058bc;
 		--glass-fab-border: #0058bc;
 
@@ -372,11 +426,18 @@
 
 	:root[data-theme='dark'],
 	.dark {
+		--glass-float-bg: #202024;
+		--glass-float-blur: 0px;
+		--glass-float-saturate: 100%;
+		--glass-float-border: #3f4450;
+		--glass-float-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+
 		--glass-dock-bg: #202024;
 		--glass-dock-blur: 0px;
 		--glass-dock-border: #3f4450;
 		--glass-dock-indicator-bg: #2d2d34;
 		--glass-dock-indicator-border: #52525b;
+		--glass-dock-indicator-shadow: none;
 		--glass-fab-bg: #0070eb;
 		--glass-fab-border: #0070eb;
 
@@ -503,4 +564,22 @@
 .glass-tab-bar-nav,
 .glass-dock-nav {
 	view-transition-name: app-dock;
+}
+
+/* Utilitas .glass-float (Liquid Glass Navigation Surface) */
+.glass-float {
+	background: var(--glass-float-bg);
+	-webkit-backdrop-filter: var(--glass-float-filter, blur(20px) saturate(1.7));
+	backdrop-filter: var(--glass-float-filter, blur(20px) saturate(1.7));
+	border: 1px solid var(--glass-float-border);
+	box-shadow: var(--glass-float-shadow);
+}
+
+/* Transparansi DOM saat Live Camera Viewfinder aktif */
+html.camera-preview-active,
+body.camera-preview-active,
+.camera-preview-active #app,
+.camera-preview-active main {
+	background: transparent !important;
+	background-color: transparent !important;
 }

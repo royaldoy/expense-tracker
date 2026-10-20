@@ -4,6 +4,7 @@ import {
 	CapacitorBiometricsAdapter,
 	CapacitorFilesystemAdapter,
 	CapacitorHapticsAdapter,
+	CapacitorLiveCameraAdapter,
 	CapacitorNotificationsAdapter,
 	CapacitorPlatform,
 	capacitorPlatform,
@@ -18,6 +19,7 @@ import {
 	WebBiometricsAdapter,
 	WebFilesystemAdapter,
 	WebHapticsAdapter,
+	WebLiveCameraAdapter,
 	WebNotificationsAdapter,
 	WebPlatform,
 	webPlatform,
@@ -38,7 +40,8 @@ export {
 	WebNotificationsAdapter,
 	WebBiometricsAdapter,
 	WebHapticsAdapter,
-	WebVoiceAdapter
+	WebVoiceAdapter,
+	WebLiveCameraAdapter
 };
 
 export {
@@ -52,6 +55,7 @@ export {
 	CapacitorBiometricsAdapter,
 	CapacitorHapticsAdapter,
 	CapacitorVoiceAdapter,
+	CapacitorLiveCameraAdapter,
 	VOICE_RECOGNITION_CONFIG
 };
 

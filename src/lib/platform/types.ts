@@ -227,6 +227,67 @@ export interface IVoiceAdapter {
 	stop(): Promise<void>;
 }
 
+export type FlashMode = 'off' | 'on' | 'torch' | 'auto';
+
+export interface LiveCameraStartOptions {
+	position?: 'rear' | 'front';
+	toBack?: boolean;
+	disableAudio?: boolean;
+	parent?: string;
+}
+
+export interface ILiveCameraAdapter {
+	/**
+	 * Memeriksa apakah live camera preview didukung di platform ini.
+	 */
+	isSupported(): Promise<boolean>;
+
+	/**
+	 * Memeriksa apakah izin kamera sudah diberikan.
+	 */
+	checkPermissions(): Promise<boolean>;
+
+	/**
+	 * Meminta izin kamera dari pengguna.
+	 */
+	requestPermissions(): Promise<boolean>;
+
+	/**
+	 * Memulai live camera preview (biasanya di-render di belakang WebView dengan toBack: true).
+	 */
+	start(options?: LiveCameraStartOptions): Promise<void>;
+
+	/**
+	 * Menghentikan live camera preview dan membebaskan resource kamera.
+	 */
+	stop(): Promise<void>;
+
+	/**
+	 * Mengambil foto dengan resolusi penuh dari sensor kamera, lalu otomatis dikompresi.
+	 */
+	capture(quality?: number): Promise<CompressedImage>;
+
+	/**
+	 * Mengatur mode flash / torch kamera.
+	 */
+	setFlashMode(mode: FlashMode): Promise<void>;
+
+	/**
+	 * Mendapatkan mode flash aktif saat ini.
+	 */
+	getFlashMode(): FlashMode;
+
+	/**
+	 * Memutar mode flash: off -> on -> torch -> off.
+	 */
+	toggleFlashMode(): Promise<FlashMode>;
+
+	/**
+	 * Menyesuaikan fokus dan pencahayaan otomatis pada titik koordinat layar yang ditekan.
+	 */
+	setFocus(point: { x: number; y: number }): Promise<void>;
+}
+
 export interface IPlatform {
 	readonly type: PlatformType;
 	readonly isNative: boolean;
@@ -237,6 +298,7 @@ export interface IPlatform {
 	readonly notifications: INotificationsAdapter;
 	readonly biometrics: IBiometricsAdapter;
 	readonly cameraOcr: ICameraOcrAdapter;
+	readonly liveCamera: ILiveCameraAdapter;
 	readonly haptics: IHapticsAdapter;
 	readonly voice: IVoiceAdapter;
 }
