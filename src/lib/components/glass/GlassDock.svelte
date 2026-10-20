@@ -26,7 +26,10 @@
 	}
 </script>
 
-<div class="pb-safe pointer-events-none fixed inset-x-0 bottom-4 z-40 flex justify-center px-4">
+<div
+	class="pointer-events-none fixed inset-x-0 z-40 flex justify-center px-4"
+	style="bottom: calc(16px + env(safe-area-inset-bottom, 0px));"
+>
 	<div class="relative w-full max-w-[364px]">
 		<!-- Ambient static radial gradient di belakang dock (tanpa filter blur besar demi performa) -->
 		<div
@@ -37,14 +40,7 @@
 
 		<!-- svelte-ignore a11y_no_redundant_roles -->
 		<nav
-			class="glass-dock-nav pointer-events-auto relative flex h-16 w-full items-center rounded-[32px] p-1.5 shadow-xl select-none"
-			style="
-				background: var(--glass-dock-bg);
-				backdrop-filter: blur(var(--glass-dock-blur, 24px));
-				-webkit-backdrop-filter: blur(var(--glass-dock-blur, 24px));
-				border: 1px solid var(--glass-dock-border);
-				box-shadow: var(--glass-dock-shadow);
-			"
+			class="glass-dock-nav glass-float pointer-events-auto relative flex h-16 w-full items-center rounded-[32px] p-1.5 select-none"
 			role="navigation"
 			aria-label="Navigasi Utama"
 			data-testid="glass-dock"
@@ -53,7 +49,7 @@
 			<div
 				aria-hidden="true"
 				class="pointer-events-none absolute inset-x-8 top-0 h-px"
-				style="background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.7) 50%, rgba(255,255,255,0) 100%);"
+				style="background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.85) 50%, rgba(255,255,255,0) 100%);"
 			></div>
 
 			<!-- Specular rim highlight di tepi bawah -->
@@ -63,45 +59,53 @@
 				style="background: linear-gradient(90deg, transparent 0%, rgba(0, 112, 235, 0.6) 50%, transparent 100%);"
 			></div>
 
-			<!-- Indikator Aktif: 25% lebar tetap, hanya bergeser via transform: translateX -->
-			{#if activeTabIndex >= 0}
-				<div
-					aria-hidden="true"
-					class="pointer-events-none absolute top-1.5 bottom-1.5 w-1/4 rounded-[26px] border shadow-xs"
-					style="
-						left: 0;
-						transform: translateX({activeTabIndex * 100}%);
-						transition: transform var(--motion-duration-normal, 250ms) var(--motion-ease-spring, cubic-bezier(0.34, 1.35, 0.64, 1));
-						background: var(--glass-dock-indicator-bg, rgba(255, 255, 255, 0.9));
-						border-color: var(--glass-dock-indicator-border, rgba(0, 88, 188, 0.15));
-					"
-					data-testid="dock-active-indicator"
-				></div>
-			{/if}
+			<!-- CSS Track dengan padding: Indikator & Tab berada di container yang sama persis -->
+			<div class="relative flex h-full w-full items-center">
+				<!-- Indikator Aktif: lebar calc(100% / 4), transform: translateX(calc(var(--i) * 100%)) -->
+				{#if activeTabIndex >= 0}
+					<div
+						aria-hidden="true"
+						class="pointer-events-none absolute inset-y-0 rounded-[26px] border"
+						style="
+							width: calc(100% / 4);
+							left: 0;
+							--i: {activeTabIndex};
+							transform: translateX(calc(var(--i) * 100%));
+							transition: transform var(--motion-duration-normal, 250ms)
+								var(--motion-ease-spring, cubic-bezier(0.34, 1.35, 0.64, 1));
+							background: var(--glass-dock-indicator-bg);
+							border-color: var(--glass-dock-indicator-border);
+							box-shadow: var(--glass-dock-indicator-shadow);
+						"
+						data-testid="dock-active-indicator"
+					></div>
+				{/if}
 
-			<!-- 4 Tab Navigasi -->
-			{#each tabs as tab (tab.href)}
-				{@const active = activeTabIndex === tab.index}
-				<a
-					href={tab.href}
-					onclick={() => handleTabClick(tab.index)}
-					class="relative z-10 flex min-h-[48px] min-w-[48px] flex-1 flex-col items-center justify-center rounded-2xl py-1 transition-transform duration-150 select-none active:scale-95 {active
-						? 'font-bold text-primary'
-						: 'font-medium text-on-surface-variant hover:text-on-surface'}"
-					aria-current={active ? 'page' : undefined}
-					data-testid="dock-tab-{tab.index}"
-				>
-					<span
-						class="material-symbols-outlined text-[22px] transition-transform duration-150 {active
-							? 'scale-105'
-							: ''}"
-						style="font-variation-settings: 'FILL' {active ? 1 : 0};"
+				<!-- 4 Tab Navigasi: masing-masing selebar calc(100% / 4) -->
+				{#each tabs as tab (tab.href)}
+					{@const active = activeTabIndex === tab.index}
+					<a
+						href={tab.href}
+						onclick={() => handleTabClick(tab.index)}
+						style="width: calc(100% / 4);"
+						class="relative z-10 flex h-full flex-col items-center justify-center rounded-2xl py-1 transition-transform duration-150 select-none active:scale-95 {active
+							? 'font-bold text-primary'
+							: 'font-medium text-on-surface-variant hover:text-on-surface'}"
+						aria-current={active ? 'page' : undefined}
+						data-testid="dock-tab-{tab.index}"
 					>
-						{tab.icon}
-					</span>
-					<span class="text-[10px] leading-tight tracking-tight">{tab.label}</span>
-				</a>
-			{/each}
+						<span
+							class="material-symbols-outlined text-[22px] transition-transform duration-150 {active
+								? 'scale-105'
+								: ''}"
+							style="font-variation-settings: 'FILL' {active ? 1 : 0};"
+						>
+							{tab.icon}
+						</span>
+						<span class="text-[10px] leading-tight tracking-tight">{tab.label}</span>
+					</a>
+				{/each}
+			</div>
 		</nav>
 	</div>
 </div>

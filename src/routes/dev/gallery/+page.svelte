@@ -596,15 +596,15 @@
 			</div>
 		</GlassCard>
 
-		<!-- 8. GlassDock & GlassFab Showcase -->
+		<!-- 8. GlassDock & GlassPill Showcase -->
 		<GlassCard class="flex flex-col gap-3 p-4">
 			<div class="flex items-center justify-between">
-				<span class="text-xs font-bold text-on-surface">8. GlassDock &amp; GlassFab</span>
+				<span class="text-xs font-bold text-on-surface">8. GlassDock &amp; GlassPill</span>
 				<span class="text-[11px] font-semibold text-primary">Floating Navigation</span>
 			</div>
 			<p class="text-xs text-on-surface-variant">
 				GlassDock memuat 4 tab simetris dengan indikator bergeser via translateX dan ikon terisi.
-				GlassFab melayang 56px di kanan atas dock dengan scroll auto-hide.
+				GlassPill melayang 44px di tengah tepat di atas dock dengan scroll auto-hide.
 			</p>
 			<div class="flex gap-2">
 				<GlassButton
